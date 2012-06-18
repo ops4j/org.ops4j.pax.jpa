@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>pax-jpa-samples</artifactId>
+        <groupId>org.ops4j.pax.jpa</groupId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <groupId>org.ops4j.pax.jpa.samples</groupId>
+    <artifactId>pax-jpa-sample1-model</artifactId>
+    <packaging>bundle</packaging>
+
+    <properties>
+        <bundle.symbolicName>org.ops4j.pax.jpa.sample1.model</bundle.symbolicName>
+        <bundle.namespace>org.ops4j.pax.jpa.sample1.model</bundle.namespace>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jpa_2.0_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <configuration>
+                    <instructions>
+                        <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
