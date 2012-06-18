@@ -27,6 +27,7 @@
 
     <modules>
         <module>pax-jpa</module>
+        <module>pax-jpa-eclipselink</module>
 
         <module>pax-jpa-itest</module>
         <module>pax-jpa-samples</module>
