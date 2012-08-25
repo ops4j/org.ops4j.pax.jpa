@@ -43,6 +43,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-link-mvn</artifactId>
             <scope>test</scope>
