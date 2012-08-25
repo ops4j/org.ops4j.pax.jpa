@@ -19,6 +19,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.ops4j.pax.jpa.samples</groupId>
+            <artifactId>pax-jpa-sample1-model</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
             <scope>test</scope>
