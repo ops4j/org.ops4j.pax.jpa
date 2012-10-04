@@ -58,7 +58,14 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry>
             bundle.getVersion() );
         ManifestEntry entry = entries.get( 0 );
         String value = entry.getValue();
-        URL persistenceXml = bundle.getEntry( "META-INF/persistence.xml" );
+        String[] resources = value.split(",");
+        for (String resource : resources) {
+            processPersistenceDescriptor(bundle, resource);
+        }
+    }
+
+    private void processPersistenceDescriptor(Bundle bundle, String resource) {
+        URL persistenceXml = bundle.getEntry( resource );
         try
         {
             Persistence descriptor = parser.parseDescriptor( persistenceXml );
@@ -67,10 +74,9 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry>
                 processPersistenceUnit( bundle, persistenceUnit );
             }
         }
-        catch ( JAXBException e )
+        catch ( JAXBException exc )
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error("cannot parse persistence descriptor", exc);
         }
     }
 
