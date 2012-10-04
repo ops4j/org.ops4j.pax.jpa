@@ -9,6 +9,9 @@
   <groupId>org.ops4j.pax.jpa</groupId>
   <artifactId>pax-jpa-samples</artifactId>
   <packaging>pom</packaging>
+
+  <name>OPS4J Pax JPA Samples Aggregator</name>
+    
   <modules>
       <module>pax-jpa-sample1-model</module>
   </modules>

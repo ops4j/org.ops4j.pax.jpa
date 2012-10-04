@@ -10,10 +10,14 @@
     <groupId>org.ops4j.pax.jpa</groupId>
     <artifactId>pax-jpa</artifactId>
     <packaging>bundle</packaging>
+    
+    <name>OPS4J Pax JPA Extender</name>
+    
     <properties>
         <bundle.symbolicName>org.ops4j.pax.jpa</bundle.symbolicName>
         <bundle.namespace>org.ops4j.pax.jpa</bundle.namespace>
     </properties>
+
     <dependencies>
 
         <dependency>
@@ -48,6 +52,12 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>org.ops4j.pax.jpa.impl.Activator</Bundle-Activator>
+                        <Bundle-SymbolicName>org.ops4j.pax.jpa</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>

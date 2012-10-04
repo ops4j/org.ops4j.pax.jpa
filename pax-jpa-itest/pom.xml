@@ -10,6 +10,8 @@
     <groupId>org.ops4j.pax.jpa</groupId>
     <artifactId>pax-jpa-itest</artifactId>
 
+    <name>OPS4J Pax JPA Integration Tests</name>
+    
     <dependencies>
         <dependency>
             <groupId>org.ops4j.pax.jpa</groupId>
