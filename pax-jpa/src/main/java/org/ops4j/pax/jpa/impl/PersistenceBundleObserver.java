@@ -36,7 +36,7 @@ import org.ops4j.pax.jpa.jaxb.Persistence;
 import org.ops4j.pax.jpa.jaxb.Persistence.PersistenceUnit;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.ManifestEntry;
-import org.ops4j.pax.swissbox.framework.ServiceLookup;
+import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.jdbc.DataSourceFactory;
