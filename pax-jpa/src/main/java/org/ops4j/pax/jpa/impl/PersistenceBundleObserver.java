@@ -139,7 +139,12 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
     }
 
     private void deactivatePersistenceUnit(PersistenceUnitInfoImpl puInfo) {
-        puInfo.getEmfRegistration().unregister();
+        try {
+            puInfo.getEmfRegistration().unregister();            
+        }
+        catch (IllegalStateException exc) {
+            // ignore
+        }
         puInfo.setEmfRegistration(null);
         unboundPersistenceUnits.add(puInfo);
     }
