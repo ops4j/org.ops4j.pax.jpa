@@ -27,35 +27,30 @@ import javax.xml.bind.Unmarshaller;
 import org.ops4j.pax.jpa.jaxb.Persistence;
 import org.ops4j.pax.jpa.jaxb.Persistence.PersistenceUnit;
 
-public class PersistenceDescriptorParser
-{
+public class PersistenceDescriptorParser {
+
     private static JAXBContext singletonJaxbContext;
 
-    public Persistence parseDescriptor( URL url ) throws JAXBException
-    {
+    public Persistence parseDescriptor(URL url) throws JAXBException {
         JAXBContext jaxbContext = getJaxbContext();
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        Persistence persistenceXml = (Persistence) unmarshaller.unmarshal( url );
+        Persistence persistenceXml = (Persistence) unmarshaller.unmarshal(url);
         return persistenceXml;
     }
 
-    private synchronized JAXBContext getJaxbContext() throws JAXBException
-    {
-        if( singletonJaxbContext == null )
-        {
-            singletonJaxbContext =
-                JAXBContext.newInstance( "org.ops4j.pax.jpa.jaxb", getClass().getClassLoader() );
+    private synchronized JAXBContext getJaxbContext() throws JAXBException {
+        if (singletonJaxbContext == null) {
+            singletonJaxbContext = JAXBContext.newInstance("org.ops4j.pax.jpa.jaxb", getClass()
+                .getClassLoader());
         }
         return singletonJaxbContext;
     }
 
-    public Properties parseProperties( PersistenceUnit persistenceUnit )
-    {
+    public Properties parseProperties(PersistenceUnit persistenceUnit) {
         PersistenceUnit.Properties jaxbProps = persistenceUnit.getProperties();
         Properties props = new Properties();
-        for( PersistenceUnit.Properties.Property p : jaxbProps.getProperty() )
-        {
-            props.setProperty( p.getName(), p.getValue() );
+        for (PersistenceUnit.Properties.Property p : jaxbProps.getProperty()) {
+            props.setProperty(p.getName(), p.getValue());
         }
         return props;
     }

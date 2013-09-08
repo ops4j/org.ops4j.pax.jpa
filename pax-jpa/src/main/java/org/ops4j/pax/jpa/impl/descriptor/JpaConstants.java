@@ -17,8 +17,8 @@
  */
 package org.ops4j.pax.jpa.impl.descriptor;
 
-public class JpaConstants
-{
+public class JpaConstants {
+
     public static final String JPA_DRIVER = "javax.persistence.jdbc.driver";
     public static final String JPA_URL = "javax.persistence.jdbc.url";
     public static final String JPA_USER = "javax.persistence.jdbc.user";

@@ -23,17 +23,14 @@ import org.eclipse.persistence.jpa.PersistenceProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator
-{
+public class Activator implements BundleActivator {
 
     public static final String PERSISTENCE_PROVIDER = "javax.persistence.provider";
-    public static final String ECLIPSELINK_OSGI_PROVIDER =
-        "org.eclipse.persistence.jpa.PersistenceProvider";
+    public static final String ECLIPSELINK_OSGI_PROVIDER = "org.eclipse.persistence.jpa.PersistenceProvider";
     private static BundleContext context;
 
     @Override
-    public void start( BundleContext context ) throws Exception
-    {
+    public void start(BundleContext context) throws Exception {
         Activator.context = context;
         registerProviderService();
     }
@@ -44,19 +41,17 @@ public class Activator implements BundleActivator
      * 
      * @throws Exception
      */
-    public void registerProviderService() throws Exception
-    {
+    public void registerProviderService() throws Exception {
         // Create and register ourselves as a JPA persistence provider service
         PersistenceProvider providerService = new PersistenceProvider();
         Hashtable<String, String> props = new Hashtable<String, String>();
-        props.put( PERSISTENCE_PROVIDER, ECLIPSELINK_OSGI_PROVIDER );
-        context.registerService( "javax.persistence.spi.PersistenceProvider", providerService,
-            props );
+        props.put(PERSISTENCE_PROVIDER, ECLIPSELINK_OSGI_PROVIDER);
+        context
+            .registerService("javax.persistence.spi.PersistenceProvider", providerService, props);
     }
 
     @Override
-    public void stop( BundleContext context ) throws Exception
-    {
+    public void stop(BundleContext context) throws Exception {
     }
 
 }

@@ -63,8 +63,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
     private List<PersistenceUnitInfoImpl> unboundPersistenceUnits = new ArrayList<PersistenceUnitInfoImpl>();
     private List<ServiceReference<PersistenceProvider>> persistenceProviders = new ArrayList<ServiceReference<PersistenceProvider>>();
     private List<ServiceReference<DataSourceFactory>> dataSourceFactories = new ArrayList<ServiceReference<DataSourceFactory>>();
-    
-    
+
     public PersistenceBundleObserver() {
         log.debug("instantiating observer");
     }
@@ -84,8 +83,9 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         watcher.stop();
     }
 
-    public synchronized void addPersistenceProvider(ServiceReference<PersistenceProvider> persistenceProvider) {
-        log.debug("adding persistence provider {}", 
+    public synchronized void addPersistenceProvider(
+        ServiceReference<PersistenceProvider> persistenceProvider) {
+        log.debug("adding persistence provider {}",
             persistenceProvider.getProperty("javax.persistence.provider"));
         persistenceProviders.add(persistenceProvider);
         scanUnboundPersistenceUnits();
@@ -108,7 +108,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
             if (!persistenceProviders.isEmpty() && !dataSourceFactories.isEmpty()) {
                 PersistenceProvider provider = bc.getService(persistenceProviders.get(0));
                 puInfo.setProvider(provider);
-                
+
                 DataSourceFactory dsf = bc.getService(dataSourceFactories.get(0));
                 puInfo.setDataSourceFactory(dsf);
                 return true;
@@ -132,7 +132,8 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         emfReg.put(EntityManagerFactoryBuilder.JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
         emfReg.put(EntityManagerFactoryBuilder.JPA_UNIT_VERSION, bundle.getVersion().toString());
         emfReg.put(EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER, provider.getClass().getName());
-        ServiceRegistration<EntityManagerFactory> reg = bundle.getBundleContext().registerService(EntityManagerFactory.class, emf, emfReg);
+        ServiceRegistration<EntityManagerFactory> reg = bundle.getBundleContext().registerService(
+            EntityManagerFactory.class, emf, emfReg);
         puInfo.setEmfRegistration(reg);
         boundPersistenceUnits.add(puInfo);
     }
@@ -143,7 +144,8 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         unboundPersistenceUnits.add(puInfo);
     }
 
-    public synchronized void removePersistenceProvider(ServiceReference<PersistenceProvider> persistenceProvider) {
+    public synchronized void removePersistenceProvider(
+        ServiceReference<PersistenceProvider> persistenceProvider) {
         log.debug("removing persistence provider {}", persistenceProvider.getClass().getName());
         scanBoundPersistenceUnits();
 

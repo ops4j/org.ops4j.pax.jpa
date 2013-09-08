@@ -38,45 +38,46 @@ import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.exam.util.PathUtils;
 import org.osgi.framework.BundleContext;
 
-@RunWith( PaxExam.class )
-public class EclipselinkTest
-{
+@RunWith(PaxExam.class)
+public class EclipselinkTest {
+
     @Inject
     private BundleContext bc;
-    
+
     @Inject
     @Filter("(osgi.unit.name=library)")
     private EntityManagerFactory emf;
-    
+
     @Configuration
-    public Option[] config()
-    {
-        return options(
-            regressionDefaults(),
-            bundle( "reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa/target/classes"),
-            bundle( "reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa-eclipselink/target/classes"),
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
-            mavenBundle( "org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model" ).versionAsInProject(),
-            mavenBundle( "org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
-            mavenBundle( "org.apache.geronimo.specs", "geronimo-jta_1.1_spec" ).versionAsInProject(),
-            mavenBundle( "org.apache.geronimo.specs", "geronimo-servlet_3.0_spec" ).versionAsInProject(),
+    public Option[] config() {
+        return options(regressionDefaults(), bundle("reference:file:" + PathUtils.getBaseDir()
+            + "/../pax-jpa/target/classes"), bundle("reference:file:" + PathUtils.getBaseDir()
+            + "/../pax-jpa-eclipselink/target/classes"),
+            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
+                .versionAsInProject(),
 
-            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.antlr").versionAsInProject(),
-            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.asm").versionAsInProject(),
-            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.core").versionAsInProject(),
-            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.jpa").versionAsInProject(),
+            mavenBundle("org.eclipse.persistence", "org.eclipse.persistence.antlr")
+                .versionAsInProject(),
+            mavenBundle("org.eclipse.persistence", "org.eclipse.persistence.asm")
+                .versionAsInProject(),
+            mavenBundle("org.eclipse.persistence", "org.eclipse.persistence.core")
+                .versionAsInProject(),
+            mavenBundle("org.eclipse.persistence", "org.eclipse.persistence.jpa")
+                .versionAsInProject(),
 
-            
-            mavenBundle( "org.apache.derby", "derby").versionAsInProject(),
-            
-            mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
+            mavenBundle("org.apache.derby", "derby").versionAsInProject(),
+
+            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
     }
 
     @Test
-    public void createDataSourceAndConnection() throws SQLException, InterruptedException
-    {
-        assertNotNull( bc );
+    public void createDataSourceAndConnection() throws SQLException, InterruptedException {
+        assertNotNull(bc);
         EntityManager em = emf.createEntityManager();
-        assertNotNull( em );
+        assertNotNull(em);
     }
 }

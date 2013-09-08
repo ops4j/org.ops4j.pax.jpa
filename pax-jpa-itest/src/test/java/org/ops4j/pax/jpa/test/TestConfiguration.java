@@ -32,28 +32,28 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.util.PathUtils;
 
 /**
- * Default configuration for native container regression tests, overriding the default test
- * system configuration.
+ * Default configuration for native container regression tests, overriding the default test system
+ * configuration.
  * <p>
- * We do not need the Remote Bundle Context for Native Container, and we prefer unified logging
- * with logback.
+ * We do not need the Remote Bundle Context for Native Container, and we prefer unified logging with
+ * logback.
  * <p>
- * To override the standard options, you need to set the configuration property {@code pax.exam.system = default}.
+ * To override the standard options, you need to set the configuration property
+ * {@code pax.exam.system = default}.
  * 
  * @author Harald Wellmann
  */
-public class TestConfiguration
-{
-    public static Option regressionDefaults()
-    {        
+public class TestConfiguration {
+
+    public static Option regressionDefaults() {
         return composite(
-            
+
             // copy most options from PaxExamRuntime.defaultTestSystemOptions(),
             // except RBC and Pax Logging
-            bootDelegationPackage( "sun.*" ),
+            bootDelegationPackage("sun.*"),
             cleanCaches(),
-            frameworkStartLevel( START_LEVEL_TEST_BUNDLE ),
-            
+            frameworkStartLevel(START_LEVEL_TEST_BUNDLE),
+
             // add SLF4J and logback bundles
             mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
@@ -63,14 +63,12 @@ public class TestConfiguration
                 START_LEVEL_SYSTEM_BUNDLES),
 
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
-                       
+
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
-            systemProperty("logback.configurationFile").value( "file:" + PathUtils.getBaseDir() +
-            		"/src/test/resources/logback.xml" ),            		
-            systemProperty( "osgi.console" ).value( "6666" ),
-            systemProperty( "eclipse.consoleLog" ).value( "true" ),
-            junitBundles()
-            );
-    }    
+            systemProperty("logback.configurationFile").value(
+                "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
+            systemProperty("osgi.console").value("6666"), systemProperty("eclipse.consoleLog")
+                .value("true"), junitBundles());
+    }
 }

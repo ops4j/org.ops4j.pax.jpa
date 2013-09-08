@@ -44,12 +44,12 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-public class PersistenceUnitInfoImpl implements PersistenceUnitInfo
-{
+public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
+
     private Bundle bundle;
-    
+
     private PersistenceUnit persistenceUnit;
-    
+
     private DataSourceFactory dataSourceFactory;
 
     private Properties props;
@@ -57,179 +57,152 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo
     private BundleClassLoader cl;
 
     private PersistenceProvider provider;
-    
-    private ServiceRegistration<EntityManagerFactory> emfRegistration;    
-    
-    public PersistenceUnitInfoImpl(Bundle bundle, PersistenceUnit persistenceUnit, Properties props)
-    {
+
+    private ServiceRegistration<EntityManagerFactory> emfRegistration;
+
+    public PersistenceUnitInfoImpl(Bundle bundle, PersistenceUnit persistenceUnit, Properties props) {
         this.bundle = bundle;
         this.persistenceUnit = persistenceUnit;
         this.props = props;
-        this.cl = new BundleClassLoader( bundle );
+        this.cl = new BundleClassLoader(bundle);
     }
-    
-    public Bundle getBundle() 
-    {
+
+    public Bundle getBundle() {
         return bundle;
     }
-    
+
     @Override
-    public String getPersistenceUnitName()
-    {
+    public String getPersistenceUnitName() {
         return persistenceUnit.getName();
     }
 
     @Override
-    public String getPersistenceProviderClassName()
-    {
+    public String getPersistenceProviderClassName() {
         return persistenceUnit.getProvider();
     }
 
     @Override
-    public PersistenceUnitTransactionType getTransactionType()
-    {
-        org.ops4j.pax.jpa.jaxb.PersistenceUnitTransactionType transactionType = persistenceUnit.getTransactionType();
-        return transactionType == null ? null : PersistenceUnitTransactionType.valueOf(transactionType.toString());
+    public PersistenceUnitTransactionType getTransactionType() {
+        org.ops4j.pax.jpa.jaxb.PersistenceUnitTransactionType transactionType = persistenceUnit
+            .getTransactionType();
+        return transactionType == null ? null : PersistenceUnitTransactionType
+            .valueOf(transactionType.toString());
     }
 
     @Override
-    public DataSource getJtaDataSource()
-    {
+    public DataSource getJtaDataSource() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public DataSource getNonJtaDataSource()
-    {
-        String url = props.getProperty( JpaConstants.JPA_URL );
-        String user = props.getProperty( JpaConstants.JPA_USER );
-        String password = props.getProperty( JpaConstants.JPA_PASSWORD );
+    public DataSource getNonJtaDataSource() {
+        String url = props.getProperty(JpaConstants.JPA_URL);
+        String user = props.getProperty(JpaConstants.JPA_USER);
+        String password = props.getProperty(JpaConstants.JPA_PASSWORD);
         Properties dsfProps = new Properties();
-        dsfProps.setProperty( DataSourceFactory.JDBC_URL, url );
-        
-        if (user != null)
-        {
-            dsfProps.setProperty( DataSourceFactory.JDBC_USER, user );
+        dsfProps.setProperty(DataSourceFactory.JDBC_URL, url);
+
+        if (user != null) {
+            dsfProps.setProperty(DataSourceFactory.JDBC_USER, user);
         }
-        if (password != null)
-        {
-            dsfProps.setProperty( DataSourceFactory.JDBC_PASSWORD, password );
+        if (password != null) {
+            dsfProps.setProperty(DataSourceFactory.JDBC_PASSWORD, password);
         }
-        try
-        {
-            return dataSourceFactory.createDataSource( dsfProps );
+        try {
+            return dataSourceFactory.createDataSource(dsfProps);
         }
-        catch ( SQLException exc )
-        {
-            throw new Ops4jException( exc );
+        catch (SQLException exc) {
+            throw new Ops4jException(exc);
         }
     }
-    
+
     @Override
-    public List<String> getMappingFileNames()
-    {
+    public List<String> getMappingFileNames() {
         return persistenceUnit.getMappingFile();
     }
 
     @Override
-    public List<URL> getJarFileUrls()
-    {
+    public List<URL> getJarFileUrls() {
         return Collections.emptyList();
     }
 
     @Override
-    public URL getPersistenceUnitRootUrl()
-    {
-        return bundle.getEntry( "/" );
+    public URL getPersistenceUnitRootUrl() {
+        return bundle.getEntry("/");
     }
 
     @Override
-    public List<String> getManagedClassNames()
-    {
+    public List<String> getManagedClassNames() {
         return persistenceUnit.getClazz();
     }
 
     @Override
-    public boolean excludeUnlistedClasses()
-    {
+    public boolean excludeUnlistedClasses() {
         return persistenceUnit.isExcludeUnlistedClasses();
     }
 
     @Override
-    public SharedCacheMode getSharedCacheMode()
-    {
+    public SharedCacheMode getSharedCacheMode() {
         PersistenceUnitCachingType sharedCacheMode = persistenceUnit.getSharedCacheMode();
-        return (sharedCacheMode == null) ? null : SharedCacheMode.valueOf(sharedCacheMode.toString());
+        return (sharedCacheMode == null) ? null : SharedCacheMode.valueOf(sharedCacheMode
+            .toString());
     }
 
     @Override
-    public ValidationMode getValidationMode()
-    {
+    public ValidationMode getValidationMode() {
         PersistenceUnitValidationModeType validationMode = persistenceUnit.getValidationMode();
         return (validationMode == null) ? null : ValidationMode.valueOf(validationMode.toString());
     }
 
     @Override
-    public Properties getProperties()
-    {
+    public Properties getProperties() {
         return props;
     }
 
     @Override
-    public String getPersistenceXMLSchemaVersion()
-    {
+    public String getPersistenceXMLSchemaVersion() {
         return "2.0";
     }
 
     @Override
-    public ClassLoader getClassLoader()
-    {
+    public ClassLoader getClassLoader() {
         return cl;
     }
 
     @Override
-    public void addTransformer( ClassTransformer transformer )
-    {
-        JpaWeavingHook hook = new JpaWeavingHook( this, transformer );
-        bundle.getBundleContext().registerService( WeavingHook.class, hook, null );
+    public void addTransformer(ClassTransformer transformer) {
+        JpaWeavingHook hook = new JpaWeavingHook(this, transformer);
+        bundle.getBundleContext().registerService(WeavingHook.class, hook, null);
     }
 
     @Override
-    public ClassLoader getNewTempClassLoader()
-    {
-        return new TemporaryBundleClassLoader( bundle, provider.getClass().getClassLoader() );
+    public ClassLoader getNewTempClassLoader() {
+        return new TemporaryBundleClassLoader(bundle, provider.getClass().getClassLoader());
     }
 
-    
     public PersistenceProvider getProvider() {
         return provider;
     }
 
-    
     public void setProvider(PersistenceProvider provider) {
         this.provider = provider;
     }
 
-    
     public DataSourceFactory getDataSourceFactory() {
         return dataSourceFactory;
     }
 
-    
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
     }
 
-    
     public ServiceRegistration<EntityManagerFactory> getEmfRegistration() {
         return emfRegistration;
     }
 
-    
     public void setEmfRegistration(ServiceRegistration<EntityManagerFactory> emfRegistration) {
         this.emfRegistration = emfRegistration;
     }
-    
-    
+
 }

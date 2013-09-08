@@ -25,41 +25,34 @@ import org.ops4j.io.StreamUtils;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 
-public class TemporaryBundleClassLoader extends BundleClassLoader
-{
+public class TemporaryBundleClassLoader extends BundleClassLoader {
 
-    public TemporaryBundleClassLoader( Bundle bundle )
-    {
-        super( bundle );
+    public TemporaryBundleClassLoader(Bundle bundle) {
+        super(bundle);
     }
 
-    public TemporaryBundleClassLoader( Bundle bundle, ClassLoader parent )
-    {
-        super( bundle, parent );
+    public TemporaryBundleClassLoader(Bundle bundle, ClassLoader parent) {
+        super(bundle, parent);
     }
 
     @Override
-    protected Class<?> findClass( String className ) throws ClassNotFoundException
-    {
-        String resource = className.replace( '.', '/' ).concat( ".class" );
-        InputStream is = getResourceAsStream( resource );
+    protected Class<?> findClass(String className) throws ClassNotFoundException {
+        String resource = className.replace('.', '/').concat(".class");
+        InputStream is = getResourceAsStream(resource);
 
-        if( is == null )
-        {
-            throw new ClassNotFoundException( className );
+        if (is == null) {
+            throw new ClassNotFoundException(className);
         }
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try
-        {
-            StreamUtils.copyStream( is, baos, true );
+        try {
+            StreamUtils.copyStream(is, baos, true);
         }
-        catch ( IOException exc )
-        {
-            throw new ClassNotFoundException( className, exc );
+        catch (IOException exc) {
+            throw new ClassNotFoundException(className, exc);
         }
 
         byte[] bytes = baos.toByteArray();
-        return defineClass( className, bytes, 0, bytes.length );
+        return defineClass(className, bytes, 0, bytes.length);
     }
 }
