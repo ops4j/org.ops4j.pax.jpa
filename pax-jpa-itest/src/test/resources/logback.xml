@@ -36,6 +36,7 @@
     <appender-ref ref="TEST_LOG"/>
   </root>
   <logger name="org.ops4j.pax.exam" level="INFO"/> 
+  <logger name="org.ops4j.pax.jpa" level="DEBUG"/> 
   <logger name="openjpa" level="INFO"/> 
   
 </configuration>

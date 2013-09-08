@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
@@ -39,6 +40,7 @@ import org.ops4j.pax.jpa.jaxb.PersistenceUnitCachingType;
 import org.ops4j.pax.jpa.jaxb.PersistenceUnitValidationModeType;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.service.jdbc.DataSourceFactory;
 
@@ -48,7 +50,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo
     
     private PersistenceUnit persistenceUnit;
     
-    private DataSourceFactory dsf;
+    private DataSourceFactory dataSourceFactory;
 
     private Properties props;
 
@@ -56,13 +58,13 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo
 
     private PersistenceProvider provider;
     
-    public PersistenceUnitInfoImpl(Bundle bundle, PersistenceUnit persistenceUnit, Properties props, PersistenceProvider provider, DataSourceFactory dsf)
+    private ServiceRegistration<EntityManagerFactory> emfRegistration;    
+    
+    public PersistenceUnitInfoImpl(Bundle bundle, PersistenceUnit persistenceUnit, Properties props)
     {
         this.bundle = bundle;
         this.persistenceUnit = persistenceUnit;
-        this.dsf = dsf;
         this.props = props;
-        this.provider = provider;
         this.cl = new BundleClassLoader( bundle );
     }
     
@@ -116,7 +118,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo
         }
         try
         {
-            return dsf.createDataSource( dsfProps );
+            return dataSourceFactory.createDataSource( dsfProps );
         }
         catch ( SQLException exc )
         {
@@ -198,4 +200,36 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo
     {
         return new TemporaryBundleClassLoader( bundle, provider.getClass().getClassLoader() );
     }
+
+    
+    public PersistenceProvider getProvider() {
+        return provider;
+    }
+
+    
+    public void setProvider(PersistenceProvider provider) {
+        this.provider = provider;
+    }
+
+    
+    public DataSourceFactory getDataSourceFactory() {
+        return dataSourceFactory;
+    }
+
+    
+    public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
+        this.dataSourceFactory = dataSourceFactory;
+    }
+
+    
+    public ServiceRegistration<EntityManagerFactory> getEmfRegistration() {
+        return emfRegistration;
+    }
+
+    
+    public void setEmfRegistration(ServiceRegistration<EntityManagerFactory> emfRegistration) {
+        this.emfRegistration = emfRegistration;
+    }
+    
+    
 }
