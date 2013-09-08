@@ -11,7 +11,7 @@
     <artifactId>pax-jpa-itest</artifactId>
 
     <name>OPS4J Pax JPA Integration Tests</name>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.ops4j.pax.jpa</groupId>
@@ -172,6 +172,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.jpa</artifactId>
+            <version>${eclipselink.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -198,30 +204,4 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>eclipselink</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>    
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.eclipse.persistence</groupId>
-                    <artifactId>org.eclipse.persistence.jpa</artifactId>
-                    <version>${eclipselink.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.eclipse.persistence</groupId>
-                    <artifactId>org.eclipse.persistence.core</artifactId>
-                    <version>${eclipselink.version}</version>
-                </dependency>
-            </dependencies>
-            <repositories>
-                <repository>
-                    <id>eclipselink</id>
-                    <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
 </project>

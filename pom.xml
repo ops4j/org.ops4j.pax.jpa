@@ -16,7 +16,7 @@
 
 
     <properties>
-        <eclipselink.version>2.3.2</eclipselink.version>
+        <eclipselink.version>2.4.2</eclipselink.version>
         <logback.version>1.0.0</logback.version>
         <pax.exam.version>3.2.0</pax.exam.version>
         <pax.jdbc.version>0.3.0</pax.jdbc.version>
