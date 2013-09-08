@@ -36,14 +36,10 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.exam.util.PathUtils;
-import org.osgi.framework.BundleContext;
 
 @RunWith( PaxExam.class )
 public class PersistenceUnitTest
 {
-    @Inject
-    private BundleContext bc;
-    
     @Inject
     @Filter("(osgi.unit.name=library)")
     private EntityManagerFactory emf;
@@ -54,11 +50,10 @@ public class PersistenceUnitTest
         return options(
             regressionDefaults(),
             bundle( "reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa/target/classes"),
-            mavenBundle( "org.ops4j.base", "ops4j-base-io", "1.3.0" ),
             mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
-            mavenBundle( "org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model", "0.1.0-SNAPSHOT" ),
+            mavenBundle( "org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model" ).versionAsInProject(),
             mavenBundle( "org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
-            mavenBundle( "org.apache.geronimo.specs", "geronimo-jta_1.1_spec", "1.1.1"),
+            mavenBundle( "org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
             mavenBundle( "org.apache.geronimo.specs", "geronimo-servlet_3.0_spec" ).versionAsInProject(),
 
             mavenBundle( "org.apache.openjpa", "openjpa").versionAsInProject(),
@@ -67,7 +62,7 @@ public class PersistenceUnitTest
             mavenBundle( "commons-pool", "commons-pool").versionAsInProject(),
             mavenBundle( "commons-dbcp", "commons-dbcp").versionAsInProject(),
             mavenBundle( "org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm").versionAsInProject(),
-            mavenBundle( "org.apache.servicemix.bundles", "org.apache.servicemix.bundles.serp", "1.13.1_4"),
+            mavenBundle( "org.apache.servicemix.bundles", "org.apache.servicemix.bundles.serp").versionAsInProject(),
 
             mavenBundle( "org.apache.derby", "derby").versionAsInProject(),
             

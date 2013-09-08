@@ -165,7 +165,12 @@
             <scope>provided</scope>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.serp</artifactId>
+            <version>1.13.1_4</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 
@@ -197,18 +202,18 @@
         <profile>
             <id>eclipselink</id>
             <activation>
-                
+                <activeByDefault>true</activeByDefault>    
             </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.persistence</groupId>
                     <artifactId>org.eclipse.persistence.jpa</artifactId>
-                    <version>2.3.2</version>
+                    <version>${eclipselink.version}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.eclipse.persistence</groupId>
                     <artifactId>org.eclipse.persistence.core</artifactId>
-                    <version>2.3.2</version>
+                    <version>${eclipselink.version}</version>
                 </dependency>
             </dependencies>
             <repositories>

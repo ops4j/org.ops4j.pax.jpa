@@ -55,17 +55,16 @@ public class EclipselinkTest
             regressionDefaults(),
             bundle( "reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa/target/classes"),
             bundle( "reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa-eclipselink/target/classes"),
-            mavenBundle( "org.ops4j.base", "ops4j-base-io", "1.3.0" ),
             mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
-            mavenBundle( "org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model", "0.1.0-SNAPSHOT" ),
+            mavenBundle( "org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model" ).versionAsInProject(),
             mavenBundle( "org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
-            mavenBundle( "org.apache.geronimo.specs", "geronimo-jta_1.1_spec", "1.1.1"),
+            mavenBundle( "org.apache.geronimo.specs", "geronimo-jta_1.1_spec" ).versionAsInProject(),
             mavenBundle( "org.apache.geronimo.specs", "geronimo-servlet_3.0_spec" ).versionAsInProject(),
 
-            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.antlr", "2.3.2"),
-            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.asm", "2.3.2"),
-            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.core", "2.3.2"),
-            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.jpa", "2.3.2"),
+            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.antlr").versionAsInProject(),
+            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.asm").versionAsInProject(),
+            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.core").versionAsInProject(),
+            mavenBundle( "org.eclipse.persistence", "org.eclipse.persistence.jpa").versionAsInProject(),
 
             
             mavenBundle( "org.apache.derby", "derby").versionAsInProject(),
