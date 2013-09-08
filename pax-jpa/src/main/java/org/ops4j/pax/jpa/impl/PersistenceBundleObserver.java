@@ -34,8 +34,11 @@ import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
 import org.ops4j.pax.jpa.jaxb.Persistence;
 import org.ops4j.pax.jpa.jaxb.Persistence.PersistenceUnit;
+import org.ops4j.pax.swissbox.extender.BundleManifestScanner;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
+import org.ops4j.pax.swissbox.extender.BundleWatcher;
 import org.ops4j.pax.swissbox.extender.ManifestEntry;
+import org.ops4j.pax.swissbox.extender.RegexKeyManifestFilter;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -46,10 +49,30 @@ import org.slf4j.LoggerFactory;
 
 public class PersistenceBundleObserver implements BundleObserver<ManifestEntry>
 {
+    public static final String BUNDLE_NAME = "org.ops4j.pax.jpa";
 
     private static Logger log = LoggerFactory.getLogger( PersistenceBundleObserver.class );
 
     private PersistenceDescriptorParser parser = new PersistenceDescriptorParser();
+
+    private BundleWatcher<ManifestEntry> watcher;
+    
+    @SuppressWarnings("unchecked")
+    public void activate(BundleContext bc) {
+        log.debug("starting bundle {}", BUNDLE_NAME);
+        
+        RegexKeyManifestFilter manifestFilter = new RegexKeyManifestFilter( "Meta-Persistence" );
+        BundleManifestScanner scanner =
+            new BundleManifestScanner( manifestFilter );
+        PersistenceBundleObserver observer = new PersistenceBundleObserver();
+        watcher = new BundleWatcher<ManifestEntry>( bc, scanner, observer );
+        watcher.start();        
+    }
+
+    public void deactivate(BundleContext bc) {
+        log.debug("stopping bundle {}", BUNDLE_NAME);
+        watcher.stop();
+    }
 
     @Override
     public void addingEntries( Bundle bundle, List<ManifestEntry> entries )
