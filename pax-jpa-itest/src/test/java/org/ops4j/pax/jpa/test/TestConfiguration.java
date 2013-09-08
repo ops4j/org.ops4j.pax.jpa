@@ -54,21 +54,16 @@ public class TestConfiguration
             cleanCaches(),
             frameworkStartLevel( START_LEVEL_TEST_BUNDLE ),
             
-            url( "link:classpath:META-INF/links/org.ops4j.pax.exam.link" ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),
-            url( "link:classpath:META-INF/links/org.ops4j.pax.exam.inject.link" ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),
-            url( "link:classpath:META-INF/links/org.ops4j.pax.extender.service.link" ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),            
-            url( "link:classpath:META-INF/links/org.ops4j.base.link" ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),            
-            url( "link:classpath:META-INF/links/org.ops4j.pax.swissbox.core.link" ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),
-            url( "link:classpath:META-INF/links/org.ops4j.pax.swissbox.extender.link" ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),            
-            url( "link:classpath:META-INF/links/org.ops4j.pax.swissbox.lifecycle.link" ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),            
-            url( "link:classpath:META-INF/links/org.ops4j.pax.swissbox.tracker.link" ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),            
-            url( "link:classpath:META-INF/links/org.apache.geronimo.specs.atinject.link" ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),            
-            
             // add SLF4J and logback bundles
-            mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel( START_LEVEL_SYSTEM_BUNDLES ),
-            mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel( START_LEVEL_SYSTEM_BUNDLES ),
-            mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel( START_LEVEL_SYSTEM_BUNDLES ),
-            
+            mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(
+                START_LEVEL_SYSTEM_BUNDLES),
+            mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel(
+                START_LEVEL_SYSTEM_BUNDLES),
+            mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(
+                START_LEVEL_SYSTEM_BUNDLES),
+
+            mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
+                       
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
             systemProperty("logback.configurationFile").value( "file:" + PathUtils.getBaseDir() +
@@ -77,6 +72,5 @@ public class TestConfiguration
             systemProperty( "eclipse.consoleLog" ).value( "true" ),
             junitBundles()
             );
-    }
-    
+    }    
 }
