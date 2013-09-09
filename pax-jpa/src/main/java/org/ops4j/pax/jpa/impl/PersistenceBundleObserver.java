@@ -146,6 +146,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         ServiceReference<PersistenceProvider> persistenceProvider) {
         log.debug("removing persistence provider {}",
             persistenceProvider.getProperty(JpaConstants.JPA_PROVIDER));
+        persistenceProviders.remove(persistenceProvider);
         scanBoundPersistenceUnits();
     }
 
