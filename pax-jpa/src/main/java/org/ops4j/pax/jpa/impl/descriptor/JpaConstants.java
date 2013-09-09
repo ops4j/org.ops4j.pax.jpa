@@ -23,4 +23,11 @@ public class JpaConstants {
     public static final String JPA_URL = "javax.persistence.jdbc.url";
     public static final String JPA_USER = "javax.persistence.jdbc.user";
     public static final String JPA_PASSWORD = "javax.persistence.jdbc.password";
+    
+    public static final String JPA_PROVIDER = "javax.persistence.provider";
+    public static final String JPA_MANIFEST_HEADER = "Meta-Persistence";
+    
+    public static final String PU_NAME = "osgi.unit.name";
+    public static final String PU_VERSION = "osgi.unit.version";
+    public static final String PU_PROVIDER = "osgi.unit.provider";
 }

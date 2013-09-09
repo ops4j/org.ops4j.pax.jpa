@@ -59,6 +59,9 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     private PersistenceProvider provider;
 
     private ServiceRegistration<EntityManagerFactory> emfRegistration;
+    private ServiceRegistration<WeavingHook> hookRegistration;
+    
+    private boolean ready;
 
     public PersistenceUnitInfoImpl(Bundle bundle, PersistenceUnit persistenceUnit, Properties props) {
         this.bundle = bundle;
@@ -173,7 +176,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     @Override
     public void addTransformer(ClassTransformer transformer) {
         JpaWeavingHook hook = new JpaWeavingHook(this, transformer);
-        bundle.getBundleContext().registerService(WeavingHook.class, hook, null);
+        hookRegistration = bundle.getBundleContext().registerService(WeavingHook.class, hook, null);
     }
 
     @Override
@@ -205,4 +208,32 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         this.emfRegistration = emfRegistration;
     }
 
+    
+    public boolean isReady() {
+        return ready;
+    }
+
+    
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
+    public void unregister() {
+        this.ready = false;
+        try {
+            emfRegistration.unregister();
+        }
+        catch (IllegalStateException exc) {
+            // ignore
+        }
+
+        try {
+            hookRegistration.unregister();
+        }
+        catch (IllegalStateException exc) {
+            // ignore
+        }
+        this.emfRegistration = null;
+        this.hookRegistration = null;
+    }
 }
