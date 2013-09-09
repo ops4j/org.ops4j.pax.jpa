@@ -127,12 +127,21 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
         EntityManagerFactory emf = provider.createContainerEntityManagerFactory(puInfo, emfProps);
 
-        Dictionary<String, String> emfReg = new Hashtable<String, String>();
-        emfReg.put(EntityManagerFactoryBuilder.JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
-        emfReg.put(EntityManagerFactoryBuilder.JPA_UNIT_VERSION, bundle.getVersion().toString());
-        emfReg.put(EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER, provider.getClass().getName());
+        EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilderImpl(puInfo);
+        Dictionary<String, String> emfBuilderServiceProps = new Hashtable<String, String>();
+        emfBuilderServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
+        emfBuilderServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_VERSION, bundle.getVersion().toString());
+        emfBuilderServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER, provider.getClass().getName());
+        ServiceRegistration<EntityManagerFactoryBuilder> builderReg = bundle.getBundleContext().registerService(
+            EntityManagerFactoryBuilder.class, builder, emfBuilderServiceProps);
+        puInfo.setEmfBuilderRegistration(builderReg);
+        
+        Dictionary<String, String> emfServiceProps = new Hashtable<String, String>();
+        emfServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
+        emfServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_VERSION, bundle.getVersion().toString());
+        emfServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER, provider.getClass().getName());
         ServiceRegistration<EntityManagerFactory> reg = bundle.getBundleContext().registerService(
-            EntityManagerFactory.class, emf, emfReg);
+            EntityManagerFactory.class, emf, emfServiceProps);
         puInfo.setEmfRegistration(reg);
         puInfo.setReady(true);
     }

@@ -43,6 +43,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.service.jdbc.DataSourceFactory;
+import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
 public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
@@ -58,6 +59,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     private PersistenceProvider provider;
 
+    private ServiceRegistration<EntityManagerFactoryBuilder> emfBuilderRegistration;
     private ServiceRegistration<EntityManagerFactory> emfRegistration;
     private ServiceRegistration<WeavingHook> hookRegistration;
     
@@ -208,7 +210,15 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         this.emfRegistration = emfRegistration;
     }
 
+    public ServiceRegistration<EntityManagerFactoryBuilder> getEmfBuilderRegistration() {
+        return emfBuilderRegistration;
+    }
     
+    public void setEmfBuilderRegistration(
+        ServiceRegistration<EntityManagerFactoryBuilder> emfBuilderRegistration) {
+        this.emfBuilderRegistration = emfBuilderRegistration;
+    }
+
     public boolean isReady() {
         return ready;
     }
@@ -220,6 +230,13 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     public void unregister() {
         this.ready = false;
+        try {
+            emfBuilderRegistration.unregister();
+        }
+        catch (IllegalStateException exc) {
+            // ignore
+        }
+
         try {
             emfRegistration.unregister();
         }
@@ -233,6 +250,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         catch (IllegalStateException exc) {
             // ignore
         }
+        this.emfBuilderRegistration = null;
         this.emfRegistration = null;
         this.hookRegistration = null;
     }
