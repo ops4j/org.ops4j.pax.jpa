@@ -106,8 +106,10 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         String user = props.getProperty(JpaConstants.JPA_USER);
         String password = props.getProperty(JpaConstants.JPA_PASSWORD);
         Properties dsfProps = new Properties();
-        dsfProps.setProperty(DataSourceFactory.JDBC_URL, url);
 
+        if (url != null) {
+            dsfProps.setProperty(DataSourceFactory.JDBC_URL, url);
+        }
         if (user != null) {
             dsfProps.setProperty(DataSourceFactory.JDBC_USER, user);
         }
@@ -144,7 +146,8 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     @Override
     public boolean excludeUnlistedClasses() {
-        return persistenceUnit.isExcludeUnlistedClasses();
+        Boolean exclude = persistenceUnit.isExcludeUnlistedClasses();
+        return (exclude == null) ? false : exclude;
     }
 
     @Override
@@ -238,14 +241,18 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         }
 
         try {
-            emfRegistration.unregister();
+            if (emfRegistration != null) {
+                emfRegistration.unregister();
+            }
         }
         catch (IllegalStateException exc) {
             // ignore
         }
 
         try {
-            hookRegistration.unregister();
+            if (hookRegistration != null) {
+                hookRegistration.unregister();
+            }
         }
         catch (IllegalStateException exc) {
             // ignore

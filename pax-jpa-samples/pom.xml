@@ -14,5 +14,6 @@
     
   <modules>
       <module>pax-jpa-sample1-model</module>
+      <module>pax-jpa-sample2</module>
   </modules>
 </project>

@@ -102,16 +102,43 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
     private boolean isSatisfied(PersistenceUnitInfoImpl puInfo) {
         BundleContext bc = puInfo.getBundle().getBundleContext();
+        String driver = puInfo.getProperties().getProperty(JpaConstants.JPA_DRIVER);
+        if (driver == null) {
+            return false;
+        }
+        
+        DataSourceFactory dsf = null;
+        for (ServiceReference<DataSourceFactory> dsfRef : dataSourceFactories) {
+            if (driver.equals(dsfRef.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS))) {
+                dsf = bc.getService(dsfRef);
+                break;
+            }            
+        }
+        if (dsf == null) {
+            return false;
+        }
+        
+        PersistenceProvider provider = null;
+        
         String providerClassName = puInfo.getPersistenceProviderClassName();
         if (providerClassName == null) {
-            if (!persistenceProviders.isEmpty() && !dataSourceFactories.isEmpty()) {
-                PersistenceProvider provider = bc.getService(persistenceProviders.get(0));
+            if (!persistenceProviders.isEmpty()) {
+                provider = bc.getService(persistenceProviders.get(0));
                 puInfo.setProvider(provider);
-
-                DataSourceFactory dsf = bc.getService(dataSourceFactories.get(0));
                 puInfo.setDataSourceFactory(dsf);
                 return true;
             }
+        }
+        else {
+            for (ServiceReference<PersistenceProvider> providerRef : persistenceProviders) {
+                if (providerClassName.equals(providerRef.getProperty(JpaConstants.JPA_PROVIDER))) {
+                    provider = bc.getService(providerRef);
+                    puInfo.setProvider(provider);
+                    puInfo.setDataSourceFactory(dsf);
+                    return true;
+                }            
+            }
+            
         }
         return false;
     }
@@ -184,19 +211,40 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
     @Override
     public synchronized void addingEntries(Bundle bundle, List<ManifestEntry> entries) {
-        log.info("discovered persistence bundle {} {}", bundle.getSymbolicName(),
+        log.info("discovered persistence bundle {}_{}", bundle.getSymbolicName(),
             bundle.getVersion());
         ManifestEntry entry = entries.get(0);
-        String value = entry.getValue();
-        String[] resources = value.split(",");
-        for (String resource : resources) {
+        List<URL> resources = parseMetaPersistenceHeader(bundle, entry.getValue());
+        for (URL resource : resources) {
             processPersistenceDescriptor(bundle, resource);
         }
         scanUnboundPersistenceUnits();
     }
 
-    private void processPersistenceDescriptor(Bundle bundle, String resource) {
-        URL persistenceXml = bundle.getEntry(resource);
+    private List<URL> parseMetaPersistenceHeader(Bundle bundle, String value) {
+        URL defaultUrl = bundle.getEntry("META-INF/persistence.xml");
+        boolean defaultUrlFound = false;
+        List<URL> urls = new ArrayList<URL>();
+        String[] parts = value.split(",\\s*");
+        for (String part : parts) {
+            String resource = part.trim();
+            if (!resource.isEmpty()) {
+                URL url = bundle.getEntry(resource);
+                if (url != null) {
+                    urls.add(url);
+                    if (url.equals(defaultUrl)) {
+                        defaultUrlFound = true;
+                    }
+                }
+            }
+        }
+        if (defaultUrl != null && !defaultUrlFound) {
+            urls.add(0, defaultUrl);
+        }
+        return urls;
+    }
+
+    private void processPersistenceDescriptor(Bundle bundle, URL persistenceXml) {
         try {
             Persistence descriptor = parser.parseDescriptor(persistenceXml);
             for (PersistenceUnit persistenceUnit : descriptor.getPersistenceUnit()) {
