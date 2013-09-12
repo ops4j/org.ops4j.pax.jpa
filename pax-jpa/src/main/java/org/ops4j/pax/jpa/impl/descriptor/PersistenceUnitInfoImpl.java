@@ -33,6 +33,7 @@ import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
 
 import org.ops4j.lang.Ops4jException;
+import org.ops4j.pax.jpa.JpaConstants;
 import org.ops4j.pax.jpa.impl.JpaWeavingHook;
 import org.ops4j.pax.jpa.impl.PersistenceUnitState;
 import org.ops4j.pax.jpa.impl.TemporaryBundleClassLoader;

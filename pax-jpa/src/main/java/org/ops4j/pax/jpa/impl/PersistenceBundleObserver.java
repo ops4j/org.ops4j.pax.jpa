@@ -17,13 +17,13 @@
  */
 package org.ops4j.pax.jpa.impl;
 
-import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_DRIVER;
-import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_MANIFEST_HEADER;
-import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_PASSWORD;
-import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_PERSISTENCE_XML;
-import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_PROVIDER;
-import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_URL;
-import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_USER;
+import static org.ops4j.pax.jpa.JpaConstants.JPA_DRIVER;
+import static org.ops4j.pax.jpa.JpaConstants.JPA_MANIFEST_HEADER;
+import static org.ops4j.pax.jpa.JpaConstants.JPA_PASSWORD;
+import static org.ops4j.pax.jpa.JpaConstants.JPA_PERSISTENCE_XML;
+import static org.ops4j.pax.jpa.JpaConstants.JPA_PROVIDER;
+import static org.ops4j.pax.jpa.JpaConstants.JPA_URL;
+import static org.ops4j.pax.jpa.JpaConstants.JPA_USER;
 import static org.osgi.service.jdbc.DataSourceFactory.OSGI_JDBC_DRIVER_CLASS;
 import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_NAME;
 import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER;
