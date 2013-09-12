@@ -49,8 +49,10 @@ public class PersistenceDescriptorParser {
     public Properties parseProperties(PersistenceUnit persistenceUnit) {
         PersistenceUnit.Properties jaxbProps = persistenceUnit.getProperties();
         Properties props = new Properties();
-        for (PersistenceUnit.Properties.Property p : jaxbProps.getProperty()) {
-            props.setProperty(p.getName(), p.getValue());
+        if (jaxbProps != null) {
+            for (PersistenceUnit.Properties.Property p : jaxbProps.getProperty()) {
+                props.setProperty(p.getName(), p.getValue());
+            }
         }
         return props;
     }

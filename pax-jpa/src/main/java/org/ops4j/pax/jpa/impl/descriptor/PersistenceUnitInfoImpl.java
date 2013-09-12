@@ -34,6 +34,7 @@ import javax.sql.DataSource;
 
 import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.jpa.impl.JpaWeavingHook;
+import org.ops4j.pax.jpa.impl.PersistenceUnitState;
 import org.ops4j.pax.jpa.impl.TemporaryBundleClassLoader;
 import org.ops4j.pax.jpa.jaxb.Persistence.PersistenceUnit;
 import org.ops4j.pax.jpa.jaxb.PersistenceUnitCachingType;
@@ -63,12 +64,13 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     private ServiceRegistration<EntityManagerFactory> emfRegistration;
     private ServiceRegistration<WeavingHook> hookRegistration;
 
-    private boolean ready;
+    private PersistenceUnitState state;
 
     public PersistenceUnitInfoImpl(Bundle bundle, PersistenceUnit persistenceUnit, Properties props) {
         this.bundle = bundle;
         this.persistenceUnit = persistenceUnit;
         this.props = props;
+        this.state = PersistenceUnitState.UNASSIGNED;
         this.cl = new BundleClassLoader(bundle);
     }
 
@@ -221,16 +223,8 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         this.emfBuilderRegistration = emfBuilderRegistration;
     }
 
-    public boolean isReady() {
-        return ready;
-    }
-
-    public void setReady(boolean ready) {
-        this.ready = ready;
-    }
-
     public void unregister() {
-        this.ready = false;
+        this.state = PersistenceUnitState.UNASSIGNED;
 
         unregister(emfBuilderRegistration);
         unregister(emfRegistration);
@@ -251,4 +245,16 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
             // ignore
         }
     }
+
+    
+    public PersistenceUnitState getState() {
+        return state;
+    }
+
+    
+    public void setState(PersistenceUnitState state) {
+        this.state = state;
+    }
+    
+    
 }
