@@ -62,7 +62,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     private ServiceRegistration<EntityManagerFactoryBuilder> emfBuilderRegistration;
     private ServiceRegistration<EntityManagerFactory> emfRegistration;
     private ServiceRegistration<WeavingHook> hookRegistration;
-    
+
     private boolean ready;
 
     public PersistenceUnitInfoImpl(Bundle bundle, PersistenceUnit persistenceUnit, Properties props) {
@@ -96,7 +96,6 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     @Override
     public DataSource getJtaDataSource() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -216,7 +215,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     public ServiceRegistration<EntityManagerFactoryBuilder> getEmfBuilderRegistration() {
         return emfBuilderRegistration;
     }
-    
+
     public void setEmfBuilderRegistration(
         ServiceRegistration<EntityManagerFactoryBuilder> emfBuilderRegistration) {
         this.emfBuilderRegistration = emfBuilderRegistration;
@@ -226,39 +225,30 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         return ready;
     }
 
-    
     public void setReady(boolean ready) {
         this.ready = ready;
     }
 
     public void unregister() {
         this.ready = false;
-        try {
-            emfBuilderRegistration.unregister();
-        }
-        catch (IllegalStateException exc) {
-            // ignore
-        }
 
-        try {
-            if (emfRegistration != null) {
-                emfRegistration.unregister();
-            }
-        }
-        catch (IllegalStateException exc) {
-            // ignore
-        }
+        unregister(emfBuilderRegistration);
+        unregister(emfRegistration);
+        unregister(hookRegistration);
 
-        try {
-            if (hookRegistration != null) {
-                hookRegistration.unregister();
-            }
-        }
-        catch (IllegalStateException exc) {
-            // ignore
-        }
         this.emfBuilderRegistration = null;
         this.emfRegistration = null;
         this.hookRegistration = null;
+    }
+
+    private <T> void unregister(ServiceRegistration<T> reg) {
+        try {
+            if (reg != null) {
+                reg.unregister();
+            }
+        }
+        catch (IllegalStateException exc) {
+            // ignore
+        }
     }
 }

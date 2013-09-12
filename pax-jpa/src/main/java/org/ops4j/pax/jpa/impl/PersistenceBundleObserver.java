@@ -17,6 +17,18 @@
  */
 package org.ops4j.pax.jpa.impl;
 
+import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_DRIVER;
+import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_MANIFEST_HEADER;
+import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_PASSWORD;
+import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_PERSISTENCE_XML;
+import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_PROVIDER;
+import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_URL;
+import static org.ops4j.pax.jpa.impl.descriptor.JpaConstants.JPA_USER;
+import static org.osgi.service.jdbc.DataSourceFactory.OSGI_JDBC_DRIVER_CLASS;
+import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_NAME;
+import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER;
+import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_VERSION;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -30,7 +42,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceProvider;
 import javax.xml.bind.JAXBException;
 
-import org.ops4j.pax.jpa.impl.descriptor.JpaConstants;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
 import org.ops4j.pax.jpa.jaxb.Persistence;
@@ -72,7 +83,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         log.debug("starting bundle {}", BUNDLE_NAME);
 
         RegexKeyManifestFilter manifestFilter = new RegexKeyManifestFilter(
-            JpaConstants.JPA_MANIFEST_HEADER);
+            JPA_MANIFEST_HEADER);
         BundleManifestScanner scanner = new BundleManifestScanner(manifestFilter);
         watcher = new BundleWatcher<ManifestEntry>(bc, scanner, this);
         watcher.start();
@@ -86,7 +97,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
     public synchronized void addPersistenceProvider(
         ServiceReference<PersistenceProvider> persistenceProvider) {
         log.debug("adding persistence provider {}",
-            persistenceProvider.getProperty(JpaConstants.JPA_PROVIDER));
+            persistenceProvider.getProperty(JPA_PROVIDER));
         persistenceProviders.add(persistenceProvider);
         scanUnboundPersistenceUnits();
 
@@ -102,14 +113,14 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
     private boolean isSatisfied(PersistenceUnitInfoImpl puInfo) {
         BundleContext bc = puInfo.getBundle().getBundleContext();
-        String driver = puInfo.getProperties().getProperty(JpaConstants.JPA_DRIVER);
+        String driver = puInfo.getProperties().getProperty(JPA_DRIVER);
         if (driver == null) {
             return false;
         }
         
         DataSourceFactory dsf = null;
         for (ServiceReference<DataSourceFactory> dsfRef : dataSourceFactories) {
-            if (driver.equals(dsfRef.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS))) {
+            if (driver.equals(dsfRef.getProperty(OSGI_JDBC_DRIVER_CLASS))) {
                 dsf = bc.getService(dsfRef);
                 break;
             }            
@@ -131,7 +142,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         }
         else {
             for (ServiceReference<PersistenceProvider> providerRef : persistenceProviders) {
-                if (providerClassName.equals(providerRef.getProperty(JpaConstants.JPA_PROVIDER))) {
+                if (providerClassName.equals(providerRef.getProperty(JPA_PROVIDER))) {
                     provider = bc.getService(providerRef);
                     puInfo.setProvider(provider);
                     puInfo.setDataSourceFactory(dsf);
@@ -147,26 +158,26 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         PersistenceProvider provider = puInfo.getProvider();
         Bundle bundle = puInfo.getBundle();
         Properties emfProps = (Properties) puInfo.getProperties().clone();
-        emfProps.remove(JpaConstants.JPA_DRIVER);
-        emfProps.remove(JpaConstants.JPA_URL);
-        emfProps.remove(JpaConstants.JPA_PASSWORD);
-        emfProps.remove(JpaConstants.JPA_USER);
+        emfProps.remove(JPA_DRIVER);
+        emfProps.remove(JPA_URL);
+        emfProps.remove(JPA_PASSWORD);
+        emfProps.remove(JPA_USER);
 
         EntityManagerFactory emf = provider.createContainerEntityManagerFactory(puInfo, emfProps);
 
         EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilderImpl(puInfo);
         Dictionary<String, String> emfBuilderServiceProps = new Hashtable<String, String>();
-        emfBuilderServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
-        emfBuilderServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_VERSION, bundle.getVersion().toString());
-        emfBuilderServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER, provider.getClass().getName());
+        emfBuilderServiceProps.put(JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
+        emfBuilderServiceProps.put(JPA_UNIT_VERSION, bundle.getVersion().toString());
+        emfBuilderServiceProps.put(JPA_UNIT_PROVIDER, provider.getClass().getName());
         ServiceRegistration<EntityManagerFactoryBuilder> builderReg = bundle.getBundleContext().registerService(
             EntityManagerFactoryBuilder.class, builder, emfBuilderServiceProps);
         puInfo.setEmfBuilderRegistration(builderReg);
         
         Dictionary<String, String> emfServiceProps = new Hashtable<String, String>();
-        emfServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
-        emfServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_VERSION, bundle.getVersion().toString());
-        emfServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER, provider.getClass().getName());
+        emfServiceProps.put(JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
+        emfServiceProps.put(JPA_UNIT_VERSION, bundle.getVersion().toString());
+        emfServiceProps.put(JPA_UNIT_PROVIDER, provider.getClass().getName());
         ServiceRegistration<EntityManagerFactory> reg = bundle.getBundleContext().registerService(
             EntityManagerFactory.class, emf, emfServiceProps);
         puInfo.setEmfRegistration(reg);
@@ -181,7 +192,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
     public synchronized void removePersistenceProvider(
         ServiceReference<PersistenceProvider> persistenceProvider) {
         log.debug("removing persistence provider {}",
-            persistenceProvider.getProperty(JpaConstants.JPA_PROVIDER));
+            persistenceProvider.getProperty(JPA_PROVIDER));
         persistenceProviders.remove(persistenceProvider);
         scanBoundPersistenceUnits();
     }
@@ -196,15 +207,14 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
     public synchronized void addDataSourceFactory(ServiceReference<DataSourceFactory> dsf) {
         log.debug("adding data source factory {}",
-            dsf.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
+            dsf.getProperty(OSGI_JDBC_DRIVER_CLASS));
         dataSourceFactories.add(dsf);
         scanUnboundPersistenceUnits();
-
     }
 
     public synchronized void removeDataSourceFactory(ServiceReference<DataSourceFactory> dsf) {
         log.debug("removing data source factory {}",
-            dsf.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
+            dsf.getProperty(OSGI_JDBC_DRIVER_CLASS));
         dataSourceFactories.remove(dsf);
         scanBoundPersistenceUnits();
     }
@@ -222,7 +232,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
     }
 
     private List<URL> parseMetaPersistenceHeader(Bundle bundle, String value) {
-        URL defaultUrl = bundle.getEntry("META-INF/persistence.xml");
+        URL defaultUrl = bundle.getEntry(JPA_PERSISTENCE_XML);
         boolean defaultUrlFound = false;
         List<URL> urls = new ArrayList<URL>();
         String[] parts = value.split(",\\s*");
@@ -265,17 +275,11 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
                 bundle, puInfo.getBundle() });
             return;
         }
+        
         log.info("processing persistence unit {}", puName);
-
         Properties puProps = parser.parseProperties(persistenceUnit);
-        String driver = puProps.getProperty(JpaConstants.JPA_DRIVER);
-
-        Map<String, String> dsfProps = new HashMap<String, String>();
-        dsfProps.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, driver);
-
         puInfo = new PersistenceUnitInfoImpl(bundle, persistenceUnit, puProps);
         persistenceUnits.put(puInfo.getPersistenceUnitName(), puInfo);
-
     }
 
     @Override

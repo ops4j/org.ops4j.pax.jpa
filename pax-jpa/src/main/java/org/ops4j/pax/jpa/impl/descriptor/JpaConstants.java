@@ -26,6 +26,7 @@ public class JpaConstants {
     
     public static final String JPA_PROVIDER = "javax.persistence.provider";
     public static final String JPA_MANIFEST_HEADER = "Meta-Persistence";
+    public static final String JPA_PERSISTENCE_XML = "META-INF/persistence.xml";
     
     public static final String PU_NAME = "osgi.unit.name";
     public static final String PU_VERSION = "osgi.unit.version";
