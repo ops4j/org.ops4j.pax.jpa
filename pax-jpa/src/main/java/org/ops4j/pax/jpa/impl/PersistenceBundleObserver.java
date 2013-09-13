@@ -19,11 +19,8 @@ package org.ops4j.pax.jpa.impl;
 
 import static org.ops4j.pax.jpa.JpaConstants.JPA_DRIVER;
 import static org.ops4j.pax.jpa.JpaConstants.JPA_MANIFEST_HEADER;
-import static org.ops4j.pax.jpa.JpaConstants.JPA_PASSWORD;
 import static org.ops4j.pax.jpa.JpaConstants.JPA_PERSISTENCE_XML;
 import static org.ops4j.pax.jpa.JpaConstants.JPA_PROVIDER;
-import static org.ops4j.pax.jpa.JpaConstants.JPA_URL;
-import static org.ops4j.pax.jpa.JpaConstants.JPA_USER;
 import static org.osgi.service.jdbc.DataSourceFactory.OSGI_JDBC_DRIVER_CLASS;
 import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_NAME;
 import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER;
@@ -61,10 +58,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Extender observing persistence bundles and tracking persistence providers and data source factories.
+ * Extender observing persistence bundles and tracking persistence providers and data source
+ * factories.
+ * <p>
+ * This class is a Declarative Services component.
  * 
  * @author Harald Wellmann
- *
+ * 
  */
 public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> {
 
@@ -79,7 +79,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
     private List<ServiceReference<DataSourceFactory>> dataSourceFactories = new ArrayList<ServiceReference<DataSourceFactory>>();
 
     @SuppressWarnings("unchecked")
-    public void activate(BundleContext bc) {
+    public synchronized void activate(BundleContext bc) {
         log.debug("starting bundle {}", bc.getBundle().getSymbolicName());
 
         RegexKeyManifestFilter manifestFilter = new RegexKeyManifestFilter(JPA_MANIFEST_HEADER);
@@ -88,156 +88,12 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         watcher.start();
     }
 
-    public void deactivate(BundleContext bc) {
+    public synchronized void deactivate(BundleContext bc) {
         log.debug("stopping bundle {}", bc.getBundle().getSymbolicName());
         for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
             deactivatePersistenceUnit(puInfo);
         }
         watcher.stop();
-    }
-
-    public synchronized void addPersistenceProvider(
-        ServiceReference<PersistenceProvider> persistenceProvider) {
-        log.debug("adding persistence provider {}",
-            persistenceProvider.getProperty(JPA_PROVIDER));
-        persistenceProviders.add(persistenceProvider);
-
-        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
-            if (puInfo.getProvider() == null && canAssign(puInfo)) {
-                assignPersistenceUnit(puInfo);
-                if (canComplete(puInfo)) {
-                        activatePersistenceUnit(puInfo);
-                }
-            }
-        }
-    }
-
-
-    private boolean canAssign(PersistenceUnitInfoImpl puInfo) {
-        BundleContext bc = puInfo.getBundle().getBundleContext();
-        PersistenceProvider provider = null;
-        
-        String providerClassName = puInfo.getPersistenceProviderClassName();
-        if (providerClassName == null) {
-            if (!persistenceProviders.isEmpty()) {
-                provider = bc.getService(persistenceProviders.get(0));
-                puInfo.setProvider(provider);
-                return true;
-            }
-        }
-        else {
-            for (ServiceReference<PersistenceProvider> providerRef : persistenceProviders) {
-                if (providerClassName.equals(providerRef.getProperty(JPA_PROVIDER))) {
-                    provider = bc.getService(providerRef);
-                    puInfo.setProvider(provider);
-                    return true;
-                }            
-            }
-            
-        }
-        puInfo.setProvider(null);
-        return false;
-    }
-
-    private boolean canComplete(PersistenceUnitInfoImpl puInfo) {
-        puInfo.setDataSourceFactory(null);
-        BundleContext bc = puInfo.getBundle().getBundleContext();
-        String driver = puInfo.getProperties().getProperty(JPA_DRIVER);
-        if (driver == null) {
-            return false;
-        }
-        
-        DataSourceFactory dsf = null;
-        for (ServiceReference<DataSourceFactory> dsfRef : dataSourceFactories) {
-            if (driver.equals(dsfRef.getProperty(OSGI_JDBC_DRIVER_CLASS))) {
-                dsf = bc.getService(dsfRef);
-                puInfo.setDataSourceFactory(dsf);
-                return true;
-            }            
-        }
-        
-        return false;
-    }
-
-    private void assignPersistenceUnit(PersistenceUnitInfoImpl puInfo) {
-        PersistenceProvider provider = puInfo.getProvider();
-        Bundle bundle = puInfo.getBundle();
-
-        EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilderImpl(puInfo);
-        Dictionary<String, String> emfBuilderServiceProps = new Hashtable<String, String>();
-        emfBuilderServiceProps.put(JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
-        emfBuilderServiceProps.put(JPA_UNIT_VERSION, bundle.getVersion().toString());
-        emfBuilderServiceProps.put(JPA_UNIT_PROVIDER, provider.getClass().getName());
-        ServiceRegistration<EntityManagerFactoryBuilder> builderReg = bundle.getBundleContext().registerService(
-            EntityManagerFactoryBuilder.class, builder, emfBuilderServiceProps);
-        puInfo.setEmfBuilderRegistration(builderReg);
-        puInfo.setState(PersistenceUnitState.READY);
-    }
-
-    private void activatePersistenceUnit(PersistenceUnitInfoImpl puInfo) {
-        PersistenceProvider provider = puInfo.getProvider();
-        Bundle bundle = puInfo.getBundle();
-        Properties emfProps = (Properties) puInfo.getProperties().clone();
-        emfProps.remove(JPA_DRIVER);
-        emfProps.remove(JPA_URL);
-        emfProps.remove(JPA_PASSWORD);
-        emfProps.remove(JPA_USER);
-
-        EntityManagerFactory emf = provider.createContainerEntityManagerFactory(puInfo, emfProps);
-
-        Dictionary<String, String> emfServiceProps = new Hashtable<String, String>();
-        emfServiceProps.put(JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
-        emfServiceProps.put(JPA_UNIT_VERSION, bundle.getVersion().toString());
-        emfServiceProps.put(JPA_UNIT_PROVIDER, provider.getClass().getName());
-        ServiceRegistration<EntityManagerFactory> reg = bundle.getBundleContext().registerService(
-            EntityManagerFactory.class, emf, emfServiceProps);
-        puInfo.setEmfRegistration(reg);
-        puInfo.setState(PersistenceUnitState.COMPLETE);
-    }
-
-    private void deactivatePersistenceUnit(PersistenceUnitInfoImpl puInfo) {
-        puInfo.unregister();
-        puInfo.setEmfRegistration(null);
-        puInfo.setDataSourceFactory(null);
-        //puInfo.setProvider(null);
-    }
-
-    public synchronized void removePersistenceProvider(
-        ServiceReference<PersistenceProvider> persistenceProvider) {
-        log.debug("removing persistence provider {}",
-            persistenceProvider.getProperty(JPA_PROVIDER));
-        persistenceProviders.remove(persistenceProvider);
-
-        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
-            if (puInfo.getState() == PersistenceUnitState.COMPLETE && !canAssign(puInfo)) {
-                deactivatePersistenceUnit(puInfo);
-            }
-        }
-    }
-
-    public synchronized void addDataSourceFactory(ServiceReference<DataSourceFactory> dsf) {
-        log.debug("adding data source factory {}",
-            dsf.getProperty(OSGI_JDBC_DRIVER_CLASS));
-        dataSourceFactories.add(dsf);
-
-        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
-            if (puInfo.getDataSourceFactory() == null && canComplete(puInfo)) {
-                if (puInfo.getProvider() != null) {
-                    activatePersistenceUnit(puInfo);
-                }
-            }
-        }
-    }
-
-    public synchronized void removeDataSourceFactory(ServiceReference<DataSourceFactory> dsf) {
-        log.debug("removing data source factory {}",
-            dsf.getProperty(OSGI_JDBC_DRIVER_CLASS));
-        dataSourceFactories.remove(dsf);
-        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
-            if (puInfo.getState() == PersistenceUnitState.COMPLETE && !canComplete(puInfo)) {
-                deactivatePersistenceUnit(puInfo);
-            }
-        }
     }
 
     @Override
@@ -260,6 +116,156 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
                 }
             }
         }
+    }
+
+    @Override
+    public synchronized void removingEntries(Bundle bundle, List<ManifestEntry> entries) {
+        log.info("removed persistence bundle {}_{}", bundle.getSymbolicName(), bundle.getVersion());
+
+        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
+            if (puInfo.getBundle().equals(bundle)) {
+                persistenceUnits.remove(puInfo.getPersistenceUnitName());
+            }
+        }
+    }
+
+    public synchronized void addPersistenceProvider(
+        ServiceReference<PersistenceProvider> persistenceProvider) {
+        log.debug("adding persistence provider {}", persistenceProvider.getProperty(JPA_PROVIDER));
+        persistenceProviders.add(persistenceProvider);
+
+        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
+            if (puInfo.getProvider() == null && canAssign(puInfo)) {
+                assignPersistenceUnit(puInfo);
+                if (canComplete(puInfo)) {
+                    activatePersistenceUnit(puInfo);
+                }
+            }
+        }
+    }
+
+    public synchronized void removePersistenceProvider(
+        ServiceReference<PersistenceProvider> persistenceProvider) {
+        log.debug("removing persistence provider {}", persistenceProvider.getProperty(JPA_PROVIDER));
+        persistenceProviders.remove(persistenceProvider);
+
+        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
+            if (puInfo.getState() != PersistenceUnitState.UNASSIGNED && !canAssign(puInfo)) {
+                unassignPersistenceUnit(puInfo);
+            }
+        }
+    }
+
+    public synchronized void addDataSourceFactory(ServiceReference<DataSourceFactory> dsf) {
+        log.debug("adding data source factory {}", dsf.getProperty(OSGI_JDBC_DRIVER_CLASS));
+        dataSourceFactories.add(dsf);
+
+        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
+            if (puInfo.getDataSourceFactory() == null && canComplete(puInfo)) {
+                if (puInfo.getProvider() != null) {
+                    activatePersistenceUnit(puInfo);
+                }
+            }
+        }
+    }
+
+    public synchronized void removeDataSourceFactory(ServiceReference<DataSourceFactory> dsf) {
+        log.debug("removing data source factory {}", dsf.getProperty(OSGI_JDBC_DRIVER_CLASS));
+        dataSourceFactories.remove(dsf);
+        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
+            if (puInfo.getState() == PersistenceUnitState.COMPLETE && !canComplete(puInfo)) {
+                deactivatePersistenceUnit(puInfo);
+            }
+        }
+    }
+
+    private boolean canAssign(PersistenceUnitInfoImpl puInfo) {
+        BundleContext bc = puInfo.getBundle().getBundleContext();
+        PersistenceProvider provider = null;
+
+        String providerClassName = puInfo.getPersistenceProviderClassName();
+        if (providerClassName == null) {
+            if (!persistenceProviders.isEmpty()) {
+                provider = bc.getService(persistenceProviders.get(0));
+                puInfo.setProvider(provider);
+                return true;
+            }
+        }
+        else {
+            for (ServiceReference<PersistenceProvider> providerRef : persistenceProviders) {
+                if (providerClassName.equals(providerRef.getProperty(JPA_PROVIDER))) {
+                    provider = bc.getService(providerRef);
+                    puInfo.setProvider(provider);
+                    return true;
+                }
+            }
+
+        }
+        puInfo.setProvider(null);
+        return false;
+    }
+
+    private boolean canComplete(PersistenceUnitInfoImpl puInfo) {
+        puInfo.setDataSourceFactory(null);
+        BundleContext bc = puInfo.getBundle().getBundleContext();
+        String driver = puInfo.getProperties().getProperty(JPA_DRIVER);
+        if (driver == null) {
+            return false;
+        }
+
+        DataSourceFactory dsf = null;
+        for (ServiceReference<DataSourceFactory> dsfRef : dataSourceFactories) {
+            if (driver.equals(dsfRef.getProperty(OSGI_JDBC_DRIVER_CLASS))) {
+                dsf = bc.getService(dsfRef);
+                puInfo.setDataSourceFactory(dsf);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void assignPersistenceUnit(PersistenceUnitInfoImpl puInfo) {
+        PersistenceProvider provider = puInfo.getProvider();
+        Bundle bundle = puInfo.getBundle();
+
+        EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilderImpl(puInfo);
+        Dictionary<String, String> emfBuilderServiceProps = new Hashtable<String, String>();
+        emfBuilderServiceProps.put(JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
+        emfBuilderServiceProps.put(JPA_UNIT_VERSION, bundle.getVersion().toString());
+        emfBuilderServiceProps.put(JPA_UNIT_PROVIDER, provider.getClass().getName());
+        ServiceRegistration<EntityManagerFactoryBuilder> builderReg = bundle.getBundleContext()
+            .registerService(EntityManagerFactoryBuilder.class, builder, emfBuilderServiceProps);
+        puInfo.setEmfBuilderRegistration(builderReg);
+        puInfo.setState(PersistenceUnitState.READY);
+    }
+
+    private void activatePersistenceUnit(PersistenceUnitInfoImpl puInfo) {
+        PersistenceProvider provider = puInfo.getProvider();
+        Bundle bundle = puInfo.getBundle();
+        Properties emfProps = (Properties) puInfo.getProperties();
+        EntityManagerFactory emf = provider.createContainerEntityManagerFactory(puInfo, emfProps);
+
+        Dictionary<String, String> emfServiceProps = new Hashtable<String, String>();
+        emfServiceProps.put(JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
+        emfServiceProps.put(JPA_UNIT_VERSION, bundle.getVersion().toString());
+        emfServiceProps.put(JPA_UNIT_PROVIDER, provider.getClass().getName());
+        ServiceRegistration<EntityManagerFactory> reg = bundle.getBundleContext().registerService(
+            EntityManagerFactory.class, emf, emfServiceProps);
+        puInfo.setEmfRegistration(reg);
+        puInfo.setState(PersistenceUnitState.COMPLETE);
+    }
+
+    private void deactivatePersistenceUnit(PersistenceUnitInfoImpl puInfo) {
+        puInfo.unregister();
+        puInfo.setDataSourceFactory(null);
+        puInfo.setState(PersistenceUnitState.READY);
+    }
+
+    private void unassignPersistenceUnit(PersistenceUnitInfoImpl puInfo) {
+        puInfo.unregister();
+        puInfo.setProvider(null);
+        puInfo.setState(PersistenceUnitState.UNASSIGNED);
     }
 
     private List<URL> parseMetaPersistenceHeader(Bundle bundle, String value) {
@@ -306,21 +312,10 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
                 bundle, puInfo.getBundle() });
             return;
         }
-        
+
         log.info("processing persistence unit {}", puName);
         Properties puProps = parser.parseProperties(persistenceUnit);
         puInfo = new PersistenceUnitInfoImpl(bundle, persistenceUnit, puProps);
         persistenceUnits.put(puInfo.getPersistenceUnitName(), puInfo);
-    }
-
-    @Override
-    public synchronized void removingEntries(Bundle bundle, List<ManifestEntry> entries) {
-        log.info("removed persistence bundle {} {}", bundle.getSymbolicName(), bundle.getVersion());
-        
-        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
-            if (puInfo.getBundle().equals(bundle)) {
-                persistenceUnits.remove(puInfo.getPersistenceUnitName());
-            }
-        }
     }
 }
