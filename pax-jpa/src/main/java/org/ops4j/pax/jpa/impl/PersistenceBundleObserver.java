@@ -90,6 +90,9 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
     public void deactivate(BundleContext bc) {
         log.debug("stopping bundle {}", bc.getBundle().getSymbolicName());
+        for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
+            deactivatePersistenceUnit(puInfo);
+        }
         watcher.stop();
     }
 

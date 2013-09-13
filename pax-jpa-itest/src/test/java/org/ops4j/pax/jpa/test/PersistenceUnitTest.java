@@ -45,6 +45,8 @@ import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.hooks.weaving.WeavingHook;
+import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -116,5 +118,19 @@ public class PersistenceUnitTest {
         assertThat(bc.getServiceReference(EntityManagerFactory.class), is(nullValue()));
         providerBundle.start();
         assertThat(ServiceLookup.getService(bc, EntityManagerFactory.class), is(notNullValue()));
+    }
+
+    @Test
+    public void stopAndStartExtenderBundle() throws BundleException {
+        Bundle extenderBundle = BundleUtils.getBundle(bc, "org.ops4j.pax.jpa");
+        extenderBundle.stop();
+        assertThat(bc.getServiceReference(WeavingHook.class), is(nullValue()));
+        assertThat(bc.getServiceReference(EntityManagerFactoryBuilder.class), is(nullValue()));
+        assertThat(bc.getServiceReference(EntityManagerFactory.class), is(nullValue()));
+
+        extenderBundle.start();
+        assertThat(ServiceLookup.getService(bc, EntityManagerFactory.class), is(notNullValue()));
+        assertThat(ServiceLookup.getService(bc, EntityManagerFactoryBuilder.class), is(notNullValue()));
+        assertThat(ServiceLookup.getService(bc, WeavingHook.class), is(notNullValue()));
     }
 }
