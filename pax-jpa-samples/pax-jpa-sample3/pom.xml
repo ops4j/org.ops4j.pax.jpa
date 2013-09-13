@@ -8,6 +8,9 @@
   <groupId>org.ops4j.pax.jpa.samples</groupId>
   <artifactId>pax-jpa-sample3</artifactId>
   <packaging>bundle</packaging>
+
+  <name>OPS4J Pax JPA Sample3</name>
+
     <properties>
         <bundle.symbolicName>org.ops4j.pax.jpa.sample3</bundle.symbolicName>
         <bundle.namespace>org.ops4j.pax.jpa.sample3</bundle.namespace>
