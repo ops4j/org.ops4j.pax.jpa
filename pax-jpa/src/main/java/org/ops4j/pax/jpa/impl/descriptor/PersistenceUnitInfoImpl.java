@@ -47,6 +47,13 @@ import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
+/**
+ * Link between OSGi JPA container and persistence provider, collecting information about a given
+ * persistence unit.
+ * 
+ * @author Harald Wellmann
+ * 
+ */
 public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     private Bundle bundle;
@@ -247,15 +254,12 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         }
     }
 
-    
     public PersistenceUnitState getState() {
         return state;
     }
 
-    
     public void setState(PersistenceUnitState state) {
         this.state = state;
     }
-    
-    
+
 }

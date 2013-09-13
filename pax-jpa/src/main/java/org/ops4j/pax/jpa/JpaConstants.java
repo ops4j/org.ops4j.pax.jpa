@@ -17,6 +17,12 @@
  */
 package org.ops4j.pax.jpa;
 
+/**
+ * Constants for property keys defined in OSGi or JPA specs but missing in API classes.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class JpaConstants {
 
     public static final String JPA_DRIVER = "javax.persistence.jdbc.driver";

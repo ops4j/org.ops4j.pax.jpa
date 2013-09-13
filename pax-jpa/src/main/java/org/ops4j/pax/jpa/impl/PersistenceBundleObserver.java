@@ -60,9 +60,13 @@ import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Extender observing persistence bundles and tracking persistence providers and data source factories.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> {
-
-    public static final String BUNDLE_NAME = "org.ops4j.pax.jpa";
 
     private static Logger log = LoggerFactory.getLogger(PersistenceBundleObserver.class);
 
@@ -74,23 +78,18 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
     private List<ServiceReference<PersistenceProvider>> persistenceProviders = new ArrayList<ServiceReference<PersistenceProvider>>();
     private List<ServiceReference<DataSourceFactory>> dataSourceFactories = new ArrayList<ServiceReference<DataSourceFactory>>();
 
-    public PersistenceBundleObserver() {
-        log.debug("instantiating observer");
-    }
-
     @SuppressWarnings("unchecked")
     public void activate(BundleContext bc) {
-        log.debug("starting bundle {}", BUNDLE_NAME);
+        log.debug("starting bundle {}", bc.getBundle().getSymbolicName());
 
-        RegexKeyManifestFilter manifestFilter = new RegexKeyManifestFilter(
-            JPA_MANIFEST_HEADER);
+        RegexKeyManifestFilter manifestFilter = new RegexKeyManifestFilter(JPA_MANIFEST_HEADER);
         BundleManifestScanner scanner = new BundleManifestScanner(manifestFilter);
         watcher = new BundleWatcher<ManifestEntry>(bc, scanner, this);
         watcher.start();
     }
 
     public void deactivate(BundleContext bc) {
-        log.debug("stopping bundle {}", BUNDLE_NAME);
+        log.debug("stopping bundle {}", bc.getBundle().getSymbolicName());
         watcher.stop();
     }
 

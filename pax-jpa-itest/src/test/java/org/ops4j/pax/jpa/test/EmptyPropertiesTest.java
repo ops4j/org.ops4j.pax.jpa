@@ -71,7 +71,7 @@ public class EmptyPropertiesTest {
     }
 
     @Test
-    public void createEntityManager() {
+    public void checkEntityManagerFactoryBuilder() {
         assertNotNull(emfBuilder);
     }
 

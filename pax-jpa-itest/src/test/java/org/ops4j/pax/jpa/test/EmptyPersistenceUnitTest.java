@@ -71,7 +71,7 @@ public class EmptyPersistenceUnitTest {
     }
 
     @Test
-    public void createEntityManager() {
+    public void checkEntityManagerFactory() {
         assertNotNull(emf);
     }
 

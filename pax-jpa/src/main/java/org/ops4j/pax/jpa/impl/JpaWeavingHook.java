@@ -31,6 +31,15 @@ import org.osgi.framework.hooks.weaving.WovenClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Weaving hook for enhancing entity classes.
+ * 
+ * The hook applies the transformer obtained from the persistence provider and
+ * adds dynamic imports for any additional packages required by the enhanced code.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class JpaWeavingHook implements WeavingHook {
 
     private static final Logger LOG = LoggerFactory.getLogger(JpaWeavingHook.class);
@@ -57,6 +66,12 @@ public class JpaWeavingHook implements WeavingHook {
                     wovenClass.getDefinedClass(), wovenClass.getProtectionDomain(),
                     wovenClass.getBytes());
                 wovenClass.setBytes(transformed);
+                
+                /*
+                 * 
+                 * TODO Hard-coded list of packages for OpenJPA and Eclipselink.
+                 * We should only add the ones required for the given provider. 
+                 */
                 wovenClass.getDynamicImports().add("org.apache.openjpa.enhance");
                 wovenClass.getDynamicImports().add("org.apache.openjpa.util");
                 wovenClass.getDynamicImports().add("org.eclipse.persistence.*");

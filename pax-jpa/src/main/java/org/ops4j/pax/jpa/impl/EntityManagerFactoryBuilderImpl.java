@@ -24,7 +24,14 @@ import javax.persistence.EntityManagerFactory;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
-
+/**
+ * Implements the OSGi JPA {@link EntityManagerFactoryBuilder} service.
+ * 
+ * NOTE: This implementation only supports container managed entity manager factories. 
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuilder {
         
     private PersistenceUnitInfoImpl puInfo;

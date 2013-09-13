@@ -27,6 +27,14 @@ import javax.xml.bind.Unmarshaller;
 import org.ops4j.pax.jpa.jaxb.Persistence;
 import org.ops4j.pax.jpa.jaxb.Persistence.PersistenceUnit;
 
+/**
+ * Parser for persistence descriptors. Only supports the JPA 2.0 scheme.
+ * 
+ * Based on JAXB.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class PersistenceDescriptorParser {
 
     private static JAXBContext singletonJaxbContext;
@@ -40,7 +48,7 @@ public class PersistenceDescriptorParser {
 
     private synchronized JAXBContext getJaxbContext() throws JAXBException {
         if (singletonJaxbContext == null) {
-            singletonJaxbContext = JAXBContext.newInstance("org.ops4j.pax.jpa.jaxb", getClass()
+            singletonJaxbContext = JAXBContext.newInstance(Persistence.class.getPackage().getName(), getClass()
                 .getClassLoader());
         }
         return singletonJaxbContext;

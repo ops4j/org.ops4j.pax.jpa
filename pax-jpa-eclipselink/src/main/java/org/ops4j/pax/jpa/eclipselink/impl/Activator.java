@@ -24,6 +24,13 @@ import org.ops4j.pax.jpa.JpaConstants;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Adapter for Eclipselink to register its PersistenceProvider service with the 
+ * required service properties.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class Activator implements BundleActivator {
 
     @Override

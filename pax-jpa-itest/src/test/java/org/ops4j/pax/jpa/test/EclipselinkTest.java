@@ -50,9 +50,12 @@ public class EclipselinkTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), bundle("reference:file:" + PathUtils.getBaseDir()
-            + "/../pax-jpa/target/classes"), bundle("reference:file:" + PathUtils.getBaseDir()
-            + "/../pax-jpa-eclipselink/target/classes"),
+        return options(
+            regressionDefaults(),
+            bundle("reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa/target/classes"), //
+            bundle("reference:file:" + PathUtils.getBaseDir()
+                + "/../pax-jpa-eclipselink/target/classes"),
+
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
@@ -75,7 +78,7 @@ public class EclipselinkTest {
     }
 
     @Test
-    public void createDataSourceAndConnection() throws SQLException, InterruptedException {
+    public void createEntityManager() {
         assertNotNull(bc);
         EntityManager em = emf.createEntityManager();
         assertNotNull(em);

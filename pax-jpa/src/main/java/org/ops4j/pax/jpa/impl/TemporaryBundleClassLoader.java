@@ -25,6 +25,13 @@ import org.ops4j.io.StreamUtils;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 
+/**
+ * Temporary class loader required by
+ * {@code javax.persistence.spi.PersistenceUnitInfo.getNewTempClassLoader()}.
+ * 
+ * @author Harald Wellmann
+ * 
+ */
 public class TemporaryBundleClassLoader extends BundleClassLoader {
 
     public TemporaryBundleClassLoader(Bundle bundle) {
