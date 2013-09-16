@@ -31,12 +31,12 @@
     </encoder>
   </appender>
   
-  <root level="INFO">
+  <root level="WARN">
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="TEST_LOG"/>
   </root>
-  <logger name="org.ops4j.pax.exam" level="INFO"/> 
-  <logger name="org.ops4j.pax.jpa" level="DEBUG"/> 
-  <logger name="openjpa" level="INFO"/> 
+  <logger name="org.ops4j.pax.exam" level="WARN"/> 
+  <logger name="org.ops4j.pax.jpa" level="WARN"/> 
+  <logger name="openjpa" level="WARN"/> 
   
 </configuration>
