@@ -50,7 +50,7 @@ import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class PersistenceUnitTest {
+public class OpenJpaTest {
 
     @Inject
     private BundleContext bc;
