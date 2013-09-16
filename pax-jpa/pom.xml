@@ -10,9 +10,9 @@
     <groupId>org.ops4j.pax.jpa</groupId>
     <artifactId>pax-jpa</artifactId>
     <packaging>bundle</packaging>
-    
+
     <name>OPS4J Pax JPA Extender</name>
-    
+
     <properties>
         <bundle.symbolicName>org.ops4j.pax.jpa</bundle.symbolicName>
         <bundle.namespace>org.ops4j.pax.jpa</bundle.namespace>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-framework</artifactId>
-            </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
