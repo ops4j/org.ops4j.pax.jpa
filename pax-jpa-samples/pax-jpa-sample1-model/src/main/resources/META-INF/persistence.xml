@@ -15,6 +15,8 @@
             <property name="openjpa.Log" value="slf4j" />
             <property name="openjpa.jdbc.SynchronizeMappings"
                 value="buildSchema(SchemaAction='add,deleteTableContents')" />
+
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
         </properties>
     </persistence-unit>
 
