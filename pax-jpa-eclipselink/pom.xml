@@ -50,38 +50,4 @@
         </plugins>
     </build>
     
-    <profiles>
-        <profile>
-            <id>eclipselink</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>                
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.eclipse.persistence</groupId>
-                    <artifactId>org.eclipse.persistence.jpa</artifactId>
-                    <version>2.3.2</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.eclipse.persistence</groupId>
-                    <artifactId>org.eclipse.persistence.core</artifactId>
-                    <version>2.3.2</version>
-                </dependency>
-            </dependencies>
-            <repositories>
-                <repository>
-                    <id>eclipselink</id>
-                    <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-                    <releases>
-                      <enabled>true</enabled>
-                      <updatePolicy>never</updatePolicy>
-                    </releases>
-                    <snapshots>
-                      <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
-    
 </project>

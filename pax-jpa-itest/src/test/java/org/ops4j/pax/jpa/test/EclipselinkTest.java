@@ -55,7 +55,7 @@ public class EclipselinkTest {
                 + "/../pax-jpa-eclipselink/target/classes"),
 
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")

@@ -22,7 +22,7 @@
 
         <dependency>
             <groupId>org.ops4j.pax.jpa.samples</groupId>
-            <artifactId>pax-jpa-sample1-model</artifactId>
+            <artifactId>pax-jpa-sample1</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -133,63 +133,54 @@
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
-            <version>10.8.2.2</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa</artifactId>
-            <version>2.2.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.4</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-servlet_3.0_spec</artifactId>
-            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jta_1.1_spec</artifactId>
-            <version>1.1.1</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.asm</artifactId>
-            <version>3.3_2</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.serp</artifactId>
-            <version>1.13.1_4</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.jpa</artifactId>
-            <version>${eclipselink.version}</version>
         </dependency>
 
     </dependencies>
