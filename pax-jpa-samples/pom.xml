@@ -13,7 +13,7 @@
   <name>OPS4J Pax JPA Samples Aggregator</name>
     
   <modules>
-      <module>pax-jpa-sample1-model</module>
+      <module>pax-jpa-sample1</module>
       <module>pax-jpa-sample2</module>
       <module>pax-jpa-sample3</module>
   </modules>
