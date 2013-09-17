@@ -22,11 +22,14 @@ import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.when;
 
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.util.PathUtils;
 
 public class TestConfiguration {
+    
+    public static boolean debugConsole = false;
 
     public static Option regressionDefaults() {
         return composite(
@@ -45,8 +48,9 @@ public class TestConfiguration {
             // This way, both the driver and the container use the same configuration
             systemProperty("logback.configurationFile").value(
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
-            systemProperty("osgi.console").value("6666"), //
-            systemProperty("eclipse.consoleLog").value("true"), //
+            when(debugConsole).useOptions(    
+                systemProperty("osgi.console").value("6666"), //
+                systemProperty("eclipse.consoleLog").value("true")), //
             junitBundles());
     }
 }
