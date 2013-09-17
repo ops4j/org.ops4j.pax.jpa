@@ -37,4 +37,9 @@ public class JpaConstants {
     public static final String PU_NAME = "osgi.unit.name";
     public static final String PU_VERSION = "osgi.unit.version";
     public static final String PU_PROVIDER = "osgi.unit.provider";
+    
+
+    /** Hidden utility class constructor. */
+    private JpaConstants() {
+    }
 }
