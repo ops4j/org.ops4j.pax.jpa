@@ -45,9 +45,9 @@ import org.ops4j.pax.jpa.jaxb.Persistence;
 import org.ops4j.pax.jpa.jaxb.Persistence.PersistenceUnit;
 import org.ops4j.pax.swissbox.extender.BundleManifestScanner;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
-import org.ops4j.pax.swissbox.extender.BundleWatcher;
 import org.ops4j.pax.swissbox.extender.ManifestEntry;
 import org.ops4j.pax.swissbox.extender.RegexKeyManifestFilter;
+import org.ops4j.pax.swissbox.extender.SynchronousBundleWatcher;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -72,7 +72,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
     private PersistenceDescriptorParser parser = new PersistenceDescriptorParser();
 
-    private BundleWatcher<ManifestEntry> watcher;
+    private SynchronousBundleWatcher<ManifestEntry> watcher;
 
     private Map<String, PersistenceUnitInfoImpl> persistenceUnits = new HashMap<String, PersistenceUnitInfoImpl>();
     private List<ServiceReference<PersistenceProvider>> persistenceProviders = new ArrayList<ServiceReference<PersistenceProvider>>();
@@ -84,7 +84,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
         RegexKeyManifestFilter manifestFilter = new RegexKeyManifestFilter(JPA_MANIFEST_HEADER);
         BundleManifestScanner scanner = new BundleManifestScanner(manifestFilter);
-        watcher = new BundleWatcher<ManifestEntry>(bc, scanner, this);
+        watcher = new SynchronousBundleWatcher<ManifestEntry>(bc, scanner, this);
         watcher.start();
     }
 
