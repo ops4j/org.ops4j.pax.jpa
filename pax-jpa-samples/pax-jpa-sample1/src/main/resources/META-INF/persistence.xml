@@ -11,12 +11,19 @@
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.AutoloadedDriver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:library;create=true" />
-
+            
+            <!-- Example Open JPA Properties -->
             <property name="openjpa.Log" value="slf4j" />
             <property name="openjpa.jdbc.SynchronizeMappings"
                 value="buildSchema(SchemaAction='add,deleteTableContents')" />
-
+            
+            <!-- Example Eclipse Link Properties -->
             <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+            
+            <!-- Example Hibernate Properties -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
         </properties>
     </persistence-unit>
 
