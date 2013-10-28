@@ -18,14 +18,19 @@
 package org.ops4j.pax.jpa.test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
+import static org.junit.Assert.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.jpa.test.TestConfiguration.regressionDefaults;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +38,7 @@ import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
-import org.ops4j.pax.exam.util.PathUtils;
+import org.ops4j.pax.jpa.sample1.model.Author;
 import org.osgi.framework.BundleContext;
 
 @RunWith(PaxExam.class)
@@ -50,9 +55,8 @@ public class EclipselinkTest {
     public Option[] config() {
         return options(
             regressionDefaults(),
-            bundle("reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa/target/classes"), //
-            bundle("reference:file:" + PathUtils.getBaseDir()
-                + "/../pax-jpa-eclipselink/target/classes"),
+            mavenBundle("org.ops4j.pax.jpa", "pax-jpa").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jpa", "pax-jpa-eclipselink").versionAsInProject(),
 
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
@@ -79,6 +83,19 @@ public class EclipselinkTest {
     public void createEntityManager() {
         assertNotNull(bc);
         EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        try {
+            assertNotNull(em);
+            CriteriaBuilder cb = emf.getCriteriaBuilder();
+            CriteriaQuery<Author> q = cb.createQuery(Author.class);
+            q.from(Author.class);
+            TypedQuery<Author> typedQuery = em.createQuery(q);
+            List<Author> list = typedQuery.getResultList();
+            assertNotNull(list);
+            assertTrue(list.isEmpty());
+        } finally {
+            em.getTransaction().rollback();
+        }
         assertNotNull(em);
     }
 }

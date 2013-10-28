@@ -37,6 +37,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
+                        <Import-Package>*,javassist.util.proxy;resolution:=optional,org.hibernate.proxy;resolution:=optional</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
