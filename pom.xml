@@ -327,6 +327,8 @@
                     </executions>
                     <configuration>
                         <configLocation>checkstyle/pax-exam-checks.xml</configLocation>
+                        <!-- suppress Checkstyle warnings from patched hibernate-osgi copy -->
+                        <excludes>**/org/hibernate/**</excludes>
                     </configuration>
                     <dependencies>
                         <dependency>
