@@ -118,11 +118,13 @@
             <artifactId>org.eclipse.osgi</artifactId>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
             <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.enterprise</artifactId>
@@ -181,14 +183,6 @@
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.jpa</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-osgi</artifactId>
-            <version>4.2.7.SP1</version>
-            <scope>provided</scope>
-        </dependency>
-
 
     </dependencies>
 

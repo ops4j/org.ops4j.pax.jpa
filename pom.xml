@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.ops4j</groupId>
@@ -16,6 +17,7 @@
 
     <properties>
         <eclipselink.version>2.4.2</eclipselink.version>
+        <hibernate.version>4.2.7.SP1</hibernate.version>
         <logback.version>1.0.0</logback.version>
         <pax.exam.version>3.2.0</pax.exam.version>
         <pax.jdbc.version>0.3.0</pax.jdbc.version>
@@ -30,8 +32,8 @@
         <connection>scm:git:git@github.com:ops4j/org.ops4j.pax.jpa.git</connection>
         <developerConnection>scm:git:git@github.com:ops4j/org.ops4j.pax.jpa.git</developerConnection>
         <url>git@github.com:ops4j/org.ops4j.pax.jpa.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <modules>
         <module>pax-jpa</module>
@@ -187,6 +189,18 @@
                 <groupId>org.apache.openjpa</groupId>
                 <artifactId>openjpa</artifactId>
                 <version>2.2.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
             </dependency>
 
 
