@@ -36,6 +36,7 @@
     <modules>
         <module>pax-jpa</module>
         <module>pax-jpa-eclipselink</module>
+        <module>pax-jpa-hibernate</module>
 
         <module>pax-jpa-itest</module>
         <module>pax-jpa-samples</module>
@@ -235,6 +236,12 @@
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
                 <version>3.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>3.1.0.GA</version>
             </dependency>
 
         </dependencies>
