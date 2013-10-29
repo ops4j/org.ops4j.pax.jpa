@@ -91,7 +91,8 @@ public class OsgiPersistenceProvider extends HibernatePersistence {
 		// OSGi ClassLoaders must implement BundleReference
 		properties.put( org.hibernate.ejb.AvailableSettings.SCANNER,
 				new OsgiScanner( ( (BundleReference) info.getClassLoader() ).getBundle() ) );
-
+		properties.put( org.hibernate.ejb.AvailableSettings.USE_CLASS_ENHANCER, "true" );
+		
 		osgiClassLoader.addClassLoader( info.getClassLoader() );
 
 		Ejb3Configuration cfg = new Ejb3Configuration();

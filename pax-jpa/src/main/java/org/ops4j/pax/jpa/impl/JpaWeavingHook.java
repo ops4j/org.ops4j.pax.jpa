@@ -74,7 +74,11 @@ public class JpaWeavingHook implements WeavingHook {
                  */
                 wovenClass.getDynamicImports().add("org.apache.openjpa.enhance");
                 wovenClass.getDynamicImports().add("org.apache.openjpa.util");
+                
                 wovenClass.getDynamicImports().add("org.eclipse.persistence.*");
+
+                wovenClass.getDynamicImports().add("org.hibernate.*");
+                wovenClass.getDynamicImports().add("javassist.util.proxy");
             }
             catch (IllegalClassFormatException exc) {
                 throw new WeavingException("cannot transform " + wovenClass.getClassName(), exc);
