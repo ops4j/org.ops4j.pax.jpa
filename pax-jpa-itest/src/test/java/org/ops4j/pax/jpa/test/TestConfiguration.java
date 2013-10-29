@@ -29,7 +29,7 @@ import org.ops4j.pax.exam.util.PathUtils;
 
 public class TestConfiguration {
     
-    public static boolean debugConsole = false;
+    public static boolean debugConsole = true;
 
     public static Option regressionDefaults() {
         return composite(

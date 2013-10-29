@@ -182,6 +182,14 @@
             <artifactId>org.eclipse.persistence.jpa</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-osgi</artifactId>
+            <version>4.2.7.SP1</version>
+            <scope>provided</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>
