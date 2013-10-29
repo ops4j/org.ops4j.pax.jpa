@@ -51,6 +51,13 @@ public class OsgiClassLoader extends ClassLoader {
 	private Map<String, Class<?>> classCache = new HashMap<String, Class<?>>();
 	
 	private Map<String, URL> resourceCache = new HashMap<String, URL>();
+	
+	
+        public OsgiClassLoader() {
+            // do not delegate to system classloader to avoid conflicts when 
+            // running an embedded OSGi framework
+            super(null);
+        }
 
 	/**
 	 * Load the class and break on first found match.
@@ -89,6 +96,21 @@ public class OsgiClassLoader extends ClassLoader {
 		}
 
 		throw new ClassNotFoundException( "Could not load requested class : " + name );
+	}
+	
+	@Override
+	protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+	        // avoid parent delegation when no parent is set
+	        if( getParent() != null )
+	        {
+	            return super.loadClass( name, resolve );
+	        }
+	        final Class<?> classToLoad = findClass( name );
+	        if( resolve )
+	        {
+	            resolveClass( classToLoad );
+	        }
+	        return classToLoad;
 	}
 
 	/**
