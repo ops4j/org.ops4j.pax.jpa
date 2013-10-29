@@ -1,14 +1,14 @@
-﻿Pax CDI
+﻿Pax JPA
 =======
 
-Thanks for looking into Pax CDI - Contexts and Dependency Injection for OSGi. 
+Thanks for looking into Pax JPA - an OSGi JPA Service implementation. 
 
-This is the official source repository of the OPS4J Pax CDI project.
+This is the official source repository of the OPS4J Pax JPA project.
 Its licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Documentation
 
-* <http://team.ops4j.org/wiki/display/paxcdi/Documentation>
+* <http://team.ops4j.org/wiki/display/paxjpa/Documentation>
 
 ## Build
 
@@ -16,7 +16,7 @@ You'll need a machine with Java 6 or Java 7 and Apache Maven 3 installed.
 
 Checkout:
 
-    git clone git://github.com/ops4j/org.ops4j.pax.cdi.git
+    git clone git://github.com/ops4j/org.ops4j.pax.jpa.git
 
 Run Build:
 
@@ -27,7 +27,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-The current milestone release is Pax CDI 0.5.0.
+The current milestone release is *Pax JPA 0.1.1*.
 
 ## Issue Tracking
 
@@ -37,7 +37,7 @@ The current milestone release is Pax CDI 0.5.0.
 
 We have a continuous integration build set up here:
 
-* <http://ci.ops4j.org/jenkins/job/org.ops4j.pax.cdi>
+* <http://ci.ops4j.org/jenkins/job/org.ops4j.pax.jpa>
 
 Snapshot artifacts are being published to:
 
