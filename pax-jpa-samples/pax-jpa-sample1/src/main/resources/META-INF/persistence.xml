@@ -22,6 +22,7 @@
             
             <!-- Example Hibernate Properties -->
             <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.ejb.use_class_enhancer" value="true"/>
         </properties>
     </persistence-unit>
 

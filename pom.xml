@@ -17,7 +17,7 @@
 
     <properties>
         <eclipselink.version>2.4.2</eclipselink.version>
-        <hibernate.version>4.2.7.SP1</hibernate.version>
+        <hibernate.version>4.2.11.Final</hibernate.version>
         <logback.version>1.0.0</logback.version>
         <pax.exam.version>3.2.0</pax.exam.version>
         <pax.jdbc.version>0.3.0</pax.jdbc.version>
@@ -38,7 +38,6 @@
     <modules>
         <module>pax-jpa</module>
         <module>pax-jpa-eclipselink</module>
-        <module>pax-jpa-hibernate</module>
 
         <module>pax-jpa-itest</module>
         <module>pax-jpa-samples</module>
@@ -200,6 +199,12 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-osgi</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
 

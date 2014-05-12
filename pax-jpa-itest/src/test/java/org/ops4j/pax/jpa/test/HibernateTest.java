@@ -24,7 +24,6 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 import static org.ops4j.pax.jpa.test.TestConfiguration.regressionDefaults;
 
 import java.util.List;
@@ -78,10 +77,8 @@ public class HibernateTest {
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
                 .versionAsInProject(),
 
-            // mavenBundle("org.ops4j.pax.jpa", "pax-jpa-hibernate").versionAsInProject(),
-            bundle("reference:file:" + PathUtils.getBaseDir()
-                + "/../pax-jpa-hibernate/target/classes"), //
             mavenBundle("org.hibernate", "hibernate-core").versionAsInProject(),
+            mavenBundle("org.hibernate", "hibernate-osgi").versionAsInProject(),
             mavenBundle("org.hibernate", "hibernate-entitymanager").versionAsInProject(),
 
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.ant",
@@ -91,11 +88,8 @@ public class HibernateTest {
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.dom4j",
                 "1.6.1_5"), //
             mavenBundle("org.javassist", "javassist", "3.18.1-GA"),
-            mavenBundle("com.fasterxml", "classmate", "0.5.4"),
-            
-            // not an OSGi bundle, see JANDEX-19
-            wrappedBundle(mavenBundle("org.jboss", "jandex", "1.1.0.Final")),
-            
+            mavenBundle("com.fasterxml", "classmate", "0.5.4"),            
+            mavenBundle("org.jboss", "jandex", "1.2.0.Final"),            
             mavenBundle("org.jboss.logging", "jboss-logging", "3.1.0.GA"),
             mavenBundle("org.hibernate.common", "hibernate-commons-annotations", "4.0.2.Final"),
 
