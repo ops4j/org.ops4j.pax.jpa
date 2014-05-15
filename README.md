@@ -12,7 +12,7 @@ Its licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Build
 
-You'll need a machine with Java 6 or Java 7 and Apache Maven 3 installed.
+You'll need a machine with Java 6+ and Apache Maven 3 installed.
 
 Checkout:
 
@@ -27,7 +27,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-The current milestone release is *Pax JPA 0.1.1*.
+The current milestone release is *Pax JPA 0.2.0*.
 
 ## Issue Tracking
 
