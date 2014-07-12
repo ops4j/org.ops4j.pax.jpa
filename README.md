@@ -4,7 +4,7 @@
 Thanks for looking into Pax JPA - an OSGi JPA Service implementation. 
 
 This is the official source repository of the OPS4J Pax JPA project.
-Its licensed under the Apache Software License 2.0 by the OPS4J community.
+It is licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Documentation
 
@@ -31,7 +31,7 @@ The current milestone release is *Pax JPA 0.2.0*.
 
 ## Issue Tracking
 
-* <http://team.ops4j.org/browse/PAXCDI>
+* <http://team.ops4j.org/browse/PAXJPA>
 
 ## Continuous Integration Builds
 
