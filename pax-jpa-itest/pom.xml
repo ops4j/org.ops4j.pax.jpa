@@ -168,8 +168,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.asm</artifactId>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-asm4-shaded</artifactId>
             <scope>provided</scope>
         </dependency>
 

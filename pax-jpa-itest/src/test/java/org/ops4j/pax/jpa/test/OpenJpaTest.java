@@ -76,8 +76,7 @@ public class OpenJpaTest {
             mavenBundle("commons-collections", "commons-collections").versionAsInProject(),
             mavenBundle("commons-pool", "commons-pool").versionAsInProject(),
             mavenBundle("commons-dbcp", "commons-dbcp").versionAsInProject(),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm")
-                .versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-asm4-shaded").versionAsInProject(),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.serp")
                 .versionAsInProject(),
 
