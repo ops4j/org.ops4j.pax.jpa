@@ -16,5 +16,6 @@
       <module>pax-jpa-sample1</module>
       <module>pax-jpa-sample2</module>
       <module>pax-jpa-sample3</module>
+      <module>pax-jpa-samples-features</module>
   </modules>
 </project>
