@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.ops4j</groupId>
@@ -22,7 +23,7 @@
         <pax.exam.version>3.5.0</pax.exam.version>
         <pax.jdbc.version>0.3.0</pax.jdbc.version>
         <pax.swissbox.version>1.7.0</pax.swissbox.version>
-        <pax.url.version>2.0.0</pax.url.version>
+        <pax.url.version>2.1.0</pax.url.version>
         <slf4j.version>1.6.4</slf4j.version>
 
         <pax.jpa.wiki.url>http://team.ops4j.org/wiki/display/PAXJPA/</pax.jpa.wiki.url>
@@ -196,7 +197,7 @@
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
@@ -346,7 +347,7 @@
                                         <version>(3.0.0,)</version>
                                         <message>This project requires Maven 3</message>
                                     </requireMavenVersion>
-                                    <DependencyConvergence />
+                                    <DependencyConvergence/>
                                 </rules>
                             </configuration>
                             <goals>
