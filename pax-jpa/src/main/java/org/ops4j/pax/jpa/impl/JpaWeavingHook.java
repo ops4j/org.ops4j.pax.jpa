@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Weaving hook for enhancing entity classes.
  * 
- * The hook applies the transformer obtained from the persistence provider and
- * adds dynamic imports for any additional packages required by the enhanced code.
+ * The hook applies the transformer obtained from the persistence provider and adds dynamic imports
+ * for any additional packages required by the enhanced code.
  * 
  * @author Harald Wellmann
  *
@@ -61,24 +61,26 @@ public class JpaWeavingHook implements WeavingHook {
         if (wovenClass.getBundleWiring().getBundle() == puInfo.getBundle()
             && managedClasses.contains(wovenClass.getClassName())) {
             try {
-                LOG.info("weaving {}", wovenClass.getClassName());
-                byte[] transformed = transformer.transform(cl, wovenClass.getClassName(),
-                    wovenClass.getDefinedClass(), wovenClass.getProtectionDomain(),
-                    wovenClass.getBytes());
-                wovenClass.setBytes(transformed);
-                
-                /*
-                 * 
-                 * TODO Hard-coded list of packages for OpenJPA and Eclipselink.
-                 * We should only add the ones required for the given provider. 
-                 */
-                wovenClass.getDynamicImports().add("org.apache.openjpa.enhance");
-                wovenClass.getDynamicImports().add("org.apache.openjpa.util");
-                
-                wovenClass.getDynamicImports().add("org.eclipse.persistence.*");
+                synchronized (this) {
+                    LOG.debug("weaving {}", wovenClass.getClassName());
+                    byte[] transformed = transformer.transform(cl, wovenClass.getClassName(),
+                        wovenClass.getDefinedClass(), wovenClass.getProtectionDomain(),
+                        wovenClass.getBytes());
+                    wovenClass.setBytes(transformed);
 
-                wovenClass.getDynamicImports().add("org.hibernate.*");
-                wovenClass.getDynamicImports().add("javassist.util.proxy");
+                    /*
+                     * 
+                     * TODO Hard-coded list of packages for OpenJPA and Eclipselink. We should only
+                     * add the ones required for the given provider.
+                     */
+                    wovenClass.getDynamicImports().add("org.apache.openjpa.enhance");
+                    wovenClass.getDynamicImports().add("org.apache.openjpa.util");
+
+                    wovenClass.getDynamicImports().add("org.eclipse.persistence.*");
+
+                    wovenClass.getDynamicImports().add("org.hibernate.*");
+                    wovenClass.getDynamicImports().add("javassist.util.proxy");
+                }
             }
             catch (IllegalClassFormatException exc) {
                 throw new WeavingException("cannot transform " + wovenClass.getClassName(), exc);
