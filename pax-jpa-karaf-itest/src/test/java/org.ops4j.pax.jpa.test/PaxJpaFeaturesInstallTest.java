@@ -12,9 +12,14 @@ import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerMethod;
+import org.ops4j.pax.exam.util.Filter;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManagerFactory;
 import java.io.File;
+
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
@@ -22,6 +27,10 @@ public class PaxJpaFeaturesInstallTest {
 
     @Inject
     FeaturesService featuresService;
+
+    @Inject
+    @Filter("(osgi.unit.name=library)")
+    private EntityManagerFactory emf;
 
     @Configuration
     public Option[] config() {
@@ -39,24 +48,31 @@ public class PaxJpaFeaturesInstallTest {
                 .type("xml")
                 .versionAsInProject();
 
+        MavenUrlReference paxJdbc = CoreOptions.maven()
+                .groupId("org.ops4j.pax.jdbc")
+                .artifactId("pax-jdbc-features")
+                .classifier("features")
+                .type("xml")
+                .versionAsInProject();
+
         return new Option[]{
                 // KarafDistributionOption.debugConfiguration("5005", true),
                 KarafDistributionOption.karafDistributionConfiguration()
                         .frameworkUrl(karafUrl)
                         .unpackDirectory(new File("target/exam"))
                         .useDeployFolder(false),
-                KarafDistributionOption.features(paxJpaRepo, "pax-jpa", "pax-jpa-eclipselink", "pax-jpa-openjpa"),
+                KarafDistributionOption.keepRuntimeFolder(),
+                mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
+                KarafDistributionOption.features(paxJdbc, "pax-jdbc-derby"),
+                KarafDistributionOption.features(paxJpaRepo, "pax-jpa", "pax-jpa-eclipselink"),
         };
     }
 
     @Test
     public void testPaxJpaEclipseLinkFeatureIsDeployedAndUsable() throws Exception {
         Assert.assertTrue(featuresService.isInstalled(featuresService.getFeature("pax-jpa-eclipselink")));
-    }
 
-    @Test
-    public void testPaxJpaOpenJpakFeatureIsDeployedAndUsable() throws Exception {
-        Assert.assertTrue(featuresService.isInstalled(featuresService.getFeature("pax-jpa-openjpa")));
+        Assert.assertThat(emf, notNullValue());
     }
 
 }

@@ -28,6 +28,7 @@
 
         <pax.jpa.wiki.url>http://team.ops4j.org/wiki/display/PAXJPA/</pax.jpa.wiki.url>
         <openjpa.version>2.3.0</openjpa.version>
+        <karaf.version>3.0.1</karaf.version>
     </properties>
 
     <scm>
@@ -109,7 +110,11 @@
                 <artifactId>pax-exam-container-native</artifactId>
                 <version>${pax.exam.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-container-karaf</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.jdbc</groupId>
                 <artifactId>pax-jdbc</artifactId>
