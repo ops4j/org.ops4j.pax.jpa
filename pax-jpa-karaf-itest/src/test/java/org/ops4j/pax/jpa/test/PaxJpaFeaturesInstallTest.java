@@ -2,6 +2,7 @@ package org.ops4j.pax.jpa.test;
 
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureConsole;
 
 import java.io.File;
 
@@ -49,13 +50,6 @@ public class PaxJpaFeaturesInstallTest {
                 .type("xml")
                 .versionAsInProject();
 
-        MavenUrlReference paxJdbc = CoreOptions.maven()
-                .groupId("org.ops4j.pax.jdbc")
-                .artifactId("pax-jdbc-features")
-                .classifier("features")
-                .type("xml")
-                .versionAsInProject();
-
         return new Option[]{
                 // KarafDistributionOption.debugConfiguration("5005", true),
                 KarafDistributionOption.karafDistributionConfiguration()
@@ -63,8 +57,14 @@ public class PaxJpaFeaturesInstallTest {
                         .unpackDirectory(new File("target/exam"))
                         .useDeployFolder(false),
                 KarafDistributionOption.keepRuntimeFolder(),
+                configureConsole().ignoreLocalConsole(),
+
+                // don't use until released
+                // KarafDistributionOption.features(paxJdbc, "pax-jdbc-derby"),
                 mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
-                KarafDistributionOption.features(paxJdbc, "pax-jdbc-derby"),
+                mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc", "0.3.0"),
+                mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby", "0.3.0"),
+                mavenBundle("org.apache.derby", "derby", "10.10.1.1"),
                 KarafDistributionOption.features(paxJpaRepo, "pax-jpa", "pax-jpa-eclipselink"),
         };
     }

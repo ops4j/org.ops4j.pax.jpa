@@ -6,7 +6,6 @@
         <artifactId>jpa</artifactId>
         <groupId>org.ops4j.pax</groupId>
         <version>0.3.0-SNAPSHOT</version>
-        <relativePath>..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +13,7 @@
     <artifactId>pax-jpa-features</artifactId>
     <packaging>pom</packaging>
 
-    <name>OPS4J Pax JPA features</name>
+    <name>OPS4J Pax JPA Karaf Features</name>
 
     <description>
         Pax JPA module creating a features xml file to deploy Pax JPA components as features in Apache Karaf.
