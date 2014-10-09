@@ -1,5 +1,13 @@
 package org.ops4j.pax.jpa.test;
 
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+
+import java.io.File;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.karaf.features.FeaturesService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,13 +21,6 @@ import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.ops4j.pax.exam.util.Filter;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
-import java.io.File;
-
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
