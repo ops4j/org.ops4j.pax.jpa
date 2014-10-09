@@ -10,6 +10,7 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         
         <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.AutoloadedDriver" />
             
             <!-- Example Open JPA Properties -->
             <property name="openjpa.Log" value="slf4j" />
@@ -22,7 +23,6 @@
             <!-- Example Hibernate Properties -->
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             <property name="hibernate.ejb.use_class_enhancer" value="true"/>
-
         </properties>
     </persistence-unit>
 
