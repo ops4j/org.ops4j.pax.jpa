@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
@@ -50,9 +52,9 @@ import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 /**
  * Link between OSGi JPA container and persistence provider, collecting information about a given
  * persistence unit.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
@@ -111,6 +113,17 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     @Override
     public DataSource getNonJtaDataSource() {
+        String dataSourceName = persistenceUnit.getNonJtaDataSource();
+        if (dataSourceName != null) {
+            try {
+                InitialContext context = new InitialContext();
+                DataSource dataSource = (DataSource) context.lookup(dataSourceName);
+                return dataSource;
+            }
+            catch (NamingException exc) {
+                throw new Ops4jException(exc);
+            }
+        }
         String url = props.getProperty(JpaConstants.JPA_URL);
         String user = props.getProperty(JpaConstants.JPA_USER);
         String password = props.getProperty(JpaConstants.JPA_PASSWORD);

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+    <persistence-unit name="library" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>osgi:service/javax.sql.DataSource</non-jta-data-source>
+        <class>org.ops4j.pax.jpa.sample4.model.Author</class>
+        <class>org.ops4j.pax.jpa.sample4.model.Book</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        
+        <properties>
+            
+            <!-- Example Open JPA Properties -->
+            <property name="openjpa.Log" value="slf4j" />
+            <property name="openjpa.jdbc.SynchronizeMappings"
+                value="buildSchema(SchemaAction='add,deleteTableContents')" />
+            
+            <!-- Example Eclipse Link Properties -->
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+            
+            <!-- Example Hibernate Properties -->
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.ejb.use_class_enhancer" value="true"/>
+
+        </properties>
+    </persistence-unit>
+
+</persistence>

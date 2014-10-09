@@ -1,21 +1,22 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>jpa</artifactId>
-    <groupId>org.ops4j.pax</groupId>
-    <version>0.3.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
-  </parent>
-  <groupId>org.ops4j.pax.jpa</groupId>
-  <artifactId>pax-jpa-samples</artifactId>
-  <packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jpa</artifactId>
+        <groupId>org.ops4j.pax</groupId>
+        <version>0.3.0-SNAPSHOT</version>
+    </parent>
+    <groupId>org.ops4j.pax.jpa</groupId>
+    <artifactId>pax-jpa-samples</artifactId>
+    <packaging>pom</packaging>
 
-  <name>OPS4J Pax JPA Samples Aggregator</name>
-    
-  <modules>
-      <module>pax-jpa-sample1</module>
-      <module>pax-jpa-sample2</module>
-      <module>pax-jpa-sample3</module>
-      <module>pax-jpa-samples-features</module>
-  </modules>
+    <name>OPS4J Pax JPA Samples Aggregator</name>
+
+    <modules>
+        <module>pax-jpa-sample1</module>
+        <module>pax-jpa-sample2</module>
+        <module>pax-jpa-sample3</module>
+        <module>pax-jpa-sample4</module>
+        <module>pax-jpa-samples-features</module>
+    </modules>
 </project>
