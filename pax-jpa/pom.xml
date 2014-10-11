@@ -81,7 +81,7 @@
                     <args>
                     </args>
                     <schemaIncludes>
-                        <include>xsd/persistence-2.0.xsd</include>
+                        <include>xsd/persistence-2.1.xsd</include>
                     </schemaIncludes>
                 </configuration>
             </plugin>

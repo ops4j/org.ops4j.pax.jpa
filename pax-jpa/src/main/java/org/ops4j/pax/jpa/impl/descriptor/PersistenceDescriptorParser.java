@@ -53,7 +53,7 @@ public class PersistenceDescriptorParser {
         // the one indicated by the generated JAXB model classes.
         // For some reason, the JAXB version in JDK 8 is more lenient and does
         // not require this filter.
-        NamespaceFilter inFilter = new NamespaceFilter("http://java.sun.com/xml/ns/persistence");
+        NamespaceFilter inFilter = new NamespaceFilter("http://xmlns.jcp.org/xml/ns/persistence");
         inFilter.setParent(reader);
         
         JAXBContext context = getJaxbContext();
