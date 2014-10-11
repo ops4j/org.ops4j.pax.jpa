@@ -5,8 +5,10 @@
              start-level="30">
         <feature>scr</feature>
 
-        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-spi/1.4.0</bundle>
-        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-io/1.4.0</bundle>
+        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-lang/${ops4j.base.version}</bundle>
+        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-spi/${ops4j.base.version}</bundle>
+        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-io/${ops4j.base.version}</bundle>
+        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-monitors/${ops4j.base.version}</bundle>
 
         <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-core/${pax.swissbox.version}</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-extender/${pax.swissbox.version}</bundle>
