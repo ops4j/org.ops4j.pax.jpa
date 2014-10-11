@@ -274,5 +274,9 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     public void setState(PersistenceUnitState state) {
         this.state = state;
     }
+    
+    public boolean hasJndiDataSource() {
+        return persistenceUnit.getNonJtaDataSource() != null;
+    }
 
 }

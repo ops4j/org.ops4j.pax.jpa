@@ -206,6 +206,9 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
     }
 
     private boolean canComplete(PersistenceUnitInfoImpl puInfo) {
+        if (puInfo.hasJndiDataSource()) {
+            return true;
+        }
         puInfo.setDataSourceFactory(null);
         BundleContext bc = puInfo.getBundle().getBundleContext();
         String driver = puInfo.getProperties().getProperty(JPA_DRIVER);
