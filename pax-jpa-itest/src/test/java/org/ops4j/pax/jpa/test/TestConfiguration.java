@@ -19,11 +19,16 @@ package org.ops4j.pax.jpa.test;
 
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
 import static org.ops4j.pax.exam.CoreOptions.composite;
+import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.when;
 
+import java.io.IOException;
+import java.util.Properties;
+
+import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.util.PathUtils;
 
@@ -32,7 +37,18 @@ public class TestConfiguration {
     public static boolean debugConsole = true;
 
     public static Option regressionDefaults() {
+        Properties props = new Properties();
+        try {
+            props.load(TestConfiguration.class.getResourceAsStream("/systemPackages.properties"));
+        }
+        catch (IOException exc) {
+            throw new Ops4jException(exc);
+        }
+
         return composite(
+
+            frameworkProperty("org.osgi.framework.system.packages").value(
+                props.getProperty("org.osgi.framework.system.packages")),
 
             // add SLF4J and logback bundles
             mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(
@@ -43,6 +59,7 @@ public class TestConfiguration {
                 START_LEVEL_SYSTEM_BUNDLES),
 
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
+            mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
 
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
