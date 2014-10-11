@@ -26,6 +26,7 @@ import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_NAME;
 import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER;
 import static org.osgi.service.jpa.EntityManagerFactoryBuilder.JPA_UNIT_VERSION;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -56,6 +57,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /**
  * Extender observing persistence bundles and tracking persistence providers and data source
@@ -298,15 +300,21 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         try {
             Persistence descriptor = parser.parseDescriptor(persistenceXml);
             for (PersistenceUnit persistenceUnit : descriptor.getPersistenceUnit()) {
-                processPersistenceUnit(bundle, persistenceUnit);
+                processPersistenceUnit(bundle, descriptor.getVersion(), persistenceUnit);
             }
         }
         catch (JAXBException exc) {
             log.error("cannot parse persistence descriptor", exc);
         }
+        catch (IOException exc) {
+            log.error("cannot parse persistence descriptor", exc);
+        }
+        catch (SAXException exc) {
+            log.error("cannot parse persistence descriptor", exc);
+        }
     }
 
-    private void processPersistenceUnit(Bundle bundle, PersistenceUnit persistenceUnit) {
+    private void processPersistenceUnit(Bundle bundle, String version, PersistenceUnit persistenceUnit) {
         String puName = persistenceUnit.getName();
         PersistenceUnitInfoImpl puInfo = persistenceUnits.get(puName);
         if (puInfo != null) {
@@ -318,7 +326,7 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
         log.info("processing persistence unit {}", puName);
         Properties puProps = parser.parseProperties(persistenceUnit);
-        puInfo = new PersistenceUnitInfoImpl(bundle, persistenceUnit, puProps);
+        puInfo = new PersistenceUnitInfoImpl(bundle, version, persistenceUnit, puProps);
         persistenceUnits.put(puInfo.getPersistenceUnitName(), puInfo);
     }
 }

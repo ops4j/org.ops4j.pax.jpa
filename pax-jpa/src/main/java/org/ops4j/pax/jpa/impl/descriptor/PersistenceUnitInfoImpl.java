@@ -59,6 +59,8 @@ import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     private Bundle bundle;
+    
+    private String version;
 
     private PersistenceUnit persistenceUnit;
 
@@ -76,8 +78,9 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     private PersistenceUnitState state;
 
-    public PersistenceUnitInfoImpl(Bundle bundle, PersistenceUnit persistenceUnit, Properties props) {
+    public PersistenceUnitInfoImpl(Bundle bundle, String version, PersistenceUnit persistenceUnit, Properties props) {
         this.bundle = bundle;
+        this.version = version;
         this.persistenceUnit = persistenceUnit;
         this.props = props;
         this.state = PersistenceUnitState.UNASSIGNED;
@@ -192,7 +195,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     @Override
     public String getPersistenceXMLSchemaVersion() {
-        return "2.0";
+        return version;
     }
 
     @Override
