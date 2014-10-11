@@ -27,7 +27,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-The current milestone release is *Pax JPA 0.2.0*.
+The current milestone release is *Pax JPA 0.3.0*.
 
 ## Issue Tracking
 
