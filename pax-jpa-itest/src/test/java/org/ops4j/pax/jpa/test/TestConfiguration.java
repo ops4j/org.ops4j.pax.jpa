@@ -18,6 +18,7 @@
 package org.ops4j.pax.jpa.test;
 
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
+import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
@@ -25,6 +26,7 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.when;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -70,4 +72,17 @@ public class TestConfiguration {
                 systemProperty("eclipse.consoleLog").value("true")), //
             junitBundles());
     }
+    
+    public static Option workspaceBundle(String groupId, String artifactId) {
+        String fileName = null;
+            fileName = String.format("%s/../%s/target/classes", PathUtils.getBaseDir(), artifactId);
+        if (new File(fileName).exists()) {
+            String url = "reference:file:" + fileName;
+            return bundle(url);
+        }
+        else {
+            return mavenBundle(groupId, artifactId).versionAsInProject();
+        }
+    }
+    
 }

@@ -20,6 +20,14 @@
             <scope>provided</scope>
         </dependency>
 
+        
+        <dependency>
+            <groupId>org.ops4j.pax.jpa</groupId>
+            <artifactId>pax-jpa-eclipselink</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.ops4j.pax.jpa.samples</groupId>
             <artifactId>pax-jpa-sample1</artifactId>

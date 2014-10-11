@@ -25,6 +25,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.jpa.test.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.jpa.test.TestConfiguration.workspaceBundle;
 
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class HibernateJpa21Test {
                 "javax.xml.stream.events; version=\"1.0.0\"",
                 "javax.xml.stream.util; version=\"1.0.0\""),
 
-            bundle("reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa/target/classes"), //
+            workspaceBundle("org.ops4j.pax.jpa", "pax-jpa"), //
 
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),

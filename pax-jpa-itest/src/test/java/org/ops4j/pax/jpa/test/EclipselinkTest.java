@@ -18,10 +18,10 @@
 package org.ops4j.pax.jpa.test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.jpa.test.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.jpa.test.TestConfiguration.workspaceBundle;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -33,7 +33,6 @@ import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
-import org.ops4j.pax.exam.util.PathUtils;
 import org.osgi.framework.BundleContext;
 
 @RunWith(PaxExam.class)
@@ -50,9 +49,8 @@ public class EclipselinkTest {
     public Option[] config() {
         return options(
             regressionDefaults(),
-            bundle("reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa/target/classes"), //
-            bundle("reference:file:" + PathUtils.getBaseDir()
-                + "/../pax-jpa-eclipselink/target/classes"),
+            workspaceBundle("org.ops4j.pax.jpa", "pax-jpa"), //
+            workspaceBundle("org.ops4j.pax.jpa", "pax-jpa-eclipselink"), //
 
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),

@@ -22,6 +22,7 @@ import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.jpa.test.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.jpa.test.TestConfiguration.workspaceBundle;
 
 import javax.inject.Inject;
 
@@ -48,7 +49,7 @@ public class EmptyPropertiesTest {
     public Option[] config() {
         return options(
             regressionDefaults(), //
-            bundle("reference:file:" + PathUtils.getBaseDir() + "/../pax-jpa/target/classes"),
+            workspaceBundle("org.ops4j.pax.jpa", "pax-jpa"), //
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample3").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
