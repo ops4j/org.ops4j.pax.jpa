@@ -15,7 +15,7 @@
     <artifactId>pax-jpa-samples-features</artifactId>
     <packaging>pom</packaging>
 
-    <name>OPS4J Pax Samples features</name>
+    <name>OPS4J Pax JPA Samples Karaf Features</name>
 
     <description>
         Pax JPA module creating a features xml file to deploy Pax JPA Samples as features in Apache Karaf.
