@@ -22,8 +22,8 @@
         <logback.version>1.0.0</logback.version>
         <openjpa.version>2.3.0</openjpa.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
-        <pax.exam.version>4.2.0</pax.exam.version>
-        <pax.jdbc.version>0.3.0</pax.jdbc.version>
+        <pax.exam.version>4.3.0</pax.exam.version>
+        <pax.jdbc.version>0.4.0</pax.jdbc.version>
         <pax.swissbox.version>1.8.0</pax.swissbox.version>
         <pax.url.version>2.2.0</pax.url.version>
         <slf4j.version>1.6.4</slf4j.version>
