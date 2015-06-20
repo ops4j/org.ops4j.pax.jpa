@@ -17,6 +17,26 @@
  */
 package org.ops4j.pax.jpa.impl.descriptor;
 
+/*
+ * #%L
+ * net.osgiliath.helper.pax-jpa.tx
+ * %%
+ * Copyright (C) 2013 - 2015 Osgiliath
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -111,42 +131,46 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     @Override
     public DataSource getJtaDataSource() {
-        return null;
+      String dataSourceName = persistenceUnit.getJtaDataSource();
+      return commonParseJNDIDatasource(dataSourceName); 
     }
 
+    private DataSource commonParseJNDIDatasource (String dataSourceName) {
+      if (dataSourceName != null) {
+        try {
+            InitialContext context = new InitialContext();
+            DataSource dataSource = (DataSource) context.lookup(dataSourceName);
+            return dataSource;
+        }
+        catch (NamingException exc) {
+            throw new Ops4jException(exc);
+        }
+    }
+    String url = props.getProperty(JpaConstants.JPA_URL);
+    String user = props.getProperty(JpaConstants.JPA_USER);
+    String password = props.getProperty(JpaConstants.JPA_PASSWORD);
+    Properties dsfProps = new Properties();
+
+    if (url != null) {
+        dsfProps.setProperty(DataSourceFactory.JDBC_URL, url);
+    }
+    if (user != null) {
+        dsfProps.setProperty(DataSourceFactory.JDBC_USER, user);
+    }
+    if (password != null) {
+        dsfProps.setProperty(DataSourceFactory.JDBC_PASSWORD, password);
+    }
+    try {
+        return dataSourceFactory.createDataSource(dsfProps);
+    }
+    catch (SQLException exc) {
+        throw new Ops4jException(exc);
+    }
+    }
     @Override
     public DataSource getNonJtaDataSource() {
         String dataSourceName = persistenceUnit.getNonJtaDataSource();
-        if (dataSourceName != null) {
-            try {
-                InitialContext context = new InitialContext();
-                DataSource dataSource = (DataSource) context.lookup(dataSourceName);
-                return dataSource;
-            }
-            catch (NamingException exc) {
-                throw new Ops4jException(exc);
-            }
-        }
-        String url = props.getProperty(JpaConstants.JPA_URL);
-        String user = props.getProperty(JpaConstants.JPA_USER);
-        String password = props.getProperty(JpaConstants.JPA_PASSWORD);
-        Properties dsfProps = new Properties();
-
-        if (url != null) {
-            dsfProps.setProperty(DataSourceFactory.JDBC_URL, url);
-        }
-        if (user != null) {
-            dsfProps.setProperty(DataSourceFactory.JDBC_USER, user);
-        }
-        if (password != null) {
-            dsfProps.setProperty(DataSourceFactory.JDBC_PASSWORD, password);
-        }
-        try {
-            return dataSourceFactory.createDataSource(dsfProps);
-        }
-        catch (SQLException exc) {
-            throw new Ops4jException(exc);
-        }
+       return commonParseJNDIDatasource(dataSourceName); 
     }
 
     @Override
@@ -279,7 +303,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     }
     
     public boolean hasJndiDataSource() {
-        return persistenceUnit.getNonJtaDataSource() != null;
+        return persistenceUnit.getNonJtaDataSource() != null &&  persistenceUnit.getJtaDataSource() != null;
     }
 
 }
