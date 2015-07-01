@@ -1,14 +1,15 @@
 package org.ops4j.pax.jpa.test;
 
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureConsole;
 
-import java.io.File;
+import org.ops4j.pax.exam.MavenUtils;
 
+import java.io.File;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
-
 import org.apache.karaf.features.FeaturesService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,16 +56,21 @@ public class PaxJpaFeaturesInstallTest {
                 KarafDistributionOption.karafDistributionConfiguration()
                         .frameworkUrl(karafUrl)
                         .unpackDirectory(new File("target/exam"))
-                        .useDeployFolder(false),
+                        //.useDeployFolder(false)
+                        .karafVersion(
+                            MavenUtils.getArtifactVersion("org.apache.karaf",
+                                "apache-karaf")),
                 KarafDistributionOption.keepRuntimeFolder(),
+                cleanCaches(),
                 configureConsole().ignoreLocalConsole(),
 
                 // don't use until released
                 // KarafDistributionOption.features(paxJdbc, "pax-jdbc-derby"),
                 mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
-                mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc", "0.3.0"),
-                mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby", "0.3.0"),
-                mavenBundle("org.apache.derby", "derby", "10.10.1.1"),
+                mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec").versionAsInProject(),
+                mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
+                mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby").versionAsInProject(),
+                mavenBundle("org.apache.derby", "derby").versionAsInProject(),
                 KarafDistributionOption.features(paxJpaRepo, "pax-jpa", "pax-jpa-eclipselink"),
         };
     }

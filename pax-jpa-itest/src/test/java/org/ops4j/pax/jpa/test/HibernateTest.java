@@ -70,6 +70,7 @@ public class HibernateTest {
             workspaceBundle("org.ops4j.pax.jpa", "pax-jpa"), //
 
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec").versionAsInProject(),
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
@@ -94,7 +95,7 @@ public class HibernateTest {
 
             mavenBundle("org.apache.derby", "derby").versionAsInProject(),
 
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
+            mavenBundle("org.ops4j.pax.jpa", "pax-jpa-spec").versionAsInProject());
     }
 
     @Test

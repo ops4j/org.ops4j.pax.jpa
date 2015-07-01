@@ -1,474 +1,522 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.ops4j</groupId>
-        <artifactId>master</artifactId>
-        <version>4.0.0</version>
-    </parent>
-
-    <groupId>org.ops4j.pax</groupId>
-    <artifactId>jpa</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-
-    <name>OPS4J Pax JPA Reactor</name>
-
-
-    <properties>
-        <aether.version>1.0.0.v20140518</aether.version>
-        <eclipselink.version>2.4.2</eclipselink.version>
-        <hibernate.version>4.2.11.Final</hibernate.version>
-        <karaf.version>3.0.1</karaf.version>
-        <logback.version>1.0.0</logback.version>
-        <openjpa.version>2.3.0</openjpa.version>
-        <ops4j.base.version>1.5.0</ops4j.base.version>
-        <pax.exam.version>4.3.0</pax.exam.version>
-        <pax.jdbc.version>0.4.0</pax.jdbc.version>
-        <pax.swissbox.version>1.8.0</pax.swissbox.version>
-        <pax.url.version>2.2.0</pax.url.version>
-        <slf4j.version>1.6.4</slf4j.version>
-
-        <pax.jpa.wiki.url>http://team.ops4j.org/wiki/display/PAXJPA/</pax.jpa.wiki.url>
-    </properties>
-
-    <scm>
-        <connection>scm:git:git@github.com:ops4j/org.ops4j.pax.jpa.git</connection>
-        <developerConnection>scm:git:git@github.com:ops4j/org.ops4j.pax.jpa.git</developerConnection>
-        <url>git@github.com:ops4j/org.ops4j.pax.jpa.git</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <modules>
-        <module>pax-jpa</module>
-        <module>pax-jpa-eclipselink</module>
-
-        <module>pax-jpa-itest</module>
-        <module>pax-jpa-samples</module>
-        <module>pax-jpa-features</module>
-        <module>pax-jpa-karaf-itest</module>
-    </modules>
-
-    <dependencyManagement>
-        <dependencies>
-
-            <dependency>
-                <groupId>biz.aQute.bnd</groupId>
-                <artifactId>bndlib</artifactId>
-                <version>2.3.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.base</groupId>
-                <artifactId>ops4j-base-lang</artifactId>
-                <version>${ops4j.base.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.base</groupId>
-                <artifactId>ops4j-base-io</artifactId>
-                <version>${ops4j.base.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.base</groupId>
-                <artifactId>ops4j-base-net</artifactId>
-                <version>${ops4j.base.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.base</groupId>
-                <artifactId>ops4j-base-spi</artifactId>
-                <version>${ops4j.base.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.base</groupId>
-                <artifactId>ops4j-base-util-property</artifactId>
-                <version>${ops4j.base.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-core</artifactId>
-                <version>${pax.swissbox.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-extender</artifactId>
-                <version>${pax.swissbox.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-framework</artifactId>
-                <version>${pax.swissbox.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-tracker</artifactId>
-                <version>${pax.swissbox.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.core</artifactId>
-                <version>4.3.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.compendium</artifactId>
-                <version>4.3.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.enterprise</artifactId>
-                <version>4.2.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>org.eclipse.osgi</artifactId>
-                <version>3.7.0.v20110613</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-junit4</artifactId>
-                <version>${pax.exam.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam</artifactId>
-                <version>${pax.exam.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-container-native</artifactId>
-                <version>${pax.exam.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-container-karaf</artifactId>
-                <version>${pax.exam.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.jdbc</groupId>
-                <artifactId>pax-jdbc</artifactId>
-                <version>${pax.jdbc.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-link-mvn</artifactId>
-                <version>${pax.exam.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-aether</artifactId>
-                <version>${pax.url.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-commons</artifactId>
-                <version>${pax.url.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ops4j.pax.url</groupId>
-                <artifactId>pax-url-wrap</artifactId>
-                <version>${pax.url.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.11</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-atinject_1.0_spec</artifactId>
-                <version>1.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-jpa_2.0_spec</artifactId>
-                <version>1.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                <version>1.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-jta_1.1_spec</artifactId>
-                <version>1.1.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>org.eclipse.persistence.jpa</artifactId>
-                <version>${eclipselink.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.openjpa</groupId>
-                <artifactId>openjpa</artifactId>
-                <version>${openjpa.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-osgi</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>org.apache.derby</groupId>
-                <artifactId>derby</artifactId>
-                <version>10.8.2.2</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-dbcp</groupId>
-                <artifactId>commons-dbcp</artifactId>
-                <version>1.4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-asm4-shaded</artifactId>
-                <version>3.16</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.servicemix.bundles</groupId>
-                <artifactId>org.apache.servicemix.bundles.serp</artifactId>
-                <version>1.13.1_4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-provider-api</artifactId>
-                <version>1.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-classworlds</artifactId>
-                <version>2.4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-utils</artifactId>
-                <version>3.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.logging</groupId>
-                <artifactId>jboss-logging</artifactId>
-                <version>3.1.0.GA</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-api</artifactId>
-                <version>${aether.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-impl</artifactId>
-                <version>${aether.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-spi</artifactId>
-                <version>${aether.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-util</artifactId>
-                <version>${aether.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.sonatype.plexus</groupId>
-                <artifactId>plexus-cipher</artifactId>
-                <version>1.7</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.sonatype.plexus</groupId>
-                <artifactId>plexus-sec-dispatcher</artifactId>
-                <version>1.4</version>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <instructions>
-                            <Bundle-DocURL>${pax.jpa.wiki.url}</Bundle-DocURL>
-                            <Bundle-Description>${project.name}</Bundle-Description>
-                        </instructions>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.servicemix.tooling</groupId>
-                    <artifactId>depends-maven-plugin</artifactId>
-                    <version>1.2</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.2</version>
-                    <executions>
-                        <execution>
-                            <id>enforce</id>
-                            <configuration>
-                                <rules>
-                                    <requireMavenVersion>
-                                        <version>(3.0.0,)</version>
-                                        <message>This project requires Maven 3</message>
-                                    </requireMavenVersion>
-                                    <DependencyConvergence />
-                                </rules>
-                            </configuration>
-                            <goals>
-                                <goal>enforce</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>verify-style</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <configLocation>checkstyle/pax-exam-checks.xml</configLocation>
-                        <!-- suppress Checkstyle warnings from patched hibernate-osgi copy -->
-                        <excludes>**/org/hibernate/**</excludes>
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.ops4j.pax.exam</groupId>
-                            <artifactId>pax-exam-checkstyle-rules</artifactId>
-                            <version>${pax.exam.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-
-            </plugins>
-        </pluginManagement>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.3</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <comments>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.ops4j</groupId>
+		<artifactId>master</artifactId>
+		<version>4.0.0</version>
+	</parent>
+
+	<groupId>org.ops4j.pax</groupId>
+	<artifactId>jpa</artifactId>
+	<version>0.4.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>OPS4J Pax JPA Reactor</name>
+
+
+	<properties>
+		<aether.version>1.0.0.v20140518</aether.version>
+		<eclipselink.version>2.4.2</eclipselink.version>
+		<hibernate.version>4.2.11.Final</hibernate.version>
+		<karaf.version>3.0.3</karaf.version>
+		<logback.version>1.0.0</logback.version>
+		<openjpa.version>2.4.0</openjpa.version>
+		<ops4j.base.version>1.5.0</ops4j.base.version>
+		<pax.exam.version>4.3.0</pax.exam.version>
+		<pax.jdbc.version>0.6.0</pax.jdbc.version>
+		<pax.swissbox.version>1.8.0</pax.swissbox.version>
+		<pax.url.version>2.2.0</pax.url.version>
+		<slf4j.version>1.6.4</slf4j.version>
+		<lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
+		<pax.jpa.wiki.url>http://team.ops4j.org/wiki/display/PAXJPA/</pax.jpa.wiki.url>
+		<org.apache.derby_derby.version>10.8.2.2</org.apache.derby_derby.version>
+		<org.apache.xbean_xbean-asm5-shaded.version>3.18</org.apache.xbean_xbean-asm5-shaded.version>
+		<org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>1.1.1</org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>
+		<commons-lang_commons-lang.version>2.6</commons-lang_commons-lang.version>
+	</properties>
+
+	<scm>
+		<connection>scm:git:git@github.com:ops4j/org.ops4j.pax.jpa.git</connection>
+		<developerConnection>scm:git:git@github.com:ops4j/org.ops4j.pax.jpa.git</developerConnection>
+		<url>git@github.com:ops4j/org.ops4j.pax.jpa.git</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<modules>
+		<module>pax-jpa</module>
+		<module>pax-jpa-eclipselink</module>
+
+		<module>pax-jpa-itest</module>
+		<module>pax-jpa-samples</module>
+		<module>pax-jpa-features</module>
+		<module>pax-jpa-karaf-itest</module>
+		<module>pax-jpa-spec</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<dependency>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bndlib</artifactId>
+				<version>2.3.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.base</groupId>
+				<artifactId>ops4j-base-lang</artifactId>
+				<version>${ops4j.base.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.base</groupId>
+				<artifactId>ops4j-base-io</artifactId>
+				<version>${ops4j.base.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.base</groupId>
+				<artifactId>ops4j-base-net</artifactId>
+				<version>${ops4j.base.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.base</groupId>
+				<artifactId>ops4j-base-spi</artifactId>
+				<version>${ops4j.base.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.base</groupId>
+				<artifactId>ops4j-base-util-property</artifactId>
+				<version>${ops4j.base.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.swissbox</groupId>
+				<artifactId>pax-swissbox-core</artifactId>
+				<version>${pax.swissbox.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.swissbox</groupId>
+				<artifactId>pax-swissbox-extender</artifactId>
+				<version>${pax.swissbox.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.swissbox</groupId>
+				<artifactId>pax-swissbox-framework</artifactId>
+				<version>${pax.swissbox.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.swissbox</groupId>
+				<artifactId>pax-swissbox-tracker</artifactId>
+				<version>${pax.swissbox.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>4.3.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.compendium</artifactId>
+				<version>4.3.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.enterprise</artifactId>
+				<version>4.2.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>org.eclipse.osgi</artifactId>
+				<version>3.7.0.v20110613</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.exam</groupId>
+				<artifactId>pax-exam-junit4</artifactId>
+				<version>${pax.exam.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.exam</groupId>
+				<artifactId>pax-exam</artifactId>
+				<version>${pax.exam.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.exam</groupId>
+				<artifactId>pax-exam-container-native</artifactId>
+				<version>${pax.exam.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ops4j.pax.exam</groupId>
+				<artifactId>pax-exam-container-karaf</artifactId>
+				<version>${pax.exam.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ops4j.pax.jdbc</groupId>
+				<artifactId>pax-jdbc</artifactId>
+				<version>${pax.jdbc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ops4j.pax.jdbc</groupId>
+				<artifactId>pax-jdbc-derby</artifactId>
+				<version>${pax.jdbc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ops4j.pax.jdbc</groupId>
+				<artifactId>pax-jdbc-spec</artifactId>
+				<version>${pax.jdbc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ops4j.pax.exam</groupId>
+				<artifactId>pax-exam-link-mvn</artifactId>
+				<version>${pax.exam.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.url</groupId>
+				<artifactId>pax-url-aether</artifactId>
+				<version>${pax.url.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.url</groupId>
+				<artifactId>pax-url-commons</artifactId>
+				<version>${pax.url.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.ops4j.pax.url</groupId>
+				<artifactId>pax-url-wrap</artifactId>
+				<version>${pax.url.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.geronimo.specs</groupId>
+				<artifactId>geronimo-atinject_1.0_spec</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.geronimo.specs</groupId>
+				<artifactId>geronimo-jpa_2.0_spec</artifactId>
+				<version>1.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.geronimo.specs</groupId>
+				<artifactId>geronimo-servlet_3.0_spec</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.geronimo.specs</groupId>
+				<artifactId>geronimo-jta_1.1_spec</artifactId>
+				<version>${org.apache.geronimo.specs_geronimo-jta_1.1_spec.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.persistence</groupId>
+				<artifactId>org.eclipse.persistence.jpa</artifactId>
+				<version>${eclipselink.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.openjpa</groupId>
+				<artifactId>openjpa</artifactId>
+				<version>${openjpa.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-osgi</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.apache.derby</groupId>
+				<artifactId>derby</artifactId>
+				<version>${org.apache.derby_derby.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>${commons-lang_commons-lang.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-dbcp</groupId>
+				<artifactId>commons-dbcp</artifactId>
+				<version>1.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xbean</groupId>
+				<artifactId>xbean-asm5-shaded</artifactId>
+				<version>${org.apache.xbean_xbean-asm5-shaded.version}</version>
+
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.apache.servicemix.bundles</groupId>
+				<artifactId>org.apache.servicemix.bundles.serp</artifactId>
+				<version>1.13.1_4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-provider-api</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-classworlds</artifactId>
+				<version>2.4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-utils</artifactId>
+				<version>3.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.logging</groupId>
+				<artifactId>jboss-logging</artifactId>
+				<version>3.1.0.GA</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.aether</groupId>
+				<artifactId>aether-api</artifactId>
+				<version>${aether.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.aether</groupId>
+				<artifactId>aether-impl</artifactId>
+				<version>${aether.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.aether</groupId>
+				<artifactId>aether-spi</artifactId>
+				<version>${aether.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.aether</groupId>
+				<artifactId>aether-util</artifactId>
+				<version>${aether.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.sonatype.plexus</groupId>
+				<artifactId>plexus-cipher</artifactId>
+				<version>1.7</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.sonatype.plexus</groupId>
+				<artifactId>plexus-sec-dispatcher</artifactId>
+				<version>1.4</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<extensions>true</extensions>
+					<configuration>
+						<instructions>
+							<Bundle-DocURL>${pax.jpa.wiki.url}</Bundle-DocURL>
+							<Bundle-Description>${project.name}</Bundle-Description>
+						</instructions>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.servicemix.tooling</groupId>
+					<artifactId>depends-maven-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>1.2</version>
+					<executions>
+						<execution>
+							<id>enforce</id>
+							<configuration>
+								<rules>
+									<requireMavenVersion>
+										<version>(3.0.0,)</version>
+										<message>This project requires Maven 3</message>
+									</requireMavenVersion>
+									<!-- <DependencyConvergence />  -->
+								</rules>
+							</configuration>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>verify-style</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<configLocation>checkstyle/pax-exam-checks.xml</configLocation>
+						<!-- suppress Checkstyle warnings from patched hibernate-osgi copy -->
+						<excludes>**/org/hibernate/**</excludes>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.ops4j.pax.exam</groupId>
+							<artifactId>pax-exam-checkstyle-rules</artifactId>
+							<version>${pax.exam.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>${lifecycle-mapping.version}</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.servicemix.tooling
+										</groupId>
+										<artifactId>
+											depends-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.2,)
+										</versionRange>
+										<goals>
+											<goal>
+												generate-depends-file
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute>
+											<runOnIncremental>false</runOnIncremental>
+										</execute>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<comments>
                 Copyright 2012 Harald Wellmann
 
                 Licensed under the Apache License, Version 2.0 (the "License");
@@ -485,28 +533,26 @@
                 See the License for the specific language governing permissions and
                 limitations under the License.
             </comments>
-        </license>
-    </licenses>
+		</license>
+	</licenses>
 
-    <url>${pax.jpa.wiki.url}</url>
+	<url>${pax.jpa.wiki.url}</url>
 
-    <issueManagement>
-        <system>jira</system>
-        <url>http://issues.ops4j.org/jira/browse/PAXJPA</url>
-    </issueManagement>
+	<issueManagement>
+		<system>jira</system>
+		<url>http://issues.ops4j.org/jira/browse/PAXJPA</url>
+	</issueManagement>
 
-    <developers>
-        <developer>
-            <id>hwellmann</id>
-            <name>Harald Wellmann</name>
-            <email>harald.wellmann@gmx.de</email>
-            <organization>independent software developer</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-            <timezone>UTC+1</timezone>
-        </developer>
-    </developers>
-
-
+	<developers>
+		<developer>
+			<id>hwellmann</id>
+			<name>Harald Wellmann</name>
+			<email>harald.wellmann@gmx.de</email>
+			<organization>independent software developer</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>UTC+1</timezone>
+		</developer>
+	</developers>
 </project>
