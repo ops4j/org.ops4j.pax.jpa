@@ -43,6 +43,7 @@
 	</scm>
 
 	<modules>
+		<module>pax-jpa-spec</module>
 		<module>pax-jpa</module>
 		<module>pax-jpa-eclipselink</module>
 
@@ -50,7 +51,6 @@
 		<module>pax-jpa-samples</module>
 		<module>pax-jpa-features</module>
 		<module>pax-jpa-karaf-itest</module>
-		<module>pax-jpa-spec</module>
 	</modules>
 
 	<dependencyManagement>

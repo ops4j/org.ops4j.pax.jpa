@@ -1,0 +1,77 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.ops4j.pax</groupId>
+		<artifactId>jpa</artifactId>
+		<version>0.4.0-SNAPSHOT</version>
+	</parent>
+	<groupId>org.ops4j.pax.jpa</groupId>
+	<artifactId>p2</artifactId>
+	<packaging>pom</packaging>
+	<name>OPS4J::Pax::JPA::P2</name>
+	<properties>
+		<tycho.version>1.5.1</tycho.version>
+	</properties>
+	<modules>
+		<module>features</module>
+		<module>updatesite</module>
+	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>org.ops4j.pax.jpa</groupId>
+			<artifactId>pax-jpa</artifactId>
+			<version>0.4.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.jpa</groupId>
+			<artifactId>pax-jpa-spec</artifactId>
+			<version>0.4.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.jpa</groupId>
+			<artifactId>pax-jpa-eclipselink</artifactId>
+			<version>0.4.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<pomDependencies>consider</pomDependencies>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-repository-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<includeAllDependencies>true</includeAllDependencies>
+						<skipArchive>true</skipArchive>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>
