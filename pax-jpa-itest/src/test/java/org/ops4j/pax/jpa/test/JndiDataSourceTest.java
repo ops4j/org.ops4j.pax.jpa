@@ -62,6 +62,7 @@ public class JndiDataSourceTest {
             regressionDefaults(), //
             workspaceBundle("org.ops4j.pax.jpa", "pax-jpa"), //
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec").versionAsInProject(),
             // mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample4").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
@@ -73,7 +74,7 @@ public class JndiDataSourceTest {
             mavenBundle("commons-collections", "commons-collections").versionAsInProject(),
             mavenBundle("commons-pool", "commons-pool").versionAsInProject(),
             mavenBundle("commons-dbcp", "commons-dbcp").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm4-shaded").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded").versionAsInProject(),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.serp")
                 .versionAsInProject(),
 
@@ -81,7 +82,7 @@ public class JndiDataSourceTest {
 
             mavenBundle("org.apache.derby", "derby").versionAsInProject(),
 
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
+            mavenBundle("org.ops4j.pax.jpa", "pax-jpa-spec").versionAsInProject());
     }
 
     @Test
@@ -90,7 +91,7 @@ public class JndiDataSourceTest {
         props.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:library;create=true");
         DataSource dataSource = dsf.createDataSource(props);
         bc.registerService(DataSource.class, dataSource, null);
-        Bundle b = bc.installBundle("mvn:org.ops4j.pax.jpa.samples/pax-jpa-sample4/0.3.0-SNAPSHOT");
+        Bundle b = bc.installBundle("mvn:org.ops4j.pax.jpa.samples/pax-jpa-sample4/0.4.0-SNAPSHOT");
         b.start();
 
         EntityManagerFactory emf = ServiceLookup.getService(bc, EntityManagerFactory.class);

@@ -17,6 +17,26 @@
  */
 package org.ops4j.pax.jpa.impl.descriptor;
 
+/*
+ * #%L
+ * net.osgiliath.helper.pax-jpa.tx
+ * %%
+ * Copyright (C) 2013 - 2015 Osgiliath
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -59,7 +79,7 @@ import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     private Bundle bundle;
-    
+
     private String version;
 
     private PersistenceUnit persistenceUnit;
@@ -78,7 +98,8 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     private PersistenceUnitState state;
 
-    public PersistenceUnitInfoImpl(Bundle bundle, String version, PersistenceUnit persistenceUnit, Properties props) {
+    public PersistenceUnitInfoImpl(Bundle bundle, String version, PersistenceUnit persistenceUnit,
+        Properties props) {
         this.bundle = bundle;
         this.version = version;
         this.persistenceUnit = persistenceUnit;
@@ -111,12 +132,14 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     @Override
     public DataSource getJtaDataSource() {
+        String dataSourceName = persistenceUnit.getJtaDataSource();
+        if (dataSourceName != null) {
+            return commonParseJNDIDatasource(dataSourceName);
+        }
         return null;
     }
 
-    @Override
-    public DataSource getNonJtaDataSource() {
-        String dataSourceName = persistenceUnit.getNonJtaDataSource();
+    private DataSource commonParseJNDIDatasource(String dataSourceName) {
         if (dataSourceName != null) {
             try {
                 InitialContext context = new InitialContext();
@@ -147,6 +170,12 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         catch (SQLException exc) {
             throw new Ops4jException(exc);
         }
+    }
+
+    @Override
+    public DataSource getNonJtaDataSource() {
+        String dataSourceName = persistenceUnit.getNonJtaDataSource();
+        return commonParseJNDIDatasource(dataSourceName);
     }
 
     @Override
@@ -277,9 +306,10 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     public void setState(PersistenceUnitState state) {
         this.state = state;
     }
-    
+
     public boolean hasJndiDataSource() {
-        return persistenceUnit.getNonJtaDataSource() != null;
+        return persistenceUnit.getNonJtaDataSource() != null
+            || persistenceUnit.getJtaDataSource() != null;
     }
 
 }

@@ -49,6 +49,7 @@ public class EmptyPropertiesTest {
             regressionDefaults(), //
             workspaceBundle("org.ops4j.pax.jpa", "pax-jpa"), //
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec").versionAsInProject(),
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample3").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
@@ -60,12 +61,12 @@ public class EmptyPropertiesTest {
             mavenBundle("commons-collections", "commons-collections").versionAsInProject(),
             mavenBundle("commons-pool", "commons-pool").versionAsInProject(),
             mavenBundle("commons-dbcp", "commons-dbcp").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm4-shaded").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded").versionAsInProject(),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.serp")
                 .versionAsInProject(),
 
             mavenBundle("org.apache.derby", "derby").versionAsInProject(),
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
+            mavenBundle("org.ops4j.pax.jpa", "pax-jpa-spec").versionAsInProject());
     }
 
     @Test

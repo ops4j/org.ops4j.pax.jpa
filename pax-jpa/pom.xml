@@ -56,7 +56,7 @@
                         <Bundle-SymbolicName>org.ops4j.pax.jpa</Bundle-SymbolicName>
                         <Service-Component>OSGI-INF/*</Service-Component>
                         <Import-Package>
-                            javax.persistence.*;version=1.0,
+                            javax.persistence.*;version=2.0,
                             org.ops4j.io;version="[1.4,2)", 
                             org.ops4j.lang;version="[1.4,2)", 
                             org.ops4j.pax.swissbox.*;version="[1.7,2)",

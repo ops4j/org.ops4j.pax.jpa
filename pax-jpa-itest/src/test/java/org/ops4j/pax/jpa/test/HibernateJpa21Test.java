@@ -72,6 +72,7 @@ public class HibernateJpa21Test {
             workspaceBundle("org.ops4j.pax.jpa", "pax-jpa"), //
 
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec").versionAsInProject(),
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
             mavenBundle("org.hibernate.javax.persistence", "hibernate-jpa-2.1-api", "1.0.0.Final"),
             mavenBundle("org.jboss.spec.javax.transaction", "jboss-transaction-api_1.2_spec", "1.0.0.Final"),
@@ -95,7 +96,7 @@ public class HibernateJpa21Test {
 
             mavenBundle("org.apache.derby", "derby").versionAsInProject(),
 
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
+            mavenBundle("org.ops4j.pax.jpa", "pax-jpa-spec").versionAsInProject());
     }
 
     @Test

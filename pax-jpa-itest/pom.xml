@@ -18,6 +18,12 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.jpa</groupId>
+            <artifactId>pax-jpa-spec</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         
         <dependency>
@@ -82,6 +88,11 @@
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+         <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -175,10 +186,9 @@
             <artifactId>geronimo-jta_1.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-asm4-shaded</artifactId>
+            <artifactId>xbean-asm5-shaded</artifactId>
             <scope>provided</scope>
         </dependency>
 
