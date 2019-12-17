@@ -183,27 +183,33 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
     private boolean canAssign(PersistenceUnitInfoImpl puInfo) {
         BundleContext bc = puInfo.getBundle().getBundleContext();
-        PersistenceProvider provider = null;
 
         String providerClassName = puInfo.getPersistenceProviderClassName();
         if (providerClassName == null) {
             if (!persistenceProviders.isEmpty()) {
-                provider = bc.getService(persistenceProviders.get(0));
-                puInfo.setProvider(provider);
-                return true;
+            	PersistenceProvider provider = bc.getService(persistenceProviders.get(0));
+                if (provider != null) {
+	                puInfo.setProvider(provider);
+	                return true;
+                }
             }
+            log.info("No PersistenceProvider avaiable, PersistenceUnit {} can not be assigned before one is supplied", puInfo.getPersistenceUnitName());
+            return false;
         }
         else {
             for (ServiceReference<PersistenceProvider> providerRef : persistenceProviders) {
                 if (providerClassName.equals(providerRef.getProperty(JPA_PROVIDER))) {
-                    provider = bc.getService(providerRef);
-                    puInfo.setProvider(provider);
-                    return true;
+                	PersistenceProvider provider = bc.getService(providerRef);
+                	if (provider != null) {
+	                    puInfo.setProvider(provider);
+	                    return true;
+                	}
                 }
             }
 
         }
         puInfo.setProvider(null);
+        log.info("PersistenceUnit {} requires PersistenceProvider with property {}={} but none could be found, can not assign before one is supplied", new Object[]{puInfo.getPersistenceUnitName(), JPA_DRIVER, providerClassName});
         return false;
     }
 
@@ -215,18 +221,18 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
         BundleContext bc = puInfo.getBundle().getBundleContext();
         String driver = puInfo.getProperties().getProperty(JPA_DRIVER);
         if (driver == null) {
+        	log.info("PersistenceUnit {} does not specify {} property and can not complete before one is supplied", puInfo.getPersistenceUnitName(), JPA_DRIVER);
             return false;
         }
 
-        DataSourceFactory dsf = null;
         for (ServiceReference<DataSourceFactory> dsfRef : dataSourceFactories) {
             if (driver.equals(dsfRef.getProperty(OSGI_JDBC_DRIVER_CLASS))) {
-                dsf = bc.getService(dsfRef);
+                DataSourceFactory dsf = bc.getService(dsfRef);
                 puInfo.setDataSourceFactory(dsf);
                 return true;
             }
         }
-
+        log.info("PersistenceUnit {} requires DataSourceFactory with property {}={} but none could be found, can not complete before one is supplied", new Object[]{puInfo.getPersistenceUnitName(), OSGI_JDBC_DRIVER_CLASS, driver});
         return false;
     }
 
