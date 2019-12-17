@@ -7,6 +7,7 @@
 	</parent>
 	<groupId>org.ops4j.pax.jpa</groupId>
 	<artifactId>pax-jpa-spec</artifactId>
+	<name>OPS4J::Pax::JPA::Spec</name>
 	<packaging>bundle</packaging>
 	<properties>
 		<bundle.symbolicName>org.ops4j.pax.jpa.spec</bundle.symbolicName>

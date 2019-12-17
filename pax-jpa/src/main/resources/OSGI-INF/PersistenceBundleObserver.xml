@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" name="PersistenceBundleObserver">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" name="org.ops4j.pax.jpa.impl.PersistenceBundleObserver">
    <implementation class="org.ops4j.pax.jpa.impl.PersistenceBundleObserver"/>
    <reference bind="addPersistenceProvider" cardinality="0..n" interface="javax.persistence.spi.PersistenceProvider" name="PersistenceProvider" policy="dynamic" unbind="removePersistenceProvider"/>
    <reference bind="addDataSourceFactory" cardinality="0..n" interface="org.osgi.service.jdbc.DataSourceFactory" name="DataSourceFactory" policy="dynamic" unbind="removeDataSourceFactory"/>

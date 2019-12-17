@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.ops4j.pax.jpa.feature_1.0.0.qualifier.jar" id="org.ops4j.pax.jpa.feature" version="1.0.0.qualifier">
+      <category name="org.ops4j.pax.jpa"/>
+   </feature>
+   <category-def name="org.ops4j.pax.jpa" label="PAX JPA">
+      <description>
+         Pax JPA - an OSGi JPA Service implementation.
+It is licensed under the Apache Software License 2.0 by the OPS4J community.
+      </description>
+   </category-def>
+</site>
