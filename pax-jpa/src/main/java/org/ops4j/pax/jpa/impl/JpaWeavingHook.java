@@ -66,20 +66,22 @@ public class JpaWeavingHook implements WeavingHook {
                     byte[] transformed = transformer.transform(cl, wovenClass.getClassName(),
                         wovenClass.getDefinedClass(), wovenClass.getProtectionDomain(),
                         wovenClass.getBytes());
-                    wovenClass.setBytes(transformed);
-
-                    /*
-                     * 
-                     * TODO Hard-coded list of packages for OpenJPA and Eclipselink. We should only
-                     * add the ones required for the given provider.
-                     */
-                    wovenClass.getDynamicImports().add("org.apache.openjpa.enhance");
-                    wovenClass.getDynamicImports().add("org.apache.openjpa.util");
-
-                    wovenClass.getDynamicImports().add("org.eclipse.persistence.*");
-
-                    wovenClass.getDynamicImports().add("org.hibernate.*");
-                    wovenClass.getDynamicImports().add("javassist.util.proxy");
+                    if (transformed != null) {
+	                    wovenClass.setBytes(transformed);
+	
+	                    /*
+	                     * 
+	                     * TODO Hard-coded list of packages for OpenJPA and Eclipselink. We should only
+	                     * add the ones required for the given provider.
+	                     */
+	                    wovenClass.getDynamicImports().add("org.apache.openjpa.enhance");
+	                    wovenClass.getDynamicImports().add("org.apache.openjpa.util");
+	
+	                    wovenClass.getDynamicImports().add("org.eclipse.persistence.*");
+	
+	                    wovenClass.getDynamicImports().add("org.hibernate.*");
+	                    wovenClass.getDynamicImports().add("javassist.util.proxy");
+	                }
                 }
             }
             catch (IllegalClassFormatException exc) {
