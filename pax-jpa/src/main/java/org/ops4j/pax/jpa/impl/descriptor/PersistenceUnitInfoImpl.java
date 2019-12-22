@@ -17,35 +17,18 @@
  */
 package org.ops4j.pax.jpa.impl.descriptor;
 
-/*
- * #%L
- * net.osgiliath.helper.pax-jpa.tx
- * %%
- * Copyright (C) 2013 - 2015 Osgiliath
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceException;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
@@ -66,6 +49,8 @@ import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.hooks.weaving.WeavingHook;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 
@@ -76,7 +61,7 @@ import org.osgi.service.jpa.EntityManagerFactoryBuilder;
  * @author Harald Wellmann
  *
  */
-public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
+public class PersistenceUnitInfoImpl implements PersistenceUnitInfo, ManagedService {
 
     private Bundle bundle;
 
@@ -86,7 +71,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     private DataSourceFactory dataSourceFactory;
 
-    private Properties props;
+    private Properties persitenceProperties;
 
     private BundleClassLoader cl;
 
@@ -95,15 +80,19 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     private ServiceRegistration<EntityManagerFactoryBuilder> emfBuilderRegistration;
     private ServiceRegistration<EntityManagerFactory> emfRegistration;
     private ServiceRegistration<WeavingHook> hookRegistration;
+    private ServiceRegistration<ManagedService> managedServiceRegistration;
 
     private PersistenceUnitState state;
 
+	private Runnable updateRunnable;
+
     public PersistenceUnitInfoImpl(Bundle bundle, String version, PersistenceUnit persistenceUnit,
-        Properties props) {
+        Properties props, Runnable updateRunnable) {
         this.bundle = bundle;
         this.version = version;
         this.persistenceUnit = persistenceUnit;
-        this.props = props;
+        this.persitenceProperties = new Properties(props);
+		this.updateRunnable = updateRunnable;
         this.state = PersistenceUnitState.UNASSIGNED;
         this.cl = new BundleClassLoader(bundle);
     }
@@ -150,9 +139,12 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
                 throw new Ops4jException(exc);
             }
         }
-        String url = props.getProperty(JpaConstants.JPA_URL);
-        String user = props.getProperty(JpaConstants.JPA_USER);
-        String password = props.getProperty(JpaConstants.JPA_PASSWORD);
+        if (dataSourceFactory == null) {
+        	throw new PersistenceException("No datasource configured");
+        }
+        String url = persitenceProperties.getProperty(JpaConstants.JPA_URL);
+        String user = persitenceProperties.getProperty(JpaConstants.JPA_USER);
+        String password = persitenceProperties.getProperty(JpaConstants.JPA_PASSWORD);
         Properties dsfProps = new Properties();
 
         if (url != null) {
@@ -219,7 +211,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     @Override
     public Properties getProperties() {
-        return props;
+        return persitenceProperties;
     }
 
     @Override
@@ -258,6 +250,10 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
     }
+    
+    public void setManagedServiceRegistration(ServiceRegistration<ManagedService> managedServiceRegistration) {
+		this.managedServiceRegistration = managedServiceRegistration;
+	}
 
     public ServiceRegistration<EntityManagerFactory> getEmfRegistration() {
         return emfRegistration;
@@ -282,10 +278,12 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         unregister(emfBuilderRegistration);
         unregister(emfRegistration);
         unregister(hookRegistration);
+        unregister(managedServiceRegistration);
 
         this.emfBuilderRegistration = null;
         this.emfRegistration = null;
         this.hookRegistration = null;
+        this.managedServiceRegistration = null;
     }
 
     private <T> void unregister(ServiceRegistration<T> reg) {
@@ -311,5 +309,21 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
         return persistenceUnit.getNonJtaDataSource() != null
             || persistenceUnit.getJtaDataSource() != null;
     }
+
+	@Override
+	public void updated(@SuppressWarnings("rawtypes") Dictionary configurationProperties) throws ConfigurationException {
+		persitenceProperties.clear();
+		if (configurationProperties != null) {
+			Enumeration<?> keys = configurationProperties.keys();
+			while (keys.hasMoreElements()) {
+				Object key = keys.nextElement();
+				Object obj = configurationProperties.get(key);
+				if (obj != null) {
+					persitenceProperties.setProperty(String.valueOf(key), String.valueOf(obj));
+				}
+			}
+		}
+		updateRunnable.run();
+	}
 
 }

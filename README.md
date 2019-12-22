@@ -12,7 +12,7 @@ It is licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Build
 
-You'll need a machine with Java 6+ and Apache Maven 3 installed.
+You'll need a machine with Java 7+ and Apache Maven 3 installed.
 
 Checkout:
 

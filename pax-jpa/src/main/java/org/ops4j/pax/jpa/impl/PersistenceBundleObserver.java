@@ -35,6 +35,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceProvider;
@@ -51,8 +52,10 @@ import org.ops4j.pax.swissbox.extender.RegexKeyManifestFilter;
 import org.ops4j.pax.swissbox.extender.SynchronousBundleWatcher;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
 import org.slf4j.Logger;
@@ -76,13 +79,16 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
     private SynchronousBundleWatcher<ManifestEntry> watcher;
 
-    private Map<String, PersistenceUnitInfoImpl> persistenceUnits = new HashMap<String, PersistenceUnitInfoImpl>();
+    private Map<String, PersistenceUnitInfoImpl> persistenceUnits = new ConcurrentHashMap<String, PersistenceUnitInfoImpl>();
     private List<ServiceReference<PersistenceProvider>> persistenceProviders = new ArrayList<ServiceReference<PersistenceProvider>>();
     private List<ServiceReference<DataSourceFactory>> dataSourceFactories = new ArrayList<ServiceReference<DataSourceFactory>>();
 
+	private BundleContext bundleContext;
+
     @SuppressWarnings("unchecked")
     public synchronized void activate(BundleContext bc) {
-        log.debug("starting bundle {}", bc.getBundle().getSymbolicName());
+        this.bundleContext = bc;
+		log.debug("starting bundle {}", bc.getBundle().getSymbolicName());
 
         RegexKeyManifestFilter manifestFilter = new RegexKeyManifestFilter(JPA_MANIFEST_HEADER);
         BundleManifestScanner scanner = new BundleManifestScanner(manifestFilter);
@@ -254,7 +260,12 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
     private void activatePersistenceUnit(PersistenceUnitInfoImpl puInfo) {
         PersistenceProvider provider = puInfo.getProvider();
         Bundle bundle = puInfo.getBundle();
-        Properties emfProps = (Properties) puInfo.getProperties();
+        //we must copy here to a map to take properties defaults into account
+        Map<String, String> emfProps = new HashMap<>();
+        Properties puProperties = puInfo.getProperties();
+        for (String key : puProperties.stringPropertyNames()) {
+        	emfProps.put(key, puProperties.getProperty(key));
+		}
         EntityManagerFactory emf = provider.createContainerEntityManagerFactory(puInfo, emfProps);
 
         Dictionary<String, String> emfServiceProps = new Hashtable<String, String>();
@@ -332,7 +343,27 @@ public class PersistenceBundleObserver implements BundleObserver<ManifestEntry> 
 
         log.info("processing persistence unit {}", puName);
         Properties puProps = parser.parseProperties(persistenceUnit);
-        puInfo = new PersistenceUnitInfoImpl(bundle, version, persistenceUnit, puProps);
+        puInfo = new PersistenceUnitInfoImpl(bundle, version, persistenceUnit, puProps, new Runnable() {
+			
+			@Override
+			public void run() {
+				for (PersistenceUnitInfoImpl puInfo : persistenceUnits.values()) {
+					if (puInfo.getState() == PersistenceUnitState.COMPLETE && !canComplete(puInfo)) {
+						deactivatePersistenceUnit(puInfo);
+					} else if (puInfo.getDataSourceFactory() == null && canComplete(puInfo)) {
+						if (puInfo.getProvider() != null) {
+							activatePersistenceUnit(puInfo);
+						}
+					}
+				}
+
+			}
+		});
         persistenceUnits.put(puInfo.getPersistenceUnitName(), puInfo);
+        Dictionary<String, Object> serviceProperties = new Hashtable<>();
+        String pid = "org.ops4j.pax.jpa.pu."+puInfo.getPersistenceUnitName().replace(' ', '_');
+		serviceProperties.put(Constants.SERVICE_PID, pid);
+        puInfo.setManagedServiceRegistration(bundleContext.registerService(ManagedService.class, puInfo, serviceProperties));
+        log.info("tracking configuration for persistence unit {} under pid {}", puName, pid);
     }
 }
