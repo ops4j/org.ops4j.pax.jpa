@@ -82,7 +82,7 @@ public class HibernateJpa21Test {
 
             mavenBundle("org.hibernate.common", "hibernate-commons-annotations", "4.0.4.Final"),
             mavenBundle("org.hibernate", "hibernate-core", HIBERNATE_VERSION),
-            mavenBundle("org.hibernate", "hibernate-osgi", HIBERNATE_VERSION),
+            mavenBundle("org.hibernate", "hibernate-osgi", HIBERNATE_VERSION).startLevel(1),
             mavenBundle("org.hibernate", "hibernate-entitymanager", HIBERNATE_VERSION),
 
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.antlr",

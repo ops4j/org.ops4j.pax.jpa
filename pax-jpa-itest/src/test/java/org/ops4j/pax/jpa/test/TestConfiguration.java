@@ -59,8 +59,8 @@ public class TestConfiguration {
                 START_LEVEL_SYSTEM_BUNDLES),
             mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
-
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
+            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.6.0"),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
 
             // Set logback configuration via system property.

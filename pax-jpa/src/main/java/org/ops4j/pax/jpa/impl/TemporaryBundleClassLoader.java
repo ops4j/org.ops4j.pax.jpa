@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.ops4j.io.StreamUtils;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 
@@ -34,32 +33,40 @@ import org.osgi.framework.Bundle;
  */
 public class TemporaryBundleClassLoader extends BundleClassLoader {
 
-    public TemporaryBundleClassLoader(Bundle bundle) {
-        super(bundle);
-    }
+	public TemporaryBundleClassLoader(Bundle bundle) {
+		super(bundle);
+	}
 
-    public TemporaryBundleClassLoader(Bundle bundle, ClassLoader parent) {
-        super(bundle, parent);
-    }
+	public TemporaryBundleClassLoader(Bundle bundle, ClassLoader parent) {
+		super(bundle, parent);
+	}
 
-    @Override
-    protected Class<?> findClass(String className) throws ClassNotFoundException {
-        String resource = className.replace('.', '/').concat(".class");
-        InputStream is = getResourceAsStream(resource);
+	@Override
+	protected Class<?> findClass(String className) throws ClassNotFoundException {
+		String resource = className.replace('.', '/').concat(".class");
+		InputStream is = getResourceAsStream(resource);
+		try {
+			if (is == null) {
+				throw new ClassNotFoundException(className);
+			}
 
-        if (is == null) {
-            throw new ClassNotFoundException(className);
-        }
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            StreamUtils.copyStream(is, baos, true);
-        }
-        catch (IOException exc) {
-            throw new ClassNotFoundException(className, exc);
-        }
-
-        byte[] bytes = baos.toByteArray();
-        return defineClass(className, bytes, 0, bytes.length);
-    }
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			try {
+				byte[] buffer = new byte[1024];
+				int read;
+				while ((read = is.read(buffer)) > -1) {
+					baos.write(buffer, 0, read);
+				}
+			} catch (IOException exc) {
+				throw new ClassNotFoundException(className, exc);
+			}
+			return defineClass(className, baos.toByteArray(), 0, baos.toByteArray().length);
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				// can't do anything then...
+			}
+		}
+	}
 }

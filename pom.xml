@@ -18,6 +18,7 @@
 		<aether.version>1.0.0.v20140518</aether.version>
 		<eclipselink.version>2.4.2</eclipselink.version>
 		<hibernate.version>4.2.11.Final</hibernate.version>
+		<osgi.version>5.0.0</osgi.version>
 		<karaf.version>3.0.3</karaf.version>
 		<logback.version>1.0.0</logback.version>
 		<openjpa.version>2.4.0</openjpa.version>
@@ -119,19 +120,19 @@
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.core</artifactId>
-				<version>4.3.1</version>
+				<version>${osgi.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.compendium</artifactId>
-				<version>4.3.1</version>
+				<version>${osgi.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.enterprise</artifactId>
-				<version>4.2.0</version>
+				<version>${osgi.version}</version>
 			</dependency>
 
 			<dependency>

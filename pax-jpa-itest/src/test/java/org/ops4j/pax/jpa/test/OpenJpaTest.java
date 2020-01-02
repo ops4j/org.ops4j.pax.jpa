@@ -32,6 +32,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -71,7 +72,7 @@ public class OpenJpaTest {
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
                 .versionAsInProject(),
 
-            mavenBundle("org.apache.openjpa", "openjpa").versionAsInProject(),
+            mavenBundle("org.apache.openjpa", "openjpa").versionAsInProject().startLevel(1 ),
             mavenBundle("commons-lang", "commons-lang").versionAsInProject(),
             mavenBundle("commons-collections", "commons-collections").versionAsInProject(),
             mavenBundle("commons-pool", "commons-pool").versionAsInProject(),
@@ -111,7 +112,9 @@ public class OpenJpaTest {
         assertThat(ServiceLookup.getService(bc, EntityManagerFactory.class), is(notNullValue()));
     }
 
-    @Test
+    
+    @Test()
+    @Ignore("This is not supported by the spec")
     public void stopAndStartPersistenceProviderBundle() throws BundleException {
         Bundle providerBundle = BundleUtils.getBundle(bc, "org.apache.openjpa");
         providerBundle.stop();

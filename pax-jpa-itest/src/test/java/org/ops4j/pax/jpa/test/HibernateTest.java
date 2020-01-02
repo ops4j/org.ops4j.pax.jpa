@@ -77,9 +77,9 @@ public class HibernateTest {
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
                 .versionAsInProject(),
 
-            mavenBundle("org.hibernate", "hibernate-core").versionAsInProject(),
-            mavenBundle("org.hibernate", "hibernate-osgi").versionAsInProject(),
-            mavenBundle("org.hibernate", "hibernate-entitymanager").versionAsInProject(),
+            mavenBundle("org.hibernate", "hibernate-core").versionAsInProject().startLevel(1),
+            mavenBundle("org.hibernate", "hibernate-osgi").versionAsInProject().startLevel(1),
+            mavenBundle("org.hibernate", "hibernate-entitymanager").versionAsInProject().startLevel(1),
 
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.ant",
                 "1.8.2_2"),
