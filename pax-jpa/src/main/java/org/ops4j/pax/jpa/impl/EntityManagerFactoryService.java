@@ -54,7 +54,9 @@ public class EntityManagerFactoryService implements EntityManagerFactory {
 	}
 
 	public void close() {
-		delegate.close();
+		// spec-ref 127.4.9 Entity Manager Factory Life Cycle : calls to the
+		// close method of the EntityManagerFactory registered in the service
+		// registry must not close the Entity Manager Factory
 	}
 
 	public Map<String, Object> getProperties() {
