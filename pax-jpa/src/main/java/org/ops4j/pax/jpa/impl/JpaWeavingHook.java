@@ -19,6 +19,7 @@ package org.ops4j.pax.jpa.impl;
 
 import java.lang.instrument.IllegalClassFormatException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.spi.ClassTransformer;
@@ -56,12 +57,16 @@ public class JpaWeavingHook implements WeavingHook {
 	public void weave(WovenClass wovenClass) {
 		if (wovenClass.getBundleWiring().getBundle() == factory.getPersistenceBundle().getBundle()
 				&& managedClasses.contains(wovenClass.getClassName())) {
+			List<ClassTransformer> transformers = factory.getPersistenceUnitInfo().getClassTransformers();
+			if (transformers.isEmpty()) {
+				return;
+			}
 			try {
 				synchronized (this) {
-					LOG.info("weaving class {} of persistence unit {}", wovenClass.getClassName(), factory.getPersistenceUnitInfo().getPersistenceUnitName());
+					LOG.debug("weaving class {} of persistence unit {}", wovenClass.getClassName(), factory.getPersistenceUnitInfo().getPersistenceUnitName());
 					ClassLoader tempClassLoader = wovenClass.getBundleWiring().getClassLoader();
 					boolean woven = false;
-					for (ClassTransformer transformer : factory.getPersistenceUnitInfo().getClassTransformers()) {
+					for (ClassTransformer transformer : transformers) {
 						byte[] transformed = transformer.transform(tempClassLoader, wovenClass.getClassName(),
 								wovenClass.getDefinedClass(), wovenClass.getProtectionDomain(), wovenClass.getBytes());
 						if (transformed != null) {
