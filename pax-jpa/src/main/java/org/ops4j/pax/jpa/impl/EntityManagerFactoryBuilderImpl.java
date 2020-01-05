@@ -154,8 +154,8 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 					return;
 				}
 			}
-			LOG.info("binding persistence unit {} to JNDI DataSource {}", puInfo.getPersistenceUnitName(),
-					jndiDataSourceName);
+			LOG.info("binding persistence unit {} to JNDI DataSource {}, {}.", new Object[]{puInfo.getPersistenceUnitName(),
+					jndiDataSourceName, PaxJPA.getPromotion(247)});
 			bindDataSource(new JndiDataSourceFactory(jndiDataSourceName));
 		} else {
 			String driver = puInfo.getProperties().getProperty(JpaConstants.JPA_DRIVER);
@@ -172,6 +172,7 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 				dataSourceFactoryServiceTracker.open();
 			}
 		}
+		//TODO must refresh the whole EMF on property change!
 	}
 
 	private static DataSource createDataSource(DataSourceFactory dataSourceFactory, Properties persitenceProperties)

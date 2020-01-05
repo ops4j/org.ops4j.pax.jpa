@@ -166,5 +166,9 @@ public class PaxJPA implements BundleActivator {
 			// already unregistered then...
 		}
 	}
+	
+	public static String getPromotion(int id) {
+		return "this is non standard behavior, if you find this feature useful visit https://osgi.org/bugzilla/show_bug.cgi?id="+id+" and vote or comment so this could be standardized in a future release of OSGi";
+	}
 
 }

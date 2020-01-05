@@ -129,8 +129,8 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 						PersistenceUnitPropertyManagedService persistenceUnitPropertyManagedService = new PersistenceUnitPropertyManagedService(
 								factory, puProps);
 						String pid = "org.ops4j.pax.jpa.pu." + persistenceUnit.getName().replace(' ', '_');
-						LOG.info("tracking configuration for persistence unit {} under pid {}",
-								persistenceUnit.getName(), pid);
+						LOG.info("tracking configuration for persistence unit {} under pid {}, {}.",
+								new Object[]{persistenceUnit.getName(), pid, PaxJPA.getPromotion(123)});
 						Dictionary<String, Object> serviceProperties = new Hashtable<>();
 						serviceProperties.put(Constants.SERVICE_PID, pid);
 						persistenceBundle.addServiceRegistration(bundleContext.registerService(ManagedService.class,
