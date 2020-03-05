@@ -23,12 +23,8 @@
             <artifactId>pax-swissbox-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.ops4j.pax.swissbox</groupId>
-            <artifactId>pax-swissbox-extender</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.swissbox</groupId>
-            <artifactId>pax-swissbox-framework</artifactId>
+        	<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -53,10 +49,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>org.ops4j.pax.jpa</Bundle-SymbolicName>
-                        <Service-Component>OSGI-INF/*</Service-Component>
+                        <Bundle-Activator>org.ops4j.pax.jpa.impl.PaxJPA</Bundle-Activator>
                         <Import-Package>
                             javax.persistence.*;version=2.0,
-                            org.ops4j.io;version="[1.4,2)", 
                             org.ops4j.lang;version="[1.4,2)", 
                             org.ops4j.pax.swissbox.*;version="[1.7,2)",
                             *</Import-Package>

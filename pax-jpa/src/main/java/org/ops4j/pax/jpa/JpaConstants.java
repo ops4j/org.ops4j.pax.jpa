@@ -25,6 +25,7 @@ package org.ops4j.pax.jpa;
  */
 public class JpaConstants {
 
+	public static final String META_INF_SERVICES_PERSISTENCE_PROVIDER = "META-INF/services/javax.persistence.spi.PersistenceProvider";
     public static final String JPA_DRIVER = "javax.persistence.jdbc.driver";
     public static final String JPA_URL = "javax.persistence.jdbc.url";
     public static final String JPA_USER = "javax.persistence.jdbc.user";

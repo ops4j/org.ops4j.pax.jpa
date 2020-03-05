@@ -19,12 +19,11 @@ package org.ops4j.pax.jpa.impl;
 
 import java.lang.instrument.IllegalClassFormatException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.spi.ClassTransformer;
 
-import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
-import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.hooks.weaving.WeavingException;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
@@ -34,60 +33,67 @@ import org.slf4j.LoggerFactory;
 /**
  * Weaving hook for enhancing entity classes.
  * 
- * The hook applies the transformer obtained from the persistence provider and adds dynamic imports
- * for any additional packages required by the enhanced code.
+ * The hook applies the transformer obtained from the persistence provider and
+ * adds dynamic imports for any additional packages required by the enhanced
+ * code.
  * 
  * @author Harald Wellmann
  *
  */
 public class JpaWeavingHook implements WeavingHook {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JpaWeavingHook.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JpaWeavingHook.class);
 
-    private PersistenceUnitInfoImpl puInfo;
-    private ClassTransformer transformer;
-    private BundleClassLoader cl;
-    private Set<String> managedClasses;
+	private Set<String> managedClasses;
 
-    public JpaWeavingHook(PersistenceUnitInfoImpl puInfo, ClassTransformer transformer) {
-        this.puInfo = puInfo;
-        this.transformer = transformer;
-        this.cl = new BundleClassLoader(puInfo.getBundle());
-        this.managedClasses = new HashSet<String>(puInfo.getManagedClassNames());
-    }
+	private EntityManagerFactoryBuilderImpl factory;
 
-    @Override
-    public void weave(WovenClass wovenClass) {
-        if (wovenClass.getBundleWiring().getBundle() == puInfo.getBundle()
-            && managedClasses.contains(wovenClass.getClassName())) {
-            try {
-                synchronized (this) {
-                    LOG.debug("weaving {}", wovenClass.getClassName());
-                    byte[] transformed = transformer.transform(cl, wovenClass.getClassName(),
-                        wovenClass.getDefinedClass(), wovenClass.getProtectionDomain(),
-                        wovenClass.getBytes());
-                    if (transformed != null) {
-	                    wovenClass.setBytes(transformed);
-	
-	                    /*
-	                     * 
-	                     * TODO Hard-coded list of packages for OpenJPA and Eclipselink. We should only
-	                     * add the ones required for the given provider.
-	                     */
-	                    wovenClass.getDynamicImports().add("org.apache.openjpa.enhance");
-	                    wovenClass.getDynamicImports().add("org.apache.openjpa.util");
-	
-	                    wovenClass.getDynamicImports().add("org.eclipse.persistence.*");
-	
-	                    wovenClass.getDynamicImports().add("org.hibernate.*");
-	                    wovenClass.getDynamicImports().add("javassist.util.proxy");
-	                }
-                }
-            }
-            catch (IllegalClassFormatException exc) {
-                throw new WeavingException("cannot transform " + wovenClass.getClassName(), exc);
-            }
-        }
-    }
+	public JpaWeavingHook(EntityManagerFactoryBuilderImpl factory) {
+		this.factory = factory;
+		this.managedClasses = new HashSet<String>(factory.getPersistenceUnitInfo().getManagedClassNames());
+	}
+
+	@Override
+	public void weave(WovenClass wovenClass) {
+		if (wovenClass.getBundleWiring().getBundle() == factory.getPersistenceBundle().getBundle()
+				&& managedClasses.contains(wovenClass.getClassName())) {
+			List<ClassTransformer> transformers = factory.getPersistenceUnitInfo().getClassTransformers();
+			if (transformers.isEmpty()) {
+				return;
+			}
+			try {
+				synchronized (this) {
+					LOG.debug("weaving class {} of persistence unit {}", wovenClass.getClassName(), factory.getPersistenceUnitInfo().getPersistenceUnitName());
+					ClassLoader tempClassLoader = wovenClass.getBundleWiring().getClassLoader();
+					boolean woven = false;
+					for (ClassTransformer transformer : transformers) {
+						byte[] transformed = transformer.transform(tempClassLoader, wovenClass.getClassName(),
+								wovenClass.getDefinedClass(), wovenClass.getProtectionDomain(), wovenClass.getBytes());
+						if (transformed != null) {
+							wovenClass.setBytes(transformed);
+							woven = true;
+						}
+					}
+					if (woven) {
+						/*
+						 * 
+						 * TODO Hard-coded list of packages for OpenJPA,
+						 * Eclipselink and Hibernate. We should only add the
+						 * ones required for the given provider.
+						 */
+						wovenClass.getDynamicImports().add("org.apache.openjpa.enhance");
+						wovenClass.getDynamicImports().add("org.apache.openjpa.util");
+
+						wovenClass.getDynamicImports().add("org.eclipse.persistence.*");
+
+						wovenClass.getDynamicImports().add("org.hibernate.*");
+						wovenClass.getDynamicImports().add("javassist.util.proxy");
+					}
+				}
+			} catch (IllegalClassFormatException exc) {
+				throw new WeavingException("cannot transform " + wovenClass.getClassName(), exc);
+			}
+		}
+	}
 
 }
