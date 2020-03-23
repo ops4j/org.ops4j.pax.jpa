@@ -55,6 +55,7 @@
                             org.ops4j.lang;version="[1.4,2)", 
                             org.ops4j.pax.swissbox.*;version="[1.7,2)",
                             *</Import-Package>
+                        <DynamicImport-Package>com.sun.*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>

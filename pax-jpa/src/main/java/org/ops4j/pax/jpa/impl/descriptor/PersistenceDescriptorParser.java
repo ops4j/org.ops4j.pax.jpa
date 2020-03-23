@@ -26,8 +26,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.sax.SAXSource;
 
+import org.ops4j.pax.jpa.jaxb.ObjectFactory;
 import org.ops4j.pax.jpa.jaxb.Persistence;
 import org.ops4j.pax.jpa.jaxb.Persistence.PersistenceUnit;
+import org.ops4j.pax.jpa.jaxb.PersistenceUnitCachingType;
+import org.ops4j.pax.jpa.jaxb.PersistenceUnitValidationModeType;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -43,42 +46,47 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class PersistenceDescriptorParser {
 
-    private static JAXBContext singletonJaxbContext;
+	private static JAXBContext singletonJaxbContext;
 
-    public Persistence parseDescriptor(URL url) throws JAXBException, IOException, SAXException {
-        XMLReader reader = XMLReaderFactory.createXMLReader();
+	public Persistence parseDescriptor(URL url) throws JAXBException, IOException, SAXException {
+		XMLReader reader = XMLReaderFactory.createXMLReader();
 
-        // Use filter to override the namespace in the document.
-        // On JDK 7, JAXB fails to parse the document if the namespace does not match
-        // the one indicated by the generated JAXB model classes.
-        // For some reason, the JAXB version in JDK 8 is more lenient and does
-        // not require this filter.
-        NamespaceFilter inFilter = new NamespaceFilter("http://xmlns.jcp.org/xml/ns/persistence");
-        inFilter.setParent(reader);
-        
-        JAXBContext context = getJaxbContext();
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        SAXSource source = new SAXSource(inFilter, new InputSource(url.openStream()));
-        
-        return unmarshaller.unmarshal(source, Persistence.class).getValue();
-    }
+		// Use filter to override the namespace in the document.
+		// On JDK 7, JAXB fails to parse the document if the namespace does not match
+		// the one indicated by the generated JAXB model classes.
+		// For some reason, the JAXB version in JDK 8 is more lenient and does
+		// not require this filter.
+		NamespaceFilter inFilter = new NamespaceFilter("http://xmlns.jcp.org/xml/ns/persistence");
+		inFilter.setParent(reader);
 
-    private synchronized JAXBContext getJaxbContext() throws JAXBException {
-        if (singletonJaxbContext == null) {
-            singletonJaxbContext = JAXBContext.newInstance(Persistence.class.getPackage().getName(), getClass()
-                .getClassLoader());
-        }
-        return singletonJaxbContext;
-    }
+		JAXBContext context = getJaxbContext();
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		SAXSource source = new SAXSource(inFilter, new InputSource(url.openStream()));
 
-    public Properties parseProperties(PersistenceUnit persistenceUnit) {
-        PersistenceUnit.Properties jaxbProps = persistenceUnit.getProperties();
-        Properties props = new Properties();
-        if (jaxbProps != null) {
-            for (PersistenceUnit.Properties.Property p : jaxbProps.getProperty()) {
-                props.setProperty(p.getName(), p.getValue());
-            }
-        }
-        return props;
-    }
+		return unmarshaller.unmarshal(source, Persistence.class).getValue();
+	}
+
+	private synchronized JAXBContext getJaxbContext() throws JAXBException {
+		if (singletonJaxbContext == null) {
+			try {
+				singletonJaxbContext = JAXBContext.newInstance(Persistence.class.getPackage().getName(),
+						getClass().getClassLoader());
+			} catch (Exception cnf) {
+				singletonJaxbContext = JAXBContext.newInstance(ObjectFactory.class, Persistence.class,
+						PersistenceUnitCachingType.class, PersistenceUnitValidationModeType.class);
+			}
+		}
+		return singletonJaxbContext;
+	}
+
+	public Properties parseProperties(PersistenceUnit persistenceUnit) {
+		PersistenceUnit.Properties jaxbProps = persistenceUnit.getProperties();
+		Properties props = new Properties();
+		if (jaxbProps != null) {
+			for (PersistenceUnit.Properties.Property p : jaxbProps.getProperty()) {
+				props.setProperty(p.getName(), p.getValue());
+			}
+		}
+		return props;
+	}
 }
