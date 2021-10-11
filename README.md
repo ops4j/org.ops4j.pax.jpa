@@ -8,7 +8,7 @@ It is licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Documentation
 
-* <http://team.ops4j.org/wiki/display/paxjpa/Documentation>
+* https://github.com/ops4j/org.ops4j.pax.jpa/wiki
 
 ## Build
 
@@ -31,13 +31,13 @@ The current milestone release is *Pax JPA 0.3.0*.
 
 ## Issue Tracking
 
-* <http://team.ops4j.org/browse/PAXJPA>
+* https://github.com/ops4j/org.ops4j.pax.jpa/issues
 
 ## Continuous Integration Builds
 
 We have a continuous integration build set up here:
 
-* <http://ci.ops4j.org/jenkins/job/org.ops4j.pax.jpa>
+* https://github.com/ops4j/org.ops4j.pax.jpa/actions
 
 Snapshot artifacts are being published to:
 
