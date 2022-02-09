@@ -19,7 +19,7 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<aether.version>1.0.0.v20140518</aether.version>
 		<eclipselink.version>2.4.2</eclipselink.version>
-		<hibernate.version>4.2.11.Final</hibernate.version>
+		<hibernate.version>5.4.24.Final</hibernate.version>
 		<osgi.version>5.0.0</osgi.version>
 		<karaf.version>3.0.3</karaf.version>
 		<logback.version>1.2.0</logback.version>
