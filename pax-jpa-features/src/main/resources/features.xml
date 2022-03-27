@@ -35,8 +35,6 @@
         </bundle>
         <bundle dependency="true">mvn:org.eclipse.persistence/org.eclipse.persistence.jpa/${eclipselink.version}
         </bundle>
-
-        <bundle start-level="29">mvn:org.ops4j.pax.jpa/pax-jpa-eclipselink/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jpa-openjpa" description="Provide OpenJPA JPA Service support" resolver="(obr)" start-level="30">
