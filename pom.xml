@@ -8,13 +8,15 @@
 
 	<groupId>org.ops4j.pax</groupId>
 	<artifactId>jpa</artifactId>
-	<version>0.4.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>OPS4J Pax JPA Reactor</name>
 
 
 	<properties>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<aether.version>1.0.0.v20140518</aether.version>
 		<eclipselink.version>2.4.2</eclipselink.version>
 		<hibernate.version>4.2.11.Final</hibernate.version>
@@ -34,6 +36,7 @@
 		<org.apache.xbean_xbean-asm5-shaded.version>3.18</org.apache.xbean_xbean-asm5-shaded.version>
 		<org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>1.1.1</org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>
 		<commons-lang_commons-lang.version>2.6</commons-lang_commons-lang.version>
+		<jakarta.xml.version>3.0.0</jakarta.xml.version>
 	</properties>
 
 	<scm>
@@ -46,8 +49,6 @@
 	<modules>
 		<module>pax-jpa-spec</module>
 		<module>pax-jpa</module>
-		<module>pax-jpa-eclipselink</module>
-
 		<module>pax-jpa-itest</module>
 		<module>pax-jpa-samples</module>
 		<module>pax-jpa-features</module>
@@ -371,6 +372,19 @@
 				<artifactId>plexus-sec-dispatcher</artifactId>
 				<version>1.4</version>
 			</dependency>
+			<dependency>
+				<groupId>jakarta.xml.bind</groupId>
+				<artifactId>jakarta.xml.bind-api</artifactId>
+				<version>${jakarta.xml.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.xml.bind</groupId>
+				<artifactId>jaxb-impl</artifactId>
+				<version>${jakarta.xml.version}</version>
+				<scope>provided</scope>
+			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
@@ -418,7 +432,7 @@
 										<version>(3.0.0,)</version>
 										<message>This project requires Maven 3</message>
 									</requireMavenVersion>
-									<!-- <DependencyConvergence />  -->
+									<!-- <DependencyConvergence /> -->
 								</rules>
 							</configuration>
 							<goals>
@@ -502,7 +516,6 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.3</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -540,8 +553,8 @@
 	<url>${pax.jpa.wiki.url}</url>
 
 	<issueManagement>
-		<system>jira</system>
-		<url>http://issues.ops4j.org/jira/browse/PAXJPA</url>
+		<system>github</system>
+		<url>https://github.com/ops4j/org.ops4j.pax.jpa/issues</url>
 	</issueManagement>
 
 	<developers>
@@ -549,6 +562,16 @@
 			<id>hwellmann</id>
 			<name>Harald Wellmann</name>
 			<email>harald.wellmann@gmx.de</email>
+			<organization>independent software developer</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>UTC+1</timezone>
+		</developer>
+		<developer>
+			<id>claeubrich</id>
+			<name>Christoph Läubrich</name>
+			<email>mail@laeubi-soft.de</email>
 			<organization>independent software developer</organization>
 			<roles>
 				<role>Developer</role>

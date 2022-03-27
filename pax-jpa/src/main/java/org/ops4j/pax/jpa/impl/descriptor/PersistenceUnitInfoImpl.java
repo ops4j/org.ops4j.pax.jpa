@@ -28,12 +28,12 @@ import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
 
+import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
+import org.jcp.xmlns.xml.ns.persistence.PersistenceUnitCachingType;
+import org.jcp.xmlns.xml.ns.persistence.PersistenceUnitValidationModeType;
 import org.ops4j.pax.jpa.impl.PaxJPA;
 import org.ops4j.pax.jpa.impl.PersistenceBundle;
 import org.ops4j.pax.jpa.impl.TemporaryBundleClassLoader;
-import org.ops4j.pax.jpa.jaxb.Persistence.PersistenceUnit;
-import org.ops4j.pax.jpa.jaxb.PersistenceUnitCachingType;
-import org.ops4j.pax.jpa.jaxb.PersistenceUnitValidationModeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +47,14 @@ import org.slf4j.LoggerFactory;
 public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
 	private static Logger LOG = LoggerFactory.getLogger(PersistenceUnitInfoImpl.class);
-	private PersistenceBundle persitenceBundle;
-	private String version;
-	private PersistenceUnit persistenceUnit;
+	private final PersistenceBundle persitenceBundle;
+	private final String version;
+	private final PersistenceUnit persistenceUnit;
 	private DataSource dataSource;
-	private Properties persitenceProperties;
+	private final Properties persitenceProperties;
 	private PersistenceProvider provider;
-	private List<ClassTransformer> classTransformers = new CopyOnWriteArrayList<>();
-	private PersistenceUnitTransactionType transactionType;
+	private final List<ClassTransformer> classTransformers = new CopyOnWriteArrayList<>();
+	private final PersistenceUnitTransactionType transactionType;
 
 	public PersistenceUnitInfoImpl(PersistenceBundle bundle, String version, PersistenceUnit persistenceUnit,
 			Properties props) {
@@ -62,7 +62,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 		this.version = version;
 		this.persistenceUnit = persistenceUnit;
 		this.persitenceProperties = new Properties(props);
-		org.ops4j.pax.jpa.jaxb.PersistenceUnitTransactionType xmlTransactionType = persistenceUnit.getTransactionType();
+		org.jcp.xmlns.xml.ns.persistence.PersistenceUnitTransactionType xmlTransactionType = persistenceUnit.getTransactionType();
 		transactionType = xmlTransactionType == null ? PersistenceUnitTransactionType.RESOURCE_LOCAL
 				: PersistenceUnitTransactionType.valueOf(xmlTransactionType.toString());
 	}

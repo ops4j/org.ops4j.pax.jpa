@@ -31,8 +31,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBException;
-
+import org.jcp.xmlns.xml.ns.persistence.Persistence;
+import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
 import org.ops4j.pax.jpa.impl.EntityManagerFactoryBuilderImpl;
 import org.ops4j.pax.jpa.impl.JpaWeavingHook;
 import org.ops4j.pax.jpa.impl.PaxJPA;
@@ -41,8 +41,6 @@ import org.ops4j.pax.jpa.impl.PersistenceProviderBundle;
 import org.ops4j.pax.jpa.impl.PersistenceUnitPropertyManagedService;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
-import org.ops4j.pax.jpa.jaxb.Persistence;
-import org.ops4j.pax.jpa.jaxb.Persistence.PersistenceUnit;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -54,6 +52,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import jakarta.xml.bind.JAXBException;
+
 public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomizer<PersistenceBundle> {
 
 	public static final int BUNDLE_TRACKING_STATE_MASK = Bundle.INSTALLED | Bundle.ACTIVE | Bundle.STARTING
@@ -63,9 +63,9 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 
 	private final PersistenceDescriptorParser parser = new PersistenceDescriptorParser();
 
-	private BundleContext bundleContext;
+	private final BundleContext bundleContext;
 
-	private Iterable<PersistenceProviderBundle> persistenceProvider;
+	private final Iterable<PersistenceProviderBundle> persistenceProvider;
 
 	public PersistenceBundleTrackerCustomizer(BundleContext bundleContext,
 			Iterable<PersistenceProviderBundle> persistenceProvider) {
@@ -172,7 +172,7 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 
 		URL defaultUrl = bundle.getEntry(JPA_PERSISTENCE_XML);
 		boolean defaultUrlFound = false;
-		List<URL> urls = new ArrayList<URL>();
+		List<URL> urls = new ArrayList<>();
 		String[] parts = value.split(",\\s*");
 		for (String part : parts) {
 			String resource = part.trim();
