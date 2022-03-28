@@ -1,0 +1,2 @@
+-tester: biz.aQute.tester.junit-platform
+-runfw: org.eclipse.osgi

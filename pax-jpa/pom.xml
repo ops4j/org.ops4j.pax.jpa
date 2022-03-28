@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>jpa</artifactId>
@@ -8,14 +10,13 @@
 	</parent>
 	<groupId>org.ops4j.pax.jpa</groupId>
 	<artifactId>pax-jpa</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>OPS4J::Pax::JPA::Extender</name>
 
 	<properties>
 		<bundle.symbolicName>org.ops4j.pax.jpa</bundle.symbolicName>
 		<bundle.namespace>org.ops4j.pax.jpa</bundle.namespace>
-		<jaxb.version />
+		<osgi-test.version>1.1.0</osgi-test.version>
 	</properties>
 
 	<dependencies>
@@ -41,6 +42,52 @@
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
 		</dependency>
+		<!-- junit dependencies -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>4.4.0</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- osgi-test dependencies -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.assertj.framework</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.assertj.log</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.assertj.promise</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.junit5</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.junit5.cm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.junit5.listeners.log.osgi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.test.junit5.runner</artifactId>
+			<version>1.2.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -53,12 +100,9 @@
 						<Bundle-Activator>org.ops4j.pax.jpa.impl.PaxJPA</Bundle-Activator>
 						<Export-Package>org.ops4j.pax.jpa</Export-Package>
 						<Import-Package>
-							javax.xml.bind;version="[2,3)",
-							javax.xml.bind.annotation;version="[2,3)",
-							javax.xml.bind.annotation.adapters;version="[2,3)",
+							jakarta.xml.*;version="[3,4)",
 							javax.persistence.*;version=2.0,
 							*</Import-Package>
-						<DynamicImport-Package>com.sun.*</DynamicImport-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -76,6 +120,15 @@
 				</executions>
 				<configuration>
 					<xsdPathWithinArtifact>META-INF/JAXB/xsd</xsdPathWithinArtifact>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
+				<!-- <version>2.22.2</version> -->
+				<version>3.0.0-M5</version>
+				<configuration>
+					<forkMode>always</forkMode>
 				</configuration>
 			</plugin>
 		</plugins>

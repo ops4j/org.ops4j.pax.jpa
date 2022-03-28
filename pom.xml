@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.ops4j</groupId>
@@ -15,8 +17,9 @@
 
 
 	<properties>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<java.version>11</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<aether.version>1.0.0.v20140518</aether.version>
 		<eclipselink.version>2.4.2</eclipselink.version>
 		<hibernate.version>5.4.24.Final</hibernate.version>
@@ -31,12 +34,15 @@
 		<pax.url.version>2.2.0</pax.url.version>
 		<slf4j.version>1.6.4</slf4j.version>
 		<lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
-		<pax.jpa.wiki.url>http://team.ops4j.org/wiki/display/PAXJPA/</pax.jpa.wiki.url>
+		<pax.jpa.wiki.url>https://github.com/ops4j/org.ops4j.pax.jpa/wiki</pax.jpa.wiki.url>
 		<org.apache.derby_derby.version>10.8.2.2</org.apache.derby_derby.version>
 		<org.apache.xbean_xbean-asm5-shaded.version>3.18</org.apache.xbean_xbean-asm5-shaded.version>
 		<org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>1.1.1</org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>
 		<commons-lang_commons-lang.version>2.6</commons-lang_commons-lang.version>
 		<jakarta.xml.version>3.0.0</jakarta.xml.version>
+		<osgi.test.version>1.1.0</osgi.test.version>
+		<junit.version>5.8.2</junit.version>
+		<bnd.version>6.2.0</bnd.version>
 	</properties>
 
 	<scm>
@@ -50,9 +56,9 @@
 		<module>pax-jpa-spec</module>
 		<module>pax-jpa</module>
 		<module>pax-jpa-samples</module>
-		<!--  <module>pax-jpa-itest</module> -->
-		<!--  <module>pax-jpa-features</module> -->
-		<!--  <module>pax-jpa-karaf-itest</module> -->
+		<module>pax-jpa-itest</module>
+		<!-- <module>pax-jpa-features</module> -->
+		<!-- <module>pax-jpa-karaf-itest</module> -->
 	</modules>
 
 	<dependencyManagement>
@@ -385,7 +391,20 @@
 				<version>${jakarta.xml.version}</version>
 				<scope>provided</scope>
 			</dependency>
-
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.test.bom</artifactId>
+				<version>${osgi.test.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -396,8 +415,8 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
 					</configuration>
 				</plugin>
 
