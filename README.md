@@ -12,7 +12,7 @@ It is licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Build
 
-You'll need a machine with Java 7+ and Apache Maven 3 installed.
+You'll need a machine with Java 11+ and Apache Maven 3 installed.
 
 Checkout:
 
@@ -38,11 +38,6 @@ The current milestone release is *Pax JPA 0.3.0*.
 We have a continuous integration build set up here:
 
 * https://github.com/ops4j/org.ops4j.pax.jpa/actions
-
-Snapshot artifacts are being published to:
-
-* <https://oss.sonatype.org/content/repositories/ops4j-snapshots>
-
 
 The OPS4J Team.
 
