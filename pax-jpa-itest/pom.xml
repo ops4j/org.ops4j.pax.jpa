@@ -64,12 +64,14 @@
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
+            <version>4.13.5</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam</artifactId>
+            <version>4.13.5</version>
             <scope>test</scope>
         </dependency>
 
@@ -82,6 +84,7 @@
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-container-native</artifactId>
+            <version>4.13.5</version>
             <scope>test</scope>
         </dependency>
 
@@ -98,6 +101,7 @@
 
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
+            <version>4.13.5</version>
             <artifactId>pax-exam-link-mvn</artifactId>
             <scope>test</scope>
         </dependency>
@@ -105,6 +109,7 @@
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-aether</artifactId>
+             <version>2.6.11</version>
             <scope>test</scope>
         </dependency>
 
@@ -242,6 +247,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
                 <configuration>
                     <forkMode>always</forkMode>
                 </configuration>
@@ -253,7 +259,7 @@
         <repository>
             <id>eclipse-gemini</id>
             <name>Eclipse Gemini Maven repository</name>
-            <url>http://download.eclipse.org/gemini/mvn/</url>
+            <url>https://download.eclipse.org/gemini/mvn/</url>
         </repository>
     </repositories>
     
