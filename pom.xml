@@ -49,8 +49,8 @@
 	<modules>
 		<module>pax-jpa-spec</module>
 		<module>pax-jpa</module>
-		<module>pax-jpa-itest</module>
 		<module>pax-jpa-samples</module>
+		<!--  <module>pax-jpa-itest</module> -->
 		<!--  <module>pax-jpa-features</module> -->
 		<!--  <module>pax-jpa-karaf-itest</module> -->
 	</modules>
