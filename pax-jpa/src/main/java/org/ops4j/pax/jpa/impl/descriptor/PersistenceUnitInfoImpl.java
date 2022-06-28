@@ -51,9 +51,9 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	private final PersistenceUnit persistenceUnit;
 	private final Properties persitenceProperties;
 	private final PersistenceUnitTransactionType transactionType;
-	protected DataSource dataSource;
-	protected PersistenceProvider provider;
-	protected DataSourceFactory dataSourceFactory;
+	protected volatile DataSource dataSource;
+	protected volatile PersistenceProvider provider;
+	protected volatile DataSourceFactory dataSourceFactory;
 
 	public PersistenceUnitInfoImpl(PersistenceBundle bundle, String version, PersistenceUnit persistenceUnit, Properties props) {
 
@@ -197,6 +197,11 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	public DataSourceFactory getDataSourceFactory() {
 
 		return dataSourceFactory;
+	}
+
+	public PersistenceProvider getPersistenceProvider() {
+
+		return provider;
 	}
 
 	public String getJndiDataSourceName() {

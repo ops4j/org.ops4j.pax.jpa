@@ -42,6 +42,7 @@ import org.ops4j.pax.jpa.impl.PersistenceBundle;
 import org.ops4j.pax.jpa.impl.PersistenceProviderBundle;
 import org.ops4j.pax.jpa.impl.PersistenceUnitDataSourceTracker;
 import org.ops4j.pax.jpa.impl.PersistenceUnitPropertyManagedService;
+import org.ops4j.pax.jpa.impl.PersistenceUnitProviderTracker;
 import org.ops4j.pax.jpa.impl.PersitenceUnitManagedServiceFactory;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
 import org.osgi.framework.Bundle;
@@ -51,6 +52,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.cm.ManagedServiceFactory;
+import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,10 +73,13 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 
 	private final Iterable<PersistenceProviderBundle> persistenceProvider;
 
+	private final BundleTracker<PersistenceProviderBundle> bundleTracker;
+
 	public PersistenceBundleTrackerCustomizer(BundleContext bundleContext,
-			Iterable<PersistenceProviderBundle> persistenceProvider) {
+			Iterable<PersistenceProviderBundle> persistenceProvider, BundleTracker<PersistenceProviderBundle> bundleTracker) {
 		this.bundleContext = bundleContext;
 		this.persistenceProvider = persistenceProvider;
+		this.bundleTracker = bundleTracker;
 	}
 
 	@Override
@@ -143,6 +148,7 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 								bundleContext.registerService(WeavingHook.class, new JpaWeavingHook(bundle, persistenceUnit.getName(), new HashSet<>(persistenceUnit.getClazz()), persistenceBundle
 										.getClassTransformers()), null));
 						persistenceBundle.addTracker(new PersistenceUnitDataSourceTracker(bundleContext), PersistenceUnitInfo.class, bundleContext);
+						persistenceBundle.addTracker(new PersistenceUnitProviderTracker(bundleContext, bundleTracker, persistenceBundle), PersistenceUnitInfo.class, bundleContext);
 						for (PersistenceProviderBundle providerBundle : persistenceProvider) {
 							if (providerBundle.assignTo(factory)) {
 								persistenceBundle.addEntityManagerFactoryBuilder(factory);

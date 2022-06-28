@@ -70,7 +70,7 @@ public class PaxJPA implements BundleActivator {
 		};
 		persistenceBundleTracker = new BundleTracker<>(bundleContext,
 				PersistenceBundleTrackerCustomizer.BUNDLE_TRACKING_STATE_MASK,
-				new PersistenceBundleTrackerCustomizer(bundleContext, persistenceProvider));
+				new PersistenceBundleTrackerCustomizer(bundleContext, persistenceProvider, peristenceProviderBundleTracker));
 		peristenceProviderServiceTracker.open();
 		peristenceProviderBundleTracker.open();
 		persistenceBundleTracker.open();

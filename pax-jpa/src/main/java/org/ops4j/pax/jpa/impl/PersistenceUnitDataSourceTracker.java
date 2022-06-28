@@ -163,7 +163,10 @@ public class PersistenceUnitDataSourceTracker implements ServiceTrackerCustomize
 	@Override
 	public void removedService(ServiceReference<PersistenceUnitInfo> reference, PersistenceUnitInfoDataSource service) {
 
-		service.dispose();
-		bundleContext.ungetService(reference);
+		try {
+			service.dispose();
+		} finally {
+			bundleContext.ungetService(reference);
+		}
 	}
 }

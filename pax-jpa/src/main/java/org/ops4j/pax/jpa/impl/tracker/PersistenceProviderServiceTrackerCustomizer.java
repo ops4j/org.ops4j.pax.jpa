@@ -46,7 +46,7 @@ public class PersistenceProviderServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer<PersistenceProvider, PersistenceProviderBundle> {
 
 	private static Logger LOG = LoggerFactory.getLogger(PersistenceProviderServiceTrackerCustomizer.class);
-	private BundleContext bundleContext;
+	private final BundleContext bundleContext;
 
 	public PersistenceProviderServiceTrackerCustomizer(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
@@ -88,7 +88,7 @@ public class PersistenceProviderServiceTrackerCustomizer
 			persistenceProviderBundle.shutdown();
 			if (persistenceProvider != null) {
 				Bundle bundle = reference.getBundle();
-				LOG.info("persistenceProvider service {} from bundle {}  with properties {} is no longer avaiable",
+				LOG.info("persistenceProvider service {} from bundle {}  with properties {} is no longer available",
 						new Object[] { persistenceProviderBundle.getClass().getName(), PaxJPA.getBundleName(bundle),
 								PaxJPA.getServiceProperties(reference) });
 			}
