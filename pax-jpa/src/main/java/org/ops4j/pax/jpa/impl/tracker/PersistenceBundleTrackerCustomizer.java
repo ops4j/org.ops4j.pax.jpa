@@ -27,9 +27,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Properties;
+
+import javax.persistence.spi.PersistenceUnitInfo;
 
 import org.jcp.xmlns.xml.ns.persistence.Persistence;
 import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
@@ -38,15 +40,17 @@ import org.ops4j.pax.jpa.impl.JpaWeavingHook;
 import org.ops4j.pax.jpa.impl.PaxJPA;
 import org.ops4j.pax.jpa.impl.PersistenceBundle;
 import org.ops4j.pax.jpa.impl.PersistenceProviderBundle;
+import org.ops4j.pax.jpa.impl.PersistenceUnitDataSourceTracker;
 import org.ops4j.pax.jpa.impl.PersistenceUnitPropertyManagedService;
+import org.ops4j.pax.jpa.impl.PersitenceUnitManagedServiceFactory;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
-import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.Constants;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +63,7 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 	public static final int BUNDLE_TRACKING_STATE_MASK = Bundle.INSTALLED | Bundle.ACTIVE | Bundle.STARTING
 			| Bundle.RESOLVED | Bundle.STOPPING;
 
-	private static Logger LOG = LoggerFactory.getLogger(PersistenceBundleTrackerCustomizer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PersistenceBundleTrackerCustomizer.class);
 
 	private final PersistenceDescriptorParser parser = new PersistenceDescriptorParser();
 
@@ -120,23 +124,25 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 					outer: for (PersistenceUnit persistenceUnit : descriptor.getPersistenceUnit()) {
 						LOG.debug("processing persistence unit {} in bundle {}", persistenceUnit.getName(),
 								PaxJPA.getBundleName(bundle));
-						Properties puProps = new Properties(parser.parseProperties(persistenceUnit));
-						PersistenceUnitInfoImpl puInfo = new PersistenceUnitInfoImpl(persistenceBundle,
-								descriptor.getVersion(), persistenceUnit, puProps);
 						EntityManagerFactoryBuilderImpl factory = new EntityManagerFactoryBuilderImpl(persistenceBundle,
-								puInfo, bundleContext);
-
+								persistenceUnit, descriptor.getVersion(), bundleContext);
 						PersistenceUnitPropertyManagedService persistenceUnitPropertyManagedService = new PersistenceUnitPropertyManagedService(
-								factory, puProps);
+								factory, factory.getPersistenceProperties());
+						PersitenceUnitManagedServiceFactory managedServiceFactory = new PersitenceUnitManagedServiceFactory(persistenceBundle, descriptor, persistenceUnit, bundleContext);
 						String pid = "org.ops4j.pax.jpa.pu." + persistenceUnit.getName().replace(' ', '_');
 						LOG.info("tracking configuration for persistence unit {} under pid {}, {}.",
-								new Object[]{persistenceUnit.getName(), pid, PaxJPA.getPromotion(123)});
+								new Object[]{persistenceUnit.getName(), pid, PaxJPA.getPromotion(279)});
+						LOG.info("tracking factory-configurations for persistence unit {} under factory.pid {} for multi-tenant support, {}.", new Object[]{persistenceUnit.getName(), pid, PaxJPA
+								.getPromotion(280)});
 						Dictionary<String, Object> serviceProperties = new Hashtable<>();
 						serviceProperties.put(Constants.SERVICE_PID, pid);
 						persistenceBundle.addServiceRegistration(bundleContext.registerService(ManagedService.class,
 								persistenceUnitPropertyManagedService, serviceProperties));
+						persistenceBundle.addServiceRegistration(bundleContext.registerService(ManagedServiceFactory.class, managedServiceFactory, serviceProperties));
 						persistenceBundle.addServiceRegistration(
-								bundleContext.registerService(WeavingHook.class, new JpaWeavingHook(factory), null));
+								bundleContext.registerService(WeavingHook.class, new JpaWeavingHook(bundle, persistenceUnit.getName(), new HashSet<>(persistenceUnit.getClazz()), persistenceBundle
+										.getClassTransformers()), null));
+						persistenceBundle.addTracker(new PersistenceUnitDataSourceTracker(bundleContext), PersistenceUnitInfo.class, bundleContext);
 						for (PersistenceProviderBundle providerBundle : persistenceProvider) {
 							if (providerBundle.assignTo(factory)) {
 								persistenceBundle.addEntityManagerFactoryBuilder(factory);
@@ -144,7 +150,7 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 							}
 						}
 						LOG.warn(
-								"persistence unit {} from bundle {} can't be assigned because no compatible PersistenceProvider is avaiable",
+								"persistence unit {} from bundle {} can't be assigned because no compatible PersistenceProvider is available",
 								persistenceUnit.getName(), PaxJPA.getBundleName(bundle));
 					}
 				}

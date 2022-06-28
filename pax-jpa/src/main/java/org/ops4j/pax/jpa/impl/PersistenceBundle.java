@@ -23,8 +23,12 @@ package org.ops4j.pax.jpa.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.persistence.spi.ClassTransformer;
 
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
@@ -34,6 +38,8 @@ import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.FrameworkWiring;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,28 +53,35 @@ import org.slf4j.LoggerFactory;
 public class PersistenceBundle {
 
 	private static Logger LOG = LoggerFactory.getLogger(PersistenceProviderBundle.class);
-
-	private Bundle bundle;
-	private boolean lazy;
-	private List<EntityManagerFactoryBuilderImpl> factories = new ArrayList<>(1);
-	private List<ServiceRegistration<?>> registrations = new ArrayList<>();
-	private AtomicBoolean shutdown = new AtomicBoolean();
-	private AtomicBoolean refreshing = new AtomicBoolean();
+	private final Bundle bundle;
+	private final boolean lazy;
+	private final List<EntityManagerFactoryBuilderImpl> factories = new ArrayList<>(1);
+	private final List<ServiceRegistration<?>> registrations = new ArrayList<>();
+	private final List<ServiceTracker<?, ?>> trackers = new ArrayList<>();
+	private final AtomicBoolean shutdown = new AtomicBoolean();
+	private final AtomicBoolean refreshing = new AtomicBoolean();
 	private BundleClassLoader classLoader;
+	private final Set<ClassTransformer> classTransformers = new CopyOnWriteArraySet<>();
 
 	public PersistenceBundle(Bundle bundle) {
+
 		this.bundle = bundle;
 		lazy = Constants.ACTIVATION_LAZY.equalsIgnoreCase(bundle.getHeaders("").get(Constants.BUNDLE_ACTIVATIONPOLICY));
 	}
 
 	public void shutdown() {
-		if (shutdown.compareAndSet(false, true)) {
-			LOG.info("Shutdown persitence bundle {}", PaxJPA.getBundleName(bundle));
-			for (ServiceRegistration<?> registration : registrations) {
+
+		if(shutdown.compareAndSet(false, true)) {
+			LOG.info("Shutdown persistence bundle {}", PaxJPA.getBundleName(bundle));
+			for(ServiceTracker<?, ?> tracker : trackers) {
+				tracker.close();
+			}
+			trackers.clear();
+			for(ServiceRegistration<?> registration : registrations) {
 				PaxJPA.unregister(registration);
 			}
 			registrations.clear();
-			for (EntityManagerFactoryBuilderImpl factory : factories) {
+			for(EntityManagerFactoryBuilderImpl factory : factories) {
 				factory.assignProvider(null);
 			}
 			factories.clear();
@@ -77,15 +90,15 @@ public class PersistenceBundle {
 
 	public void stateChanged() {
 
-		if (shutdown.get() || refreshing.get()) {
+		if(shutdown.get() || refreshing.get()) {
 			return;
 		}
-		if (isReady()) {
-			for (EntityManagerFactoryBuilderImpl factory : factories) {
+		if(isReady()) {
+			for(EntityManagerFactoryBuilderImpl factory : factories) {
 				factory.activate();
 			}
 		} else {
-			for (EntityManagerFactoryBuilderImpl factory : factories) {
+			for(EntityManagerFactoryBuilderImpl factory : factories) {
 				factory.deactivate();
 			}
 		}
@@ -101,7 +114,7 @@ public class PersistenceBundle {
 
 	public synchronized BundleClassLoader getClassLoader() {
 
-		if (classLoader == null) {
+		if(classLoader == null) {
 			// TODO we might check the state of the bundle here?
 			classLoader = new BundleClassLoader(bundle, PersistenceBundle.class.getClassLoader());
 		}
@@ -111,6 +124,13 @@ public class PersistenceBundle {
 	public void addServiceRegistration(ServiceRegistration<?> registration) {
 
 		registrations.add(registration);
+	}
+
+	public <S, T> ServiceTracker<S, T> addTracker(ServiceTrackerCustomizer<S, T> customizer, Class<S> service, BundleContext context) {
+
+		ServiceTracker<S, T> tracker = new ServiceTracker<>(context, service, customizer);
+		tracker.open();
+		return tracker;
 	}
 
 	public void addEntityManagerFactoryBuilder(EntityManagerFactoryBuilderImpl factory) {
@@ -128,14 +148,20 @@ public class PersistenceBundle {
 		return bundle;
 	}
 
+	public Set<ClassTransformer> getClassTransformers() {
+
+		return classTransformers;
+	}
+
 	public void refresh() throws InterruptedException {
+
 		BundleContext bundleContext = bundle.getBundleContext();
-		if (bundleContext == null) {
+		if(bundleContext == null) {
 			// not resolved, so no need to refresh
 			LOG.trace("bundle {} has no BundleContext, refresh not necessary", PaxJPA.getBundleName(bundle));
 			return;
 		}
-		if (refreshing.compareAndSet(false, true)) {
+		if(refreshing.compareAndSet(false, true)) {
 			FrameworkWiring frameworkWiring = bundleContext.getBundle(0).adapt(FrameworkWiring.class);
 			final CountDownLatch latch = new CountDownLatch(1);
 			LOG.debug("starting refresh of bundle {}", PaxJPA.getBundleName(bundle));
@@ -143,6 +169,7 @@ public class PersistenceBundle {
 
 				@Override
 				public void frameworkEvent(FrameworkEvent event) {
+
 					latch.countDown();
 				}
 			});

@@ -54,7 +54,7 @@ public class PaxJPA implements BundleActivator {
 		peristenceProviderBundleTracker = new BundleTracker<>(bundleContext,
 				PersistenceProviderBundleTrackerCustomizer.BUNDLE_TRACKING_STATE_MASK,
 				new PersistenceProviderBundleTrackerCustomizer());
-		Iterable<PersistenceProviderBundle> persistenceProvider = new Iterable<PersistenceProviderBundle>() {
+		Iterable<PersistenceProviderBundle> persistenceProvider = new Iterable<>() {
 
 			@Override
 			public Iterator<PersistenceProviderBundle> iterator() {
@@ -168,7 +168,8 @@ public class PaxJPA implements BundleActivator {
 	}
 	
 	public static String getPromotion(int id) {
-		return "this is non standard behavior, if you find this feature useful visit https://osgi.org/bugzilla/show_bug.cgi?id="+id+" and vote or comment so this could be standardized in a future release of OSGi";
+
+		return "this is non standard behavior, if you find this feature useful visit https://github.com/osgi/osgi/issues/" + id + " and vote or comment so this could be standardized in a future release of OSGi";
 	}
 
 }

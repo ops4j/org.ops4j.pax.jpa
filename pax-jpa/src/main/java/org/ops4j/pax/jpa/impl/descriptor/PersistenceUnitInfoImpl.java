@@ -17,7 +17,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.SharedCacheMode;
@@ -31,9 +30,9 @@ import javax.sql.DataSource;
 import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
 import org.jcp.xmlns.xml.ns.persistence.PersistenceUnitCachingType;
 import org.jcp.xmlns.xml.ns.persistence.PersistenceUnitValidationModeType;
-import org.ops4j.pax.jpa.impl.PaxJPA;
 import org.ops4j.pax.jpa.impl.PersistenceBundle;
 import org.ops4j.pax.jpa.impl.TemporaryBundleClassLoader;
+import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,24 +49,21 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	private final PersistenceBundle persitenceBundle;
 	private final String version;
 	private final PersistenceUnit persistenceUnit;
-	private DataSource dataSource;
 	private final Properties persitenceProperties;
-	private PersistenceProvider provider;
-	private final List<ClassTransformer> classTransformers = new CopyOnWriteArrayList<>();
 	private final PersistenceUnitTransactionType transactionType;
+	protected DataSource dataSource;
+	protected PersistenceProvider provider;
+	protected DataSourceFactory dataSourceFactory;
 
-	public PersistenceUnitInfoImpl(PersistenceBundle bundle, String version, PersistenceUnit persistenceUnit,
-			Properties props) {
+	public PersistenceUnitInfoImpl(PersistenceBundle bundle, String version, PersistenceUnit persistenceUnit, Properties props) {
+
 		this.persitenceBundle = bundle;
 		this.version = version;
 		this.persistenceUnit = persistenceUnit;
 		this.persitenceProperties = new Properties(props);
 		org.jcp.xmlns.xml.ns.persistence.PersistenceUnitTransactionType xmlTransactionType = persistenceUnit.getTransactionType();
-		transactionType = xmlTransactionType == null ? PersistenceUnitTransactionType.RESOURCE_LOCAL
-				: PersistenceUnitTransactionType.valueOf(xmlTransactionType.toString());
+		transactionType = xmlTransactionType == null ? PersistenceUnitTransactionType.RESOURCE_LOCAL : PersistenceUnitTransactionType.valueOf(xmlTransactionType.toString());
 	}
-
-	
 
 	@Override
 	public String getPersistenceUnitName() {
@@ -83,13 +79,14 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
 	@Override
 	public PersistenceUnitTransactionType getTransactionType() {
+
 		return transactionType;
 	}
 
 	@Override
 	public DataSource getJtaDataSource() {
 
-		if (getTransactionType() == PersistenceUnitTransactionType.JTA) {
+		if(getTransactionType() == PersistenceUnitTransactionType.JTA) {
 			return dataSource;
 		}
 		return null;
@@ -98,7 +95,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	@Override
 	public DataSource getNonJtaDataSource() {
 
-		if (getTransactionType() == PersistenceUnitTransactionType.RESOURCE_LOCAL) {
+		if(getTransactionType() == PersistenceUnitTransactionType.RESOURCE_LOCAL) {
 			return dataSource;
 		}
 		return null;
@@ -118,7 +115,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
 	@Override
 	public URL getPersistenceUnitRootUrl() {
-		
+
 		return persitenceBundle.getBundle().getEntry("/");
 	}
 
@@ -169,24 +166,21 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
 	@Override
 	public void addTransformer(ClassTransformer transformer) {
-		LOG.debug("adding ClassTransformer {} to persistence unit {}, must refresh persistence bundle {}",
-				new Object[] { transformer.getClass().getName(), getPersistenceUnitName(),
-						PaxJPA.getBundleName(persitenceBundle.getBundle()) });
-		classTransformers.add(transformer);
-		try {
-			persitenceBundle.refresh();
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
+
+		if(persitenceBundle.getClassTransformers().add(transformer)) {
+			LOG.debug("adding ClassTransformer {} to persistence unit {}, must refresh persistence bundle {}", new Object[]{transformer.getClass().getName(), getPersistenceUnitName(), persitenceBundle
+					.getBundle()});
+			try {
+				persitenceBundle.refresh();
+			} catch(InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
 		}
-	}
-
-	public List<ClassTransformer> getClassTransformers() {
-
-		return Collections.unmodifiableList(classTransformers);
 	}
 
 	@Override
 	public ClassLoader getNewTempClassLoader() {
+
 		return new TemporaryBundleClassLoader(persitenceBundle.getBundle(), provider.getClass().getClassLoader());
 	}
 
@@ -194,22 +188,38 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
 		this.provider = provider;
 	}
-	
+
 	public DataSource getDataSource() {
+
 		return dataSource;
+	}
+
+	public DataSourceFactory getDataSourceFactory() {
+
+		return dataSourceFactory;
 	}
 
 	public String getJndiDataSourceName() {
 
-		if (getTransactionType() == PersistenceUnitTransactionType.JTA) {
+		if(getTransactionType() == PersistenceUnitTransactionType.JTA) {
 			return persistenceUnit.getJtaDataSource();
 		} else {
 			return persistenceUnit.getNonJtaDataSource();
 		}
 	}
-	
+
 	public void setDataSource(DataSource dataSource) {
+
 		this.dataSource = dataSource;
-		classTransformers.clear();
+	}
+
+	public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
+
+		this.dataSourceFactory = dataSourceFactory;
+	}
+
+	public String getName() {
+
+		return getPersistenceUnitName();
 	}
 }

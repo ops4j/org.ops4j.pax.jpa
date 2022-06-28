@@ -69,7 +69,7 @@ public class PersistenceDescriptorParser {
 		return singletonJaxbContext;
 	}
 
-	public Properties parseProperties(PersistenceUnit persistenceUnit) {
+	public static Properties parseProperties(PersistenceUnit persistenceUnit) {
 
 		PersistenceUnit.Properties jaxbProps = persistenceUnit.getProperties();
 		Properties props = new Properties();

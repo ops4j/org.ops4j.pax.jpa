@@ -27,7 +27,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceProvider;
 import javax.sql.DataSource;
 
+import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
 import org.ops4j.pax.jpa.JpaConstants;
+import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
 import org.ops4j.pax.jpa.impl.tracker.DataSourceFactoryServiceTracker;
 import org.osgi.framework.Bundle;
@@ -52,21 +54,24 @@ import org.slf4j.LoggerFactory;
 public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuilder {
 
 	private static Logger LOG = LoggerFactory.getLogger(EntityManagerFactoryBuilderImpl.class);
-	private PersistenceUnitInfoImpl puInfo;
+	private final PersistenceUnitInfoImpl puInfo;
 	private ServiceRegistration<EntityManagerFactoryBuilder> emfBuilderRegistration;
 	private ServiceRegistration<EntityManagerFactory> emfRegistration;
 	private PersistenceProvider persistenceProvider;
-	private BundleContext jpaBundleContext;
+	private final BundleContext jpaBundleContext;
 	private DataSourceFactoryServiceTracker dataSourceFactoryServiceTracker;
 	private DataSourceFactory dataSourceFactory;
 	private EntityManagerFactory entityManagerFactory;
-	private PersistenceBundle persistenceBundle;
-	private AtomicBoolean activating = new AtomicBoolean();
+	private final PersistenceBundle persistenceBundle;
+	private final AtomicBoolean activating = new AtomicBoolean();
+	private final Properties puProps;
 
-	public EntityManagerFactoryBuilderImpl(PersistenceBundle persistenceBundle, PersistenceUnitInfoImpl puInfo,
+	public EntityManagerFactoryBuilderImpl(PersistenceBundle persistenceBundle, PersistenceUnit persistenceUnit, String schemaVersion,
 			BundleContext jpaBundleContext) {
+
+		this.puProps = new Properties(PersistenceDescriptorParser.parseProperties(persistenceUnit));
 		this.persistenceBundle = persistenceBundle;
-		this.puInfo = puInfo;
+		this.puInfo = new PersistenceUnitInfoImpl(persistenceBundle, schemaVersion, persistenceUnit, puProps);
 		this.jpaBundleContext = jpaBundleContext;
 	}
 
@@ -155,12 +160,12 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 				}
 			}
 			LOG.info("binding persistence unit {} to JNDI DataSource {}, {}.", new Object[]{puInfo.getPersistenceUnitName(),
-					jndiDataSourceName, PaxJPA.getPromotion(247)});
+					jndiDataSourceName, PaxJPA.getPromotion(455)});
 			bindDataSource(new JndiDataSourceFactory(jndiDataSourceName));
 		} else {
 			String driver = puInfo.getProperties().getProperty(JpaConstants.JPA_DRIVER);
 			if (driver == null || driver.isEmpty()) {
-				LOG.info("no {} property specifed persistence unit {} is incomplete",
+				LOG.info("no {} property specified persistence unit {} is incomplete",
 						new Object[] { JpaConstants.JPA_DRIVER, puInfo.getPersistenceUnitName() });
 				closeTracker();
 			} else if (dataSourceFactoryServiceTracker == null
@@ -204,7 +209,7 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 					puInfo.setDataSource(createDataSource(dataSourceFactory, puInfo.getProperties()));
 					registerEntityManagerFactory();
 				} else {
-					LOG.info("no DataSourceFactory avaiable, persistence unit {} is incomplete", puInfo.getPersistenceUnitName());
+					LOG.info("no DataSourceFactory available, persistence unit {} is incomplete", puInfo.getPersistenceUnitName());
 				}
 			} catch (SQLException e) {
 				puInfo.setDataSource(null);
@@ -214,7 +219,7 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 		}
 	}
 
-	private synchronized EntityManagerFactory createEntityManagerFactoryInternal(Map<String, Object> userProperties) {
+	synchronized EntityManagerFactory createEntityManagerFactoryInternal(Map<String, ?> userProperties) {
 		if (persistenceProvider == null) {
 			throw new IllegalStateException("This factory is not assigned");
 		}
@@ -239,7 +244,7 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 			if (bundleContext != null) {
 				LOG.info("register EntityManagerFactoryBuilder service for persistence unit {}...",
 						puInfo.getPersistenceUnitName());
-				Dictionary<String, String> emfBuilderServiceProps = new Hashtable<String, String>();
+				Dictionary<String, String> emfBuilderServiceProps = new Hashtable<>();
 				emfBuilderServiceProps.put(JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
 				emfBuilderServiceProps.put(JPA_UNIT_VERSION, bundle.getVersion().toString());
 				emfBuilderServiceProps.put(JPA_UNIT_PROVIDER, persistenceProvider.getClass().getName());
@@ -279,7 +284,7 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 			if (bundleContext != null) {
 				LOG.info("register EntityManagerFactory Service for persistence unit {}...",
 						puInfo.getPersistenceUnitName());
-				Dictionary<String, String> emfServiceProps = new Hashtable<String, String>();
+				Dictionary<String, String> emfServiceProps = new Hashtable<>();
 				emfServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
 				emfServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_VERSION, bundle.getVersion().toString());
 				emfServiceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_PROVIDER,
@@ -306,4 +311,8 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 		}
 	}
 
+	public Properties getPersistenceProperties() {
+
+		return puProps;
+	}
 }

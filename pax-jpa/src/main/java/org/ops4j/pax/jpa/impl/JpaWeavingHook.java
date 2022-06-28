@@ -18,12 +18,12 @@
 package org.ops4j.pax.jpa.impl;
 
 import java.lang.instrument.IllegalClassFormatException;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.spi.ClassTransformer;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.hooks.weaving.WeavingException;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
@@ -44,26 +44,33 @@ public class JpaWeavingHook implements WeavingHook {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JpaWeavingHook.class);
 
-	private Set<String> managedClasses;
+	private final Set<String> managedClasses;
 
-	private EntityManagerFactoryBuilderImpl factory;
+	private final Bundle persistenceBundle;
 
-	public JpaWeavingHook(EntityManagerFactoryBuilderImpl factory) {
-		this.factory = factory;
-		this.managedClasses = new HashSet<String>(factory.getPersistenceUnitInfo().getManagedClassNames());
+	private final Collection<ClassTransformer> transformers;
+
+	private final String unitName;
+
+	public JpaWeavingHook(Bundle persistenceBundle, String unitName, Set<String> managedClasses, Collection<ClassTransformer> transformers) {
+
+		this.persistenceBundle = persistenceBundle;
+		this.unitName = unitName;
+		this.transformers = transformers;
+		this.managedClasses = managedClasses;
 	}
 
 	@Override
 	public void weave(WovenClass wovenClass) {
-		if (wovenClass.getBundleWiring().getBundle() == factory.getPersistenceBundle().getBundle()
+
+		if(wovenClass.getBundleWiring().getBundle() == persistenceBundle
 				&& managedClasses.contains(wovenClass.getClassName())) {
-			List<ClassTransformer> transformers = factory.getPersistenceUnitInfo().getClassTransformers();
 			if (transformers.isEmpty()) {
 				return;
 			}
 			try {
 				synchronized (this) {
-					LOG.debug("weaving class {} of persistence unit {}", wovenClass.getClassName(), factory.getPersistenceUnitInfo().getPersistenceUnitName());
+					LOG.debug("weaving class {} of persistence unit {}", wovenClass.getClassName(), unitName);
 					ClassLoader tempClassLoader = wovenClass.getBundleWiring().getClassLoader();
 					boolean woven = false;
 					for (ClassTransformer transformer : transformers) {
