@@ -34,7 +34,7 @@ import javax.sql.DataSource;
 import org.jcp.xmlns.xml.ns.persistence.Persistence;
 import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
-import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
+import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
@@ -103,7 +103,7 @@ public class PersitenceUnitManagedServiceFactory implements ManagedServiceFactor
 		}
 	}
 
-	private static final class FactoryPersistenceUnitInfo extends PersistenceUnitInfoImpl {
+	private static final class FactoryPersistenceUnitInfo extends OSGiPersistenceUnitInfo {
 
 		private ServiceRegistration<PersistenceUnitInfo> registration;
 		private final String pid;

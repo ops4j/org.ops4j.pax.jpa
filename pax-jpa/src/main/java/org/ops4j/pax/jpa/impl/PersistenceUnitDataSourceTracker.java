@@ -27,7 +27,7 @@ import java.util.SortedMap;
 import javax.persistence.spi.PersistenceUnitInfo;
 
 import org.ops4j.pax.jpa.JpaConstants;
-import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
+import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
@@ -56,10 +56,10 @@ public class PersistenceUnitDataSourceTracker implements ServiceTrackerCustomize
 
 		private ServiceTracker<DataSourceFactory, DataSourceFactory> serviceTracker;
 		private final BundleContext bundleContext;
-		private final PersistenceUnitInfoImpl puInfo;
+		private final OSGiPersistenceUnitInfo puInfo;
 		private ServiceReference<DataSourceFactory> reference;
 
-		public PersistenceUnitInfoDataSource(PersistenceUnitInfoImpl puInfo, BundleContext bundleContext) {
+		public PersistenceUnitInfoDataSource(OSGiPersistenceUnitInfo puInfo, BundleContext bundleContext) {
 
 			this.puInfo = puInfo;
 			this.bundleContext = bundleContext;
@@ -146,8 +146,8 @@ public class PersistenceUnitDataSourceTracker implements ServiceTrackerCustomize
 
 		if(reference.getBundle() == bundleContext.getBundle()) {
 			PersistenceUnitInfo unitInfo = bundleContext.getService(reference);
-			if(unitInfo instanceof PersistenceUnitInfoImpl) {
-				PersistenceUnitInfoImpl impl = (PersistenceUnitInfoImpl)unitInfo;
+			if(unitInfo instanceof OSGiPersistenceUnitInfo) {
+				OSGiPersistenceUnitInfo impl = (OSGiPersistenceUnitInfo)unitInfo;
 				return new PersistenceUnitInfoDataSource(impl, bundleContext);
 			}
 		}

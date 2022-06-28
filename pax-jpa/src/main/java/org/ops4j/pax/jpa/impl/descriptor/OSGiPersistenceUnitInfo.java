@@ -14,6 +14,7 @@
 package org.ops4j.pax.jpa.impl.descriptor;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -30,6 +31,7 @@ import javax.sql.DataSource;
 import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
 import org.jcp.xmlns.xml.ns.persistence.PersistenceUnitCachingType;
 import org.jcp.xmlns.xml.ns.persistence.PersistenceUnitValidationModeType;
+import org.ops4j.pax.jpa.impl.EntityManagerFactoryBuilderImpl;
 import org.ops4j.pax.jpa.impl.PersistenceBundle;
 import org.ops4j.pax.jpa.impl.TemporaryBundleClassLoader;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -43,9 +45,9 @@ import org.slf4j.LoggerFactory;
  * @author Christoph Läubrich - move functional code out of this class
  *
  */
-public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
+public class OSGiPersistenceUnitInfo implements PersistenceUnitInfo {
 
-	private static Logger LOG = LoggerFactory.getLogger(PersistenceUnitInfoImpl.class);
+	private static Logger LOG = LoggerFactory.getLogger(OSGiPersistenceUnitInfo.class);
 	private final PersistenceBundle persitenceBundle;
 	private final String version;
 	private final PersistenceUnit persistenceUnit;
@@ -55,7 +57,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	protected volatile PersistenceProvider provider;
 	protected volatile DataSourceFactory dataSourceFactory;
 
-	public PersistenceUnitInfoImpl(PersistenceBundle bundle, String version, PersistenceUnit persistenceUnit, Properties props) {
+	public OSGiPersistenceUnitInfo(PersistenceBundle bundle, String version, PersistenceUnit persistenceUnit, Properties props) {
 
 		this.persitenceBundle = bundle;
 		this.version = version;
@@ -221,6 +223,19 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
 
 		this.dataSourceFactory = dataSourceFactory;
+		if(dataSourceFactory == null) {
+			this.dataSource = null;
+			LOG.info("no DataSourceFactory available, persistence unit {} is incomplete", getName());
+		} else {
+			try {
+				LOG.info("bind persistence unit {} to DataSourceFactory {}", getName(), dataSourceFactory.getClass().getName());
+				this.dataSource = EntityManagerFactoryBuilderImpl.createDataSource(dataSourceFactory, getProperties());
+			} catch(SQLException e) {
+				this.dataSource = null;
+				LOG.error("can't bind datasource", e);
+				return;
+			}
+		}
 	}
 
 	public String getName() {

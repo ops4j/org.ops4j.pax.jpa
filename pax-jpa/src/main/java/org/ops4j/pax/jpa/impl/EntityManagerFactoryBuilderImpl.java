@@ -30,7 +30,7 @@ import javax.sql.DataSource;
 import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
 import org.ops4j.pax.jpa.JpaConstants;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
-import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
+import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
 import org.ops4j.pax.jpa.impl.tracker.DataSourceFactoryServiceTracker;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuilder {
 
 	private static Logger LOG = LoggerFactory.getLogger(EntityManagerFactoryBuilderImpl.class);
-	private final PersistenceUnitInfoImpl puInfo;
+	private final OSGiPersistenceUnitInfo puInfo;
 	private ServiceRegistration<EntityManagerFactoryBuilder> emfBuilderRegistration;
 	private ServiceRegistration<EntityManagerFactory> emfRegistration;
 	private PersistenceProvider persistenceProvider;
@@ -71,7 +71,7 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 
 		this.puProps = new Properties(PersistenceDescriptorParser.parseProperties(persistenceUnit));
 		this.persistenceBundle = persistenceBundle;
-		this.puInfo = new PersistenceUnitInfoImpl(persistenceBundle, schemaVersion, persistenceUnit, puProps);
+		this.puInfo = new OSGiPersistenceUnitInfo(persistenceBundle, schemaVersion, persistenceUnit, puProps);
 		this.jpaBundleContext = jpaBundleContext;
 	}
 
@@ -93,7 +93,7 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 		return persistenceBundle;
 	}
 
-	public PersistenceUnitInfoImpl getPersistenceUnitInfo() {
+	public OSGiPersistenceUnitInfo getPersistenceUnitInfo() {
 
 		return puInfo;
 	}
@@ -180,7 +180,7 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 		//TODO must refresh the whole EMF on property change!
 	}
 
-	private static DataSource createDataSource(DataSourceFactory dataSourceFactory, Properties persitenceProperties)
+	public static DataSource createDataSource(DataSourceFactory dataSourceFactory, Properties persitenceProperties)
 			throws SQLException {
 		String url = persitenceProperties.getProperty(JpaConstants.JPA_URL);
 		String user = persitenceProperties.getProperty(JpaConstants.JPA_USER);

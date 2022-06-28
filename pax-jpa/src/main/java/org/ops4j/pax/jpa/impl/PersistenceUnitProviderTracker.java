@@ -26,7 +26,7 @@ import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
 
 import org.ops4j.pax.jpa.JpaConstants;
-import org.ops4j.pax.jpa.impl.descriptor.PersistenceUnitInfoImpl;
+import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.BundleTracker;
@@ -48,14 +48,14 @@ public class PersistenceUnitProviderTracker implements ServiceTrackerCustomizer<
 
 	final static class PersistenceUnitInfoProvider implements ServiceTrackerCustomizer<PersistenceProvider, PersistenceProvider> {
 
-		private final PersistenceUnitInfoImpl puInfo;
+		private final OSGiPersistenceUnitInfo puInfo;
 		private final ServiceTracker<PersistenceProvider, PersistenceProvider> serviceTracker;
 		private final BundleContext bundleContext;
 		private ServiceReference<PersistenceProvider> reference;
 		private final BundleTracker<PersistenceProviderBundle> bundleTracker;
 		private final PersistenceBundle bundle;
 
-		public PersistenceUnitInfoProvider(PersistenceUnitInfoImpl puInfo, PersistenceBundle bundle, BundleContext bundleContext, BundleTracker<PersistenceProviderBundle> bundleTracker) {
+		public PersistenceUnitInfoProvider(OSGiPersistenceUnitInfo puInfo, PersistenceBundle bundle, BundleContext bundleContext, BundleTracker<PersistenceProviderBundle> bundleTracker) {
 
 			this.puInfo = puInfo;
 			this.bundle = bundle;
@@ -149,8 +149,8 @@ public class PersistenceUnitProviderTracker implements ServiceTrackerCustomizer<
 
 		if(reference.getBundle() == bundleContext.getBundle()) {
 			PersistenceUnitInfo unitInfo = bundleContext.getService(reference);
-			if(unitInfo instanceof PersistenceUnitInfoImpl) {
-				PersistenceUnitInfoImpl impl = (PersistenceUnitInfoImpl)unitInfo;
+			if(unitInfo instanceof OSGiPersistenceUnitInfo) {
+				OSGiPersistenceUnitInfo impl = (OSGiPersistenceUnitInfo)unitInfo;
 				return new PersistenceUnitInfoProvider(impl, persistenceBundle, bundleContext, bundleTracker);
 			}
 		}
