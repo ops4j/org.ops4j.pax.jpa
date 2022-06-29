@@ -29,11 +29,12 @@ import javax.sql.DataSource;
 
 import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
 import org.ops4j.pax.jpa.JpaConstants;
-import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
 import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
+import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
 import org.ops4j.pax.jpa.impl.tracker.DataSourceFactoryServiceTracker;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.jpa.EntityManagerFactoryBuilder;
@@ -314,5 +315,23 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 	public Properties getPersistenceProperties() {
 
 		return puProps;
+	}
+
+	@Override
+	public String getPersistenceProviderName() {
+
+		if(persistenceProvider == null) {
+			throw new IllegalStateException();
+		}
+		return persistenceProvider.getClass().getName();
+	}
+
+	@Override
+	public Bundle getPersistenceProviderBundle() {
+
+		if(persistenceProvider == null) {
+			throw new IllegalStateException();
+		}
+		return FrameworkUtil.getBundle(persistenceProvider.getClass());
 	}
 }

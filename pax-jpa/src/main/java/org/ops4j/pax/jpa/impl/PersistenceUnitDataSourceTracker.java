@@ -27,6 +27,7 @@ import java.util.SortedMap;
 import javax.persistence.spi.PersistenceUnitInfo;
 
 import org.ops4j.pax.jpa.JpaConstants;
+import org.ops4j.pax.jpa.impl.descriptor.DataSourceFactoryDescriptor;
 import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -68,7 +69,7 @@ public class PersistenceUnitDataSourceTracker implements ServiceTrackerCustomize
 				// spec-ref : non standard behavior, acquire the desired DataSource
 				// from the JNDI registry instead of the DataSourceFactory Service
 				LOG.info("binding persistence unit {} to JNDI DataSource {}, {}.", new Object[]{puInfo.getPersistenceUnitName(), jndiDataSourceName, PaxJPA.getPromotion(455)});
-				puInfo.setDataSourceFactory(new JndiDataSourceFactory(jndiDataSourceName));
+				puInfo.setDataSourceFactory(new JndiDataSourceFactory(jndiDataSourceName), new DataSourceFactoryDescriptor(JndiDataSourceFactory.class.getName(), jndiDataSourceName, null));
 			} else {
 				String driver = puInfo.getProperties().getProperty(JpaConstants.JPA_DRIVER);
 				if(driver == null || driver.isEmpty()) {
@@ -109,7 +110,7 @@ public class PersistenceUnitDataSourceTracker implements ServiceTrackerCustomize
 			this.reference = reference;
 			LOG.info("Bind DataSourceFactory {}(of type {}) to persistence unit {}...", new Object[]{reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS), dataSourceFactory.getClass()
 					.getName(), puInfo.getName()});
-			puInfo.setDataSourceFactory(dataSourceFactory);
+			puInfo.setDataSourceFactory(dataSourceFactory, new DataSourceFactoryDescriptor(reference));
 		}
 
 		@Override

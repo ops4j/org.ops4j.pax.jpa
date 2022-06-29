@@ -47,7 +47,11 @@ import org.slf4j.LoggerFactory;
  */
 public class OSGiPersistenceUnitInfo implements PersistenceUnitInfo {
 
-	private static Logger LOG = LoggerFactory.getLogger(OSGiPersistenceUnitInfo.class);
+	public static final String SERVICE_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider";
+	public static final String SERVICE_PROPERTY_DATA_SOURCE_FACTORY = "dataSourceFactory";
+	public static final String SERVICE_PROPERTY_DATA_SOURCE = "dataSource";
+
+	private static final Logger LOG = LoggerFactory.getLogger(OSGiPersistenceUnitInfo.class);
 	private final PersistenceBundle persitenceBundle;
 	private final String version;
 	private final PersistenceUnit persistenceUnit;
@@ -56,6 +60,7 @@ public class OSGiPersistenceUnitInfo implements PersistenceUnitInfo {
 	protected volatile DataSource dataSource;
 	protected volatile PersistenceProvider provider;
 	protected volatile DataSourceFactory dataSourceFactory;
+	protected volatile DataSourceFactoryDescriptor dataSourceFactoryDescriptor;
 
 	public OSGiPersistenceUnitInfo(PersistenceBundle bundle, String version, PersistenceUnit persistenceUnit, Properties props) {
 
@@ -220,11 +225,18 @@ public class OSGiPersistenceUnitInfo implements PersistenceUnitInfo {
 		this.dataSource = dataSource;
 	}
 
-	public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
+	public DataSourceFactoryDescriptor getDataSourceFactoryDescriptor() {
+
+		return dataSourceFactoryDescriptor;
+	}
+
+	public void setDataSourceFactory(DataSourceFactory dataSourceFactory, DataSourceFactoryDescriptor descriptor) {
 
 		this.dataSourceFactory = dataSourceFactory;
+		this.dataSourceFactoryDescriptor = descriptor;
 		if(dataSourceFactory == null) {
 			this.dataSource = null;
+			this.dataSourceFactoryDescriptor = null;
 			LOG.info("no DataSourceFactory available, persistence unit {} is incomplete", getName());
 		} else {
 			try {
@@ -232,6 +244,7 @@ public class OSGiPersistenceUnitInfo implements PersistenceUnitInfo {
 				this.dataSource = EntityManagerFactoryBuilderImpl.createDataSource(dataSourceFactory, getProperties());
 			} catch(SQLException e) {
 				this.dataSource = null;
+				this.dataSourceFactoryDescriptor = null;
 				LOG.error("can't bind datasource", e);
 				return;
 			}

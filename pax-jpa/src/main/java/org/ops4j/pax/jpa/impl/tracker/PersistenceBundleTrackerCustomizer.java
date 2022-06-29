@@ -41,9 +41,11 @@ import org.ops4j.pax.jpa.impl.PaxJPA;
 import org.ops4j.pax.jpa.impl.PersistenceBundle;
 import org.ops4j.pax.jpa.impl.PersistenceProviderBundle;
 import org.ops4j.pax.jpa.impl.PersistenceUnitDataSourceTracker;
-import org.ops4j.pax.jpa.impl.PersistenceUnitPropertyManagedService;
+import org.ops4j.pax.jpa.impl.PersistenceUnitEntityManagerFactory;
 import org.ops4j.pax.jpa.impl.PersistenceUnitProviderTracker;
-import org.ops4j.pax.jpa.impl.PersitenceUnitManagedServiceFactory;
+import org.ops4j.pax.jpa.impl.cm.PersistenceUnitPropertyManagedService;
+import org.ops4j.pax.jpa.impl.cm.PersitenceUnitManagedServiceFactory;
+import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -149,6 +151,10 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 										.getClassTransformers()), null));
 						persistenceBundle.addTracker(new PersistenceUnitDataSourceTracker(bundleContext), PersistenceUnitInfo.class, bundleContext);
 						persistenceBundle.addTracker(new PersistenceUnitProviderTracker(bundleContext, bundleTracker, persistenceBundle), PersistenceUnitInfo.class, bundleContext);
+						// We are tracking all PersistenceUnitInfos that have a datasource and a provider set
+						String emfFilter="(&(" + Constants.OBJECTCLASS + "=" + PersistenceUnitInfo.class
+								.getName() + ")(" + OSGiPersistenceUnitInfo.SERVICE_PROPERTY_DATA_SOURCE + "=*)(" + OSGiPersistenceUnitInfo.SERVICE_PROPERTY_PERSISTENCE_PROVIDER + "=*))";
+						persistenceBundle.addTracker(new PersistenceUnitEntityManagerFactory(bundleContext, persistenceBundle), emfFilter, bundleContext);
 						for (PersistenceProviderBundle providerBundle : persistenceProvider) {
 							if (providerBundle.assignTo(factory)) {
 								persistenceBundle.addEntityManagerFactoryBuilder(factory);

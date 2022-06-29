@@ -23,19 +23,24 @@ package org.ops4j.pax.jpa.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.persistence.spi.ClassTransformer;
 
+import org.ops4j.pax.jpa.impl.PersistenceUnitEntityManagerFactory.EntityManagerFactoryContainer;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.util.tracker.ServiceTracker;
@@ -62,6 +67,7 @@ public class PersistenceBundle {
 	private final AtomicBoolean refreshing = new AtomicBoolean();
 	private BundleClassLoader classLoader;
 	private final Set<ClassTransformer> classTransformers = new CopyOnWriteArraySet<>();
+	private final Map<PersistenceBundleService<?>, PBSState<?>> bundleServices = new ConcurrentHashMap<>();
 
 	public PersistenceBundle(Bundle bundle) {
 
@@ -97,9 +103,15 @@ public class PersistenceBundle {
 			for(EntityManagerFactoryBuilderImpl factory : factories) {
 				factory.activate();
 			}
+			for(PBSState<?> state : bundleServices.values()) {
+				state.activate();
+			}
 		} else {
 			for(EntityManagerFactoryBuilderImpl factory : factories) {
 				factory.deactivate();
+			}
+			for(PBSState<?> state : bundleServices.values()) {
+				state.deactivate();
 			}
 		}
 	}
@@ -129,6 +141,20 @@ public class PersistenceBundle {
 	public <S, T> ServiceTracker<S, T> addTracker(ServiceTrackerCustomizer<S, T> customizer, Class<S> service, BundleContext context) {
 
 		ServiceTracker<S, T> tracker = new ServiceTracker<>(context, service, customizer);
+		trackers.add(tracker);
+		tracker.open();
+		return tracker;
+	}
+
+	public <S, T> ServiceTracker<S, T> addTracker(ServiceTrackerCustomizer<S, T> customizer, String filter, BundleContext context) {
+
+		ServiceTracker<S, T> tracker;
+		try {
+			tracker = new ServiceTracker<>(context, context.createFilter(filter), customizer);
+		} catch(InvalidSyntaxException e) {
+			throw new RuntimeException("can't create filter!", e);
+		}
+		trackers.add(tracker);
 		tracker.open();
 		return tracker;
 	}
@@ -178,6 +204,63 @@ public class PersistenceBundle {
 			refreshing.set(false);
 			LOG.debug("... packages for bundle {} refreshed", PaxJPA.getBundleName(bundle));
 			stateChanged();
+		}
+	}
+
+	public void addBundleService(PersistenceBundleService<?> bundleService) {
+
+		@SuppressWarnings("unchecked")
+		PBSState<?> state = bundleServices.computeIfAbsent(bundleService, PBSState::new);
+		if(isReady()) {
+			state.activate();
+		}
+	}
+
+	public void removeBundleService(EntityManagerFactoryContainer container) {
+
+		PBSState<?> remove = bundleServices.remove(container);
+		if(remove != null) {
+			remove.dispose();
+		}
+		container.dispose();
+	}
+
+	private final class PBSState<T> {
+
+		private final PersistenceBundleService<T> serviceProvider;
+		private boolean disposed;
+		private ServiceRegistration<T> serviceRegistration;
+
+		PBSState(PersistenceBundleService<T> serviceProvider) {
+
+			this.serviceProvider = serviceProvider;
+		}
+
+		public synchronized void deactivate() {
+
+			if(serviceRegistration != null) {
+				PaxJPA.unregister(serviceRegistration);
+				serviceRegistration=null;
+			}
+			
+		}
+
+		public synchronized void dispose() {
+
+			disposed = true;
+			deactivate();
+		}
+
+		public synchronized void activate() {
+
+			if(disposed) {
+				return;
+			}
+			BundleContext bundleContext = getBundle().getBundleContext();
+			if(bundleContext == null || serviceRegistration != null) {
+				return;
+			}
+			serviceRegistration = bundleContext.registerService(serviceProvider.getType(), serviceProvider.getService(), FrameworkUtil.asDictionary(serviceProvider.getProperties()));
 		}
 	}
 }

@@ -18,12 +18,13 @@
  * Contributors:
  * Christoph Läubrich - initial API and implementation
  *******************************************************************************/
-package org.ops4j.pax.jpa.impl;
+package org.ops4j.pax.jpa.impl.cm;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.ops4j.pax.jpa.impl.EntityManagerFactoryBuilderImpl;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 

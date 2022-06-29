@@ -18,11 +18,11 @@
  * Contributors:
  * Christoph Läubrich - initial API and implementation
  *******************************************************************************/
-package org.ops4j.pax.jpa.impl;
+package org.ops4j.pax.jpa.impl.cm;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,10 +33,14 @@ import javax.sql.DataSource;
 
 import org.jcp.xmlns.xml.ns.persistence.Persistence;
 import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
-import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
+import org.ops4j.pax.jpa.impl.PaxJPA;
+import org.ops4j.pax.jpa.impl.PersistenceBundle;
+import org.ops4j.pax.jpa.impl.descriptor.DataSourceFactoryDescriptor;
 import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
+import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
@@ -122,17 +126,23 @@ public class PersitenceUnitManagedServiceFactory implements ManagedServiceFactor
 
 		private void update() {
 
-			Hashtable<String, Object> properties = new Hashtable<>();
+			if(registration == null) {
+				return;
+			}
+			Map<String, Object> properties = new HashMap<>();
 			if(dataSource != null) {
-				properties.put("dataSource", dataSource.getClass().getName());
+				properties.put(SERVICE_PROPERTY_DATA_SOURCE, dataSource.getClass().getName());
 			}
 			if(dataSourceFactory != null) {
-				properties.put("dataSourceFactory", dataSourceFactory.getClass().getName());
+				properties.put(SERVICE_PROPERTY_DATA_SOURCE_FACTORY, dataSourceFactory.getClass().getName());
+				if(dataSourceFactoryDescriptor != null) {
+					dataSourceFactoryDescriptor.update(properties);
+				}
 			}
 			if(provider != null) {
-				properties.put("provider", provider.getClass().getName());
+				properties.put(SERVICE_PROPERTY_PERSISTENCE_PROVIDER, provider.getClass().getName());
 			}
-			registration.setProperties(properties);
+			registration.setProperties(FrameworkUtil.asDictionary(properties));
 		}
 
 		void dispose() {
@@ -155,9 +165,9 @@ public class PersitenceUnitManagedServiceFactory implements ManagedServiceFactor
 		}
 
 		@Override
-		public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
+		public void setDataSourceFactory(DataSourceFactory dataSourceFactory, DataSourceFactoryDescriptor descriptor) {
 
-			super.setDataSourceFactory(dataSourceFactory);
+			super.setDataSourceFactory(dataSourceFactory, descriptor);
 			update();
 		}
 
