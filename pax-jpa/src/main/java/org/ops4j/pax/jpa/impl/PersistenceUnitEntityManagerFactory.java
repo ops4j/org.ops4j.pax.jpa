@@ -21,12 +21,15 @@
 package org.ops4j.pax.jpa.impl;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
 
+import org.ops4j.pax.jpa.JpaConstants;
 import org.ops4j.pax.jpa.impl.descriptor.DataSourceFactoryDescriptor;
 import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
 import org.osgi.framework.BundleContext;
@@ -62,6 +65,22 @@ public class PersistenceUnitEntityManagerFactory implements ServiceTrackerCustom
 				return false;
 			}
 			try {
+				if(LOG.isDebugEnabled()) {
+					Properties properties = persistenceUnit.getProperties();
+					Map<String, String> props = new LinkedHashMap<>();
+					for(String name : properties.stringPropertyNames()) {
+						String value;
+						if(JpaConstants.JPA_PASSWORD.equals(name)) {
+							value = "*******";
+						} else {
+							value = properties.getProperty(name);
+						}
+						props.put(name, value);
+					}
+					LOG.info("Create EntityManagerFactory for persistence unit {} with properties {}", persistenceUnit.getPersistenceUnitName(), props);
+				} else {
+					LOG.info("Create EntityManagerFactory for persistence unit {}...", persistenceUnit.getPersistenceUnitName());
+				}
 				managerFactory = persistenceProvider.createContainerEntityManagerFactory(persistenceUnit, Map.of());
 				serviceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_NAME, persistenceUnit.getPersistenceUnitName());
 				serviceProps.put(EntityManagerFactoryBuilder.JPA_UNIT_VERSION, version);

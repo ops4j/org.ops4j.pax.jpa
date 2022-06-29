@@ -33,6 +33,7 @@ import javax.sql.DataSource;
 
 import org.jcp.xmlns.xml.ns.persistence.Persistence;
 import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
+import org.ops4j.pax.jpa.JpaConstants;
 import org.ops4j.pax.jpa.impl.PaxJPA;
 import org.ops4j.pax.jpa.impl.PersistenceBundle;
 import org.ops4j.pax.jpa.impl.descriptor.DataSourceFactoryDescriptor;
@@ -111,11 +112,28 @@ public class PersitenceUnitManagedServiceFactory implements ManagedServiceFactor
 
 		private ServiceRegistration<PersistenceUnitInfo> registration;
 		private final String pid;
+		private final String unitName;
 
 		public FactoryPersistenceUnitInfo(String pid, PersistenceBundle bundle, String version, PersistenceUnit persistenceUnit, Properties props) {
 
 			super(bundle, version, persistenceUnit, props);
 			this.pid = pid;
+			unitName = getUnitName(pid, persistenceUnit, props);
+		}
+
+		private static String getUnitName(String pid, PersistenceUnit persistenceUnit, Properties props) {
+
+			String name = props.getProperty(JpaConstants.PU_NAME);
+			if(name != null) {
+				return name;
+			}
+			String baseName = persistenceUnit.getName();
+			int indexOf = pid.lastIndexOf(baseName);
+			if(indexOf > 0) {
+				String suffix = pid.substring(indexOf + baseName.length());
+				return baseName + suffix;
+			}
+			return baseName + "-" + pid;
 		}
 
 		void init(ServiceRegistration<PersistenceUnitInfo> registration) {
@@ -169,6 +187,12 @@ public class PersitenceUnitManagedServiceFactory implements ManagedServiceFactor
 
 			super.setDataSourceFactory(dataSourceFactory, descriptor);
 			update();
+		}
+
+		@Override
+		public String getPersistenceUnitName() {
+
+			return unitName;
 		}
 
 		@Override

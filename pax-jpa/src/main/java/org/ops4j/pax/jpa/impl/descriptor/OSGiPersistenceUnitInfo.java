@@ -67,7 +67,7 @@ public class OSGiPersistenceUnitInfo implements PersistenceUnitInfo {
 		this.persitenceBundle = bundle;
 		this.version = version;
 		this.persistenceUnit = persistenceUnit;
-		this.persitenceProperties = new Properties(props);
+		this.persitenceProperties = props;
 		org.jcp.xmlns.xml.ns.persistence.PersistenceUnitTransactionType xmlTransactionType = persistenceUnit.getTransactionType();
 		transactionType = xmlTransactionType == null ? PersistenceUnitTransactionType.RESOURCE_LOCAL : PersistenceUnitTransactionType.valueOf(xmlTransactionType.toString());
 	}
@@ -156,7 +156,19 @@ public class OSGiPersistenceUnitInfo implements PersistenceUnitInfo {
 	@Override
 	public Properties getProperties() {
 
-		return persitenceProperties;
+		// we copy here for two reasons:
+		// 1. not allow anyone to modify our internal Properties
+		// 2. someone might use the Properties as a map, what has undesired results, see for example:
+		// https://github.com/eclipse-ee4j/eclipselink/issues/1564
+		Properties properties = new Properties();
+		for(String name : persitenceProperties.stringPropertyNames()) {
+			String value = persitenceProperties.getProperty(name);
+			if(value == null) {
+				continue;
+			}
+			properties.setProperty(name, value);
+		}
+		return properties;
 	}
 
 	@Override
