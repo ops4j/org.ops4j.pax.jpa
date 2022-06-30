@@ -459,31 +459,6 @@
 					</executions>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>verify-style</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>check</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<configLocation>checkstyle/pax-exam-checks.xml</configLocation>
-						<!-- suppress Checkstyle warnings from patched hibernate-osgi copy -->
-						<excludes>**/org/hibernate/**</excludes>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>org.ops4j.pax.exam</groupId>
-							<artifactId>pax-exam-checkstyle-rules</artifactId>
-							<version>${pax.exam.version}</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>${lifecycle-mapping.version}</version>
