@@ -33,7 +33,7 @@
 		<slf4j.version>1.6.4</slf4j.version>
 		<lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
 		<pax.jpa.wiki.url>https://github.com/ops4j/org.ops4j.pax.jpa/wiki</pax.jpa.wiki.url>
-		<org.apache.derby_derby.version>10.8.2.2</org.apache.derby_derby.version>
+		<org.apache.derby_derby.version>10.16.1.1</org.apache.derby_derby.version>
 		<org.apache.xbean_xbean-asm5-shaded.version>3.18</org.apache.xbean_xbean-asm5-shaded.version>
 		<org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>1.1.1</org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>
 		<commons-lang_commons-lang.version>2.6</commons-lang_commons-lang.version>
