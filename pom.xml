@@ -56,6 +56,15 @@
 		<!--  <module>pax-jpa-itest</module> -->
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>tck</id>
+			<modules>
+				<module>pax-jpa-tck</module>
+			</modules>
+		</profile>
+	</profiles>
+
 	<dependencyManagement>
 		<dependencies>
 
