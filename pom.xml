@@ -29,7 +29,7 @@
 		<pax.exam.version>4.3.0</pax.exam.version>
 		<pax.jdbc.version>0.6.0</pax.jdbc.version>
 		<pax.swissbox.version>1.8.0</pax.swissbox.version>
-		<pax.url.version>2.2.0</pax.url.version>
+		<pax.url.version>2.6.1</pax.url.version>
 		<slf4j.version>1.6.4</slf4j.version>
 		<lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
 		<pax.jpa.wiki.url>https://github.com/ops4j/org.ops4j.pax.jpa/wiki</pax.jpa.wiki.url>
