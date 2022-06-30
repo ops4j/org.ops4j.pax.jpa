@@ -21,7 +21,10 @@ Checkout:
 Run Build:
 
     mvn clean install
+    
+Run TCK:
 
+    mvn clean install -Ptck
 
 ## Releases
 
