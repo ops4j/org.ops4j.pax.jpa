@@ -37,7 +37,7 @@
 		<org.apache.xbean_xbean-asm5-shaded.version>3.18</org.apache.xbean_xbean-asm5-shaded.version>
 		<org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>1.1.1</org.apache.geronimo.specs_geronimo-jta_1.1_spec.version>
 		<commons-lang_commons-lang.version>2.6</commons-lang_commons-lang.version>
-		<jakarta.xml.version>3.0.0</jakarta.xml.version>
+		<jakarta.xml.version>4.0.0</jakarta.xml.version>
 		<osgi.test.version>1.1.0</osgi.test.version>
 		<junit.version>5.8.2</junit.version>
 		<bnd.version>6.2.0</bnd.version>
