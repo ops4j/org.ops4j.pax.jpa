@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.ops4j</groupId>
@@ -30,7 +32,7 @@
 		<pax.jdbc.version>0.6.0</pax.jdbc.version>
 		<pax.swissbox.version>1.8.0</pax.swissbox.version>
 		<pax.url.version>2.2.0</pax.url.version>
-		<slf4j.version>1.6.4</slf4j.version>
+		<slf4j.version>1.7.0</slf4j.version>
 		<lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
 		<pax.jpa.wiki.url>https://github.com/ops4j/org.ops4j.pax.jpa/wiki</pax.jpa.wiki.url>
 		<org.apache.derby_derby.version>10.8.2.2</org.apache.derby_derby.version>
@@ -240,7 +242,8 @@
 			<dependency>
 				<groupId>org.apache.geronimo.specs</groupId>
 				<artifactId>geronimo-jta_1.1_spec</artifactId>
-				<version>${org.apache.geronimo.specs_geronimo-jta_1.1_spec.version}</version>
+				<version>
+					${org.apache.geronimo.specs_geronimo-jta_1.1_spec.version}</version>
 			</dependency>
 
 			<dependency>
@@ -392,7 +395,7 @@
 			<dependency>
 				<groupId>com.sun.xml.bind</groupId>
 				<artifactId>jaxb-impl</artifactId>
-				<version>${jakarta.xml.version}</version>
+				<version>4.0.5</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -529,22 +532,24 @@
 			<name>Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
 			<comments>
-                Copyright 2012 Harald Wellmann
+				Copyright 2012 Harald Wellmann
 
-                Licensed under the Apache License, Version 2.0 (the "License");
-                you may not use this file except in compliance with the License.
-                You may obtain a copy of the License at
+				Licensed under the Apache License, Version 2.0 (the "License");
+				you may not use this file except in compliance with the License.
+				You may obtain a copy of the License at
+				http://www.apache.org/licenses/LICENSE-2.0
 
-                http://www.apache.org/licenses/LICENSE-2.0
+				Unless required by applicable law or agreed to in writing,
+				software
+				distributed under the License is distributed on an "AS IS"
+				BASIS,
+				WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+				implied.
 
-                Unless required by applicable law or agreed to in writing, software
-                distributed under the License is distributed on an "AS IS" BASIS,
-                WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-                implied.
-
-                See the License for the specific language governing permissions and
-                limitations under the License.
-            </comments>
+				See the License for the specific language governing permissions
+				and
+				limitations under the License.
+			</comments>
 		</license>
 	</licenses>
 
