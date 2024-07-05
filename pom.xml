@@ -41,7 +41,7 @@
 		<commons-lang_commons-lang.version>2.6</commons-lang_commons-lang.version>
 		<jakarta.xml.version>4.0.0</jakarta.xml.version>
 		<osgi.test.version>1.1.0</osgi.test.version>
-		<junit.version>5.8.2</junit.version>
+		<junit.version>5.10.3</junit.version>
 		<bnd.version>6.2.0</bnd.version>
 	</properties>
 
