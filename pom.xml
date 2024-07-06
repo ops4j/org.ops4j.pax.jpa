@@ -54,8 +54,6 @@
 
 	<modules>
 		<module>pax-jpa</module>
-		<module>pax-jpa-samples</module>
-		<!--  <module>pax-jpa-itest</module> -->
 	</modules>
 
 	<profiles>
