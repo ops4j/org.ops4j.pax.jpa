@@ -112,6 +112,14 @@
 			<artifactId>org.osgi.service.cm</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		<!-- see https://github.com/osgi/osgi/issues/733 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>2.2.224</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.test.cases.jpa</artifactId>
