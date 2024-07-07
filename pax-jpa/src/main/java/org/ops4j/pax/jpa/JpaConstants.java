@@ -41,6 +41,7 @@ public class JpaConstants {
 	// Non standard extension!
 	public static final String PU_TENANT = "pax.osgi.unit.tenant";
 	public static final String NESTED_JAR_SEPERATOR = "!/";
+	public static final String JAVAX_PERSISTENCE_DATA_SOURCE = "javax.persistence.dataSource";
     
 
     /** Hidden utility class constructor. */
