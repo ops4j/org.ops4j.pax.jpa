@@ -74,7 +74,7 @@
 					<![CDATA[
 						Bundle-Activator: org.ops4j.pax.jpa.impl.PaxJPA
 						Bundle-SymbolicName: org.ops4j.pax.jpa
-						Import-Package: javax.persistence.*;version="[1.1,3)", org.slf4j;version="[1.7,3)", org.osgi.service.jdbc;version="[1,2)", *
+						Import-Package: javax.persistence.*;version="[1.1,3)", org.slf4j;version="[1.7,3)", org.osgi.service.jdbc;version="[1,2)", jakarta.xml.*;version="[4,5)", *
 						Export-Package: org.ops4j.pax.jpa;version="1.0.0", org.osgi.service.jpa;version="1.1.1";uses:="javax.persistence,org.osgi.framework",org.osgi.service.jpa.annotations;version="1.1"
 						Bundle-DocURL: ${pax.jpa.wiki.url}
 						Bundle-Description: ${project.name}
