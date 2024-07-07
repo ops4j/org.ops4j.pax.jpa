@@ -1,7 +1,8 @@
 -runtrace: true
 
 -runproperties = \
-    report='true'
+    report='true', \
+    pax.jpa.registerSpiProviderAsService=true
     
 -runstartlevel: \
     order=sortbynameversion,\

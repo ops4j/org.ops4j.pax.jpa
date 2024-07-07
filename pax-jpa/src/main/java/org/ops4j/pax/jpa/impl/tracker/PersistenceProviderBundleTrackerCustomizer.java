@@ -64,7 +64,7 @@ public class PersistenceProviderBundleTrackerCustomizer implements BundleTracker
 			Iterator<PersistenceProvider> iterator = serviceLoader.iterator();
 			Map<String, PersistenceProvider> list = new LinkedHashMap<>();
 			while (iterator.hasNext()) {
-				PersistenceProvider persistenceProvider = (PersistenceProvider) iterator.next();
+				PersistenceProvider persistenceProvider = iterator.next();
 				LOG.debug("loaded PersistenceProvider {} from bundle {}", persistenceProvider.getClass().getName(), bundleName);
 				list.put(persistenceProvider.getClass().getName(), persistenceProvider);
 			}
@@ -79,6 +79,7 @@ public class PersistenceProviderBundleTrackerCustomizer implements BundleTracker
 	public void modifiedBundle(Bundle bundle, BundleEvent event, PersistenceProviderBundle providerBundle) {
 
 		// nothing to do here
+		providerBundle.update();
 	}
 
 	@Override
