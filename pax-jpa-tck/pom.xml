@@ -9,8 +9,9 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<bnd.version>6.4.0-SNAPSHOT</bnd.version>
+		<bnd.version>7.0.0</bnd.version>
 		<org.eclipse.osgi.version>3.17.200</org.eclipse.osgi.version>
+		<eclipselink.version>2.4.2</eclipselink.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -21,19 +22,6 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>bnd-snapshots</id>
-			<url>https://bndtools.jfrog.io/bndtools/libs-snapshot/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 	<build>
 		<plugins>
 			<plugin>
@@ -85,20 +73,17 @@
 			<groupId>org.ops4j.pax.jpa</groupId>
 			<artifactId>pax-jpa</artifactId>
 			<version>${project.version}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.activation</groupId>
-			<artifactId>jakarta.activation</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-jpa_2.2_spec</artifactId>
-			<version>1.1</version>
+		    <groupId>org.osgi</groupId>
+		    <artifactId>org.osgi.service.jdbc</artifactId>
+		    <scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>
@@ -106,14 +91,10 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>org.eclipse.persistence.jpa</artifactId>
-			<scope>provided</scope>
+			<version>${eclipselink.version}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.hk2</groupId>
@@ -128,19 +109,21 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.service.jpa</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.service.cm</artifactId>
-			<version>1.6.1</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.test.cases.jpa</artifactId>
-			<version>8.0.0-SNAPSHOT</version>
+			<version>8.1.0</version>
 			<!--			<scope>runtime</scope>-->
+			<!-- See https://github.com/osgi/osgi/issues/731 -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.osgi</groupId>
+					<artifactId>org.osgi.service.jpa</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
@@ -149,14 +132,9 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.util.function</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.util.promise</artifactId>
-			<version>1.2.0</version>
+		    <groupId>com.sun.xml.bind</groupId>
+		    <artifactId>jaxb-impl</artifactId>
+		    <version>4.0.5</version>
 		</dependency>
 	</dependencies>
 </project>
