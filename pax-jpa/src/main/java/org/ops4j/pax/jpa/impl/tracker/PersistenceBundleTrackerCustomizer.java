@@ -24,6 +24,7 @@ import static org.ops4j.pax.jpa.JpaConstants.JPA_MANIFEST_HEADER;
 import static org.ops4j.pax.jpa.JpaConstants.JPA_PERSISTENCE_XML;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -35,6 +36,7 @@ import javax.persistence.spi.PersistenceUnitInfo;
 
 import org.jcp.xmlns.xml.ns.persistence.Persistence;
 import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
+import org.ops4j.pax.jpa.JpaConstants;
 import org.ops4j.pax.jpa.impl.EntityManagerFactoryBuilderImpl;
 import org.ops4j.pax.jpa.impl.JpaWeavingHook;
 import org.ops4j.pax.jpa.impl.PaxJPA;
@@ -192,14 +194,27 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 		boolean defaultUrlFound = false;
 		List<URL> urls = new ArrayList<>();
 		String[] parts = value.split(",\\s*");
-		for (String part : parts) {
+		for(String part : parts) {
 			String resource = part.trim();
-			if (!resource.isEmpty()) {
-				URL url = bundle.getEntry(resource);
-				if (url != null) {
-					urls.add(url);
-					if (url.equals(defaultUrl)) {
-						defaultUrlFound = true;
+			if(!resource.isEmpty()) {
+				String[] split = resource.split(JpaConstants.NESTED_JAR_SEPERATOR, 2);
+				if(split.length == 2) {
+					// 127.4.2 Meta Persistence Header
+					// Paths in the Meta-Persistence header can reference JAR files that are nested in the bundle by using the !/ jar: URL syntax to separate the JAR file from the path within the JAR
+					URL entry = bundle.getEntry(split[0]);
+					if(entry != null) {
+						try {
+							urls.add(new URL("jar:" + entry + JpaConstants.NESTED_JAR_SEPERATOR + split[1]));
+						} catch(MalformedURLException e) {
+						}
+					}
+				} else {
+					URL url = bundle.getEntry(resource);
+					if(url != null) {
+						urls.add(url);
+						if(url.equals(defaultUrl)) {
+							defaultUrlFound = true;
+						}
 					}
 				}
 			}
