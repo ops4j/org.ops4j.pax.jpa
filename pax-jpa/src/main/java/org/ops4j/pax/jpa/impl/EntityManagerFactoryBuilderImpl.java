@@ -31,6 +31,7 @@ import org.jcp.xmlns.xml.ns.persistence.Persistence.PersistenceUnit;
 import org.ops4j.pax.jpa.JpaConstants;
 import org.ops4j.pax.jpa.impl.descriptor.OSGiPersistenceUnitInfo;
 import org.ops4j.pax.jpa.impl.descriptor.PersistenceDescriptorParser;
+import org.ops4j.pax.jpa.impl.descriptor.ProxyPersitenceUnitInfo;
 import org.ops4j.pax.jpa.impl.tracker.DataSourceFactoryServiceTracker;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -79,15 +80,22 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 	@Override
 	public synchronized EntityManagerFactory createEntityManagerFactory(Map<String, Object> props) {
 		Properties userProperties = new Properties(puInfo.getProperties());
+		ProxyPersitenceUnitInfo info = new ProxyPersitenceUnitInfo(puInfo);
 		for (Entry<String, Object> entry : props.entrySet()) {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 			if (value instanceof String) {
 				userProperties.setProperty(key, (String) value);
 			}
+			if(JpaConstants.JAVAX_PERSISTENCE_DATA_SOURCE.equals(key)) {
+				if(value instanceof DataSource source) {
+					// see https://github.com/osgi/osgi/issues/735
+					info.setDataSource(source);
+				}
+			}
 		}
 		// TODO we must check for rebinding/create a datasource/register as service!
-		return persistenceProvider.createContainerEntityManagerFactory(puInfo, props);
+		return persistenceProvider.createContainerEntityManagerFactory(info, userProperties);
 	}
 
 	public PersistenceBundle getPersistenceBundle() {
