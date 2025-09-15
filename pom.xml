@@ -22,7 +22,7 @@
 		<osgi.jpa.version>1.1.1</osgi.jpa.version>
 		<osgi.jdbc.version>1.1.0</osgi.jdbc.version>
 		<osgi.cm.version>1.6.1</osgi.cm.version>
-		<jakarta.xml.version>4.0.2</jakarta.xml.version>
+		<jakarta.xml.version>4.0.4</jakarta.xml.version>
 		<javax.persistence.version>1.1</javax.persistence.version>
 		<slf4j.version>1.7.0</slf4j.version>
 		<pax.jpa.wiki.url>https://github.com/ops4j/org.ops4j.pax.jpa/wiki</pax.jpa.wiki.url>
