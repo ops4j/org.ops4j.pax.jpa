@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<bnd.version>7.0.0</bnd.version>
+		<bnd.version>7.1.0</bnd.version>
 		<org.eclipse.osgi.version>3.23.200</org.eclipse.osgi.version>
 		<eclipselink.version>2.4.2</eclipselink.version>
 	</properties>
