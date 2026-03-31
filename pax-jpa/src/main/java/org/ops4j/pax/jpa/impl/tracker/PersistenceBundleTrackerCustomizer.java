@@ -54,6 +54,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.Constants;
 import org.osgi.framework.hooks.weaving.WeavingHook;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRequirement;
+import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.util.tracker.BundleTracker;
@@ -92,6 +95,13 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 		Dictionary<String, String> headers = bundle.getHeaders("");
 		String persistenceHeader = headers.get(JPA_MANIFEST_HEADER);
 		if (persistenceHeader != null) {
+			// Spec-Ref 127.7.1: check if the bundle's osgi.extender
+			// requirement for osgi.jpa is wired to this extender
+			if (!isWiredToThisExtender(bundle)) {
+				LOG.info("persistence bundle {} has osgi.extender=osgi.jpa requirement wired to a different provider, ignoring",
+						PaxJPA.getBundleName(bundle));
+				return null;
+			}
 			LOG.info("discovered persistence bundle {} ({} = {})",
 					new Object[] { PaxJPA.getBundleName(bundle), JPA_MANIFEST_HEADER, persistenceHeader });
 			final PersistenceBundle persistenceBundle = processPersistenceBundle(bundle, persistenceHeader);
@@ -103,6 +113,40 @@ public class PersistenceBundleTrackerCustomizer implements BundleTrackerCustomiz
 			LOG.trace("ignore bundle {} no {} header found!", PaxJPA.getBundleName(bundle), JPA_MANIFEST_HEADER);
 		}
 		return null;
+	}
+
+	/**
+	 * Checks whether the given bundle's {@code osgi.extender} requirement for
+	 * {@code osgi.jpa} is compatible with this extender (§127.7.1).
+	 * <p>
+	 * Uses {@link BundleRevision} (available for all bundles, even unresolved)
+	 * to match the bundle's declared requirements against this extender's
+	 * declared capabilities. If the bundle requires {@code osgi.jpa} but this
+	 * extender does not match the filter, returns {@code false}.
+	 */
+	private boolean isWiredToThisExtender(Bundle bundle) {
+
+		BundleRevision revision = bundle.adapt(BundleRevision.class);
+		if (revision == null) {
+			return true;
+		}
+		List<BundleRequirement> requirements = revision.getDeclaredRequirements("osgi.extender");
+		BundleRevision paxJpaRevision = bundleContext.getBundle().adapt(BundleRevision.class);
+		List<BundleCapability> capabilities = paxJpaRevision.getDeclaredCapabilities("osgi.extender");
+		for (BundleRequirement requirement : requirements) {
+			String filter = requirement.getDirectives().get("filter");
+			if (filter != null && filter.contains("osgi.jpa")) {
+				for (BundleCapability capability : capabilities) {
+					if (requirement.matches(capability)) {
+						return true;
+					}
+				}
+				// Bundle requires osgi.jpa extender but we don't match
+				return false;
+			}
+		}
+		// No osgi.jpa extender requirement — process normally
+		return true;
 	}
 
 	@Override
