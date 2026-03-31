@@ -129,7 +129,13 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 						"Failed to create DataSource for driver: " + driverClass, e);
 			}
 		}
-		return persistenceProvider.createContainerEntityManagerFactory(info, userProperties);
+		EntityManagerFactory realEmf = persistenceProvider.createContainerEntityManagerFactory(info, userProperties);
+		// §127.4.7: Register the EMF as a service with user properties
+		// Unregister any previous EMF (auto or builder)
+		unregisterEntityManagerFactory();
+		entityManagerFactory = realEmf;
+		registerBuilderEntityManagerFactory(props);
+		return new BuilderEntityManagerFactory(realEmf, this);
 	}
 
 	public PersistenceBundle getPersistenceBundle() {
@@ -341,7 +347,7 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 		}
 	}
 
-	private void unregisterEntityManagerFactory() {
+	void unregisterEntityManagerFactory() {
 		PaxJPA.unregister(emfRegistration);
 		emfRegistration = null;
 		if (entityManagerFactory != null) {
@@ -352,6 +358,34 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 			}
 			entityManagerFactory = null;
 		}
+	}
+
+	private void registerBuilderEntityManagerFactory(Map<String, Object> userProps) {
+		if (entityManagerFactory == null || PaxJPA.isValid(emfRegistration)) {
+			return;
+		}
+		Bundle bundle = persistenceBundle.getBundle();
+		BundleContext bundleContext = bundle.getBundleContext();
+		if (bundleContext == null) {
+			return;
+		}
+		LOG.info("register builder EntityManagerFactory service for persistence unit {}...",
+				puInfo.getPersistenceUnitName());
+		Dictionary<String, Object> emfServiceProps = new Hashtable<>();
+		emfServiceProps.put(JPA_UNIT_NAME, puInfo.getPersistenceUnitName());
+		emfServiceProps.put(JPA_UNIT_VERSION, bundle.getVersion().toString());
+		emfServiceProps.put(JPA_UNIT_PROVIDER, persistenceProvider.getClass().getName());
+		// §127.4.7: user-supplied properties become service properties
+		// (excluding sensitive properties like passwords)
+		for (Entry<String, Object> entry : userProps.entrySet()) {
+			String key = entry.getKey();
+			if (JpaConstants.JPA_PASSWORD.equals(key)) {
+				continue;
+			}
+			emfServiceProps.put(key, entry.getValue());
+		}
+		emfRegistration = bundleContext.registerService(EntityManagerFactory.class,
+				new EntityManagerFactoryService(entityManagerFactory), emfServiceProps);
 	}
 
 	public Properties getPersistenceProperties() {
