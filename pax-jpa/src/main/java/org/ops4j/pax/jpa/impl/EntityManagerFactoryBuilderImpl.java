@@ -81,20 +81,54 @@ public class EntityManagerFactoryBuilderImpl implements EntityManagerFactoryBuil
 	public synchronized EntityManagerFactory createEntityManagerFactory(Map<String, Object> props) {
 		Properties userProperties = new Properties(puInfo.getProperties());
 		ProxyPersitenceUnitInfo info = new ProxyPersitenceUnitInfo(puInfo);
+		boolean hasDirectDataSource = false;
+		String driverClass = null;
 		for (Entry<String, Object> entry : props.entrySet()) {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 			if (value instanceof String) {
 				userProperties.setProperty(key, (String) value);
 			}
-			if(JpaConstants.JAVAX_PERSISTENCE_DATA_SOURCE.equals(key)) {
-				if(value instanceof DataSource source) {
+			if (JpaConstants.JAVAX_PERSISTENCE_DATA_SOURCE.equals(key)) {
+				if (value instanceof DataSource source) {
 					// see https://github.com/osgi/osgi/issues/735
 					info.setDataSource(source);
+					hasDirectDataSource = true;
 				}
 			}
+			if (JpaConstants.JPA_DRIVER.equals(key) && value instanceof String) {
+				driverClass = (String) value;
+			}
 		}
-		// TODO we must check for rebinding/create a datasource/register as service!
+		if (!hasDirectDataSource && driverClass != null) {
+			// spec-ref §127.5.4 Rebinding: if we already have a
+			// DataSourceFactory tracked for a different driver, this is an
+			// attempt to rebind which must throw an Exception
+			if (dataSourceFactoryServiceTracker != null
+					&& !driverClass.equals(dataSourceFactoryServiceTracker.getDriver())) {
+				throw new IllegalArgumentException(
+						"Rebinding to a different DataSource is not supported (§127.5.4). "
+								+ "Current driver: " + dataSourceFactoryServiceTracker.getDriver()
+								+ ", requested: " + driverClass);
+			}
+			// Update PU properties and initiate proper DataSourceFactory
+			// tracking via propertiesChanged() which uses the existing
+			// DataSourceFactoryServiceTracker infrastructure
+			puProps.setProperty(JpaConstants.JPA_DRIVER, driverClass);
+			propertiesChanged();
+			// After tracking is set up, the DataSourceFactory should be
+			// available synchronously if a matching service exists
+			if (dataSourceFactory == null) {
+				throw new IllegalArgumentException(
+						"No DataSourceFactory service available for driver: " + driverClass);
+			}
+			try {
+				info.setDataSource(createDataSource(dataSourceFactory, userProperties));
+			} catch (SQLException e) {
+				throw new IllegalArgumentException(
+						"Failed to create DataSource for driver: " + driverClass, e);
+			}
+		}
 		return persistenceProvider.createContainerEntityManagerFactory(info, userProperties);
 	}
 
