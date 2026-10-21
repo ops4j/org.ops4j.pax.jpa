@@ -17,7 +17,7 @@ mvn clean install
 # Build including TCK (OSGi JPA compliance tests)
 mvn clean install -Ptck
 
-# Build ignoring TCK failures (as CI does)
+# Build ignoring TCK failures
 mvn -B verify -Ptck -Dbnd.testing.failure.ignore=true
 
 # Build a single module
